@@ -1,8 +1,8 @@
 {
-    "name": "iesoretania-dic/conduceme",
+    "name": "PedroQuesada/FOlder",
     "license": "AGPL-3.0",
     "type": "project",
-    "description": "Aplicación para la gestión de una empresa de alquiler de coches ",
+    "description": "Aplicación para realizar pedidos rápidamente en negocios ",
     "autoload": {
         "psr-0": { "": "src/", "SymfonyStandard": "app/" }
     },

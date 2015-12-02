@@ -1,0 +1,46 @@
+{% extends 'base.html.twig' %}
+{% block title %}Inicio de sesión{% endblock %}
+  {% block stylesheets %}
+     <!-- Custom styles for this template -->
+     <style>
+        body {
+           margin-top: 10%;
+           padding-top: 40px;
+           padding-bottom: 40px;
+           background-color: #FFF;
+        }
+        .form-signin {
+           max-width: 330px;
+           padding: 15px;
+           margin: 0px auto;
+           background-color: #DDD;
+        }
+        .form-signin .form-control {
+           position: relative;
+           height: auto;
+           padding: 10px;
+           font-size: 16px;
+        }
+
+     </style>
+  {% endblock %}
+{% block body %}
+
+   <div class="container">
+
+      <form class="form-signin">
+         <h2 class="form-signin-heading">Inicio</h2>
+         <label class="sr-only">Nombre</label>
+         <input type="text" class="form-control" placeholder="Nombre" required autofocus>
+         <label for="inputPassword" class="sr-only">Contraseña</label>
+         <input type="password" id="inputPassword" class="form-control" placeholder="Contraseña" required>
+         <div class="checkbox">
+            <label>
+               <input type="checkbox" value="remember-me"> Recuerdame
+            </label>
+         </div>
+         <a href="{{ path('inicio') }}"><button class="btn btn-lg btn-primary btn-block" type="submit">Entrar</button></a>
+      </form>
+
+   </div>
+{% endblock %}

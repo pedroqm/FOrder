@@ -1,0 +1,16 @@
+{% extends '::index.html.twig' %}
+
+{% block title %}listar usuarios{% endblock %}
+
+{% block content %}
+    {% if usuarios %}
+        <ol>
+            {% for tipo in usuarios %}
+                <li>{{ tipo }}</li>
+                <li><a href="">{{ tipo }}</a></li>
+            {% endfor %}
+        </ol>
+    {% else %}
+        <h2>No hay usuarios para mostrar</h2>
+    {% endif %}
+{% endblock %}
