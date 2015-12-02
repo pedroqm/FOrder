@@ -43,4 +43,123 @@ class Mesa
      * @var Usuario
      */
     protected $user;
+    /**
+     * Constructor
+     */
+    public function __construct()
+    {
+        $this->pedidos = new \Doctrine\Common\Collections\ArrayCollection();
+    }
+
+    /**
+     * Get id
+     *
+     * @return integer 
+     */
+    public function getId()
+    {
+        return $this->id;
+    }
+
+    /**
+     * Set cuenta
+     *
+     * @param string $cuenta
+     * @return Mesa
+     */
+    public function setCuenta($cuenta)
+    {
+        $this->cuenta = $cuenta;
+
+        return $this;
+    }
+
+    /**
+     * Get cuenta
+     *
+     * @return string 
+     */
+    public function getCuenta()
+    {
+        return $this->cuenta;
+    }
+
+    /**
+     * Set factura
+     *
+     * @param string $factura
+     * @return Mesa
+     */
+    public function setFactura($factura)
+    {
+        $this->factura = $factura;
+
+        return $this;
+    }
+
+    /**
+     * Get factura
+     *
+     * @return string 
+     */
+    public function getFactura()
+    {
+        return $this->factura;
+    }
+
+    /**
+     * Add pedidos
+     *
+     * @param \AppBundle\Entity\Pedido $pedidos
+     * @return Mesa
+     */
+    public function addPedido(\AppBundle\Entity\Pedido $pedidos)
+    {
+        $this->pedidos[] = $pedidos;
+
+        return $this;
+    }
+
+    /**
+     * Remove pedidos
+     *
+     * @param \AppBundle\Entity\Pedido $pedidos
+     */
+    public function removePedido(\AppBundle\Entity\Pedido $pedidos)
+    {
+        $this->pedidos->removeElement($pedidos);
+    }
+
+    /**
+     * Get pedidos
+     *
+     * @return \Doctrine\Common\Collections\Collection 
+     */
+    public function getPedidos()
+    {
+        return $this->pedidos;
+    }
+
+    /**
+     * Set user
+     *
+     * @param \AppBundle\Entity\Usuario $user
+     * @return Mesa
+     */
+    public function setUser(\AppBundle\Entity\Usuario $user = null)
+    {
+        $this->user = $user;
+
+        return $this;
+    }
+
+    /**
+     * Get user
+     *
+     * @return \AppBundle\Entity\Usuario 
+     */
+    public function getUser()
+    {
+        return $this->user;
+    }
 }

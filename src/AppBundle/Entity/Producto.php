@@ -42,4 +42,134 @@ class Producto{
      * @var Ingredientes
      */
     protected $ingredientes;
+    /**
+     * Constructor
+     */
+    public function __construct()
+    {
+        $this->comanda = new \Doctrine\Common\Collections\ArrayCollection();
+        $this->ingredientes = new \Doctrine\Common\Collections\ArrayCollection();
+    }
+
+    /**
+     * Get id
+     *
+     * @return integer 
+     */
+    public function getId()
+    {
+        return $this->id;
+    }
+
+    /**
+     * Set precio
+     *
+     * @param string $precio
+     * @return Producto
+     */
+    public function setPrecio($precio)
+    {
+        $this->precio = $precio;
+
+        return $this;
+    }
+
+    /**
+     * Get precio
+     *
+     * @return string 
+     */
+    public function getPrecio()
+    {
+        return $this->precio;
+    }
+
+    /**
+     * Set nombreProducto
+     *
+     * @param string $nombreProducto
+     * @return Producto
+     */
+    public function setNombreProducto($nombreProducto)
+    {
+        $this->nombreProducto = $nombreProducto;
+
+        return $this;
+    }
+
+    /**
+     * Get nombreProducto
+     *
+     * @return string 
+     */
+    public function getNombreProducto()
+    {
+        return $this->nombreProducto;
+    }
+
+    /**
+     * Add comanda
+     *
+     * @param \AppBundle\Entity\Pedido $comanda
+     * @return Producto
+     */
+    public function addComanda(\AppBundle\Entity\Pedido $comanda)
+    {
+        $this->comanda[] = $comanda;
+
+        return $this;
+    }
+
+    /**
+     * Remove comanda
+     *
+     * @param \AppBundle\Entity\Pedido $comanda
+     */
+    public function removeComanda(\AppBundle\Entity\Pedido $comanda)
+    {
+        $this->comanda->removeElement($comanda);
+    }
+
+    /**
+     * Get comanda
+     *
+     * @return \Doctrine\Common\Collections\Collection 
+     */
+    public function getComanda()
+    {
+        return $this->comanda;
+    }
+
+    /**
+     * Add ingredientes
+     *
+     * @param \AppBundle\Entity\Ingredientes $ingredientes
+     * @return Producto
+     */
+    public function addIngrediente(\AppBundle\Entity\Ingredientes $ingredientes)
+    {
+        $this->ingredientes[] = $ingredientes;
+
+        return $this;
+    }
+
+    /**
+     * Remove ingredientes
+     *
+     * @param \AppBundle\Entity\Ingredientes $ingredientes
+     */
+    public function removeIngrediente(\AppBundle\Entity\Ingredientes $ingredientes)
+    {
+        $this->ingredientes->removeElement($ingredientes);
+    }
+
+    /**
+     * Get ingredientes
+     *
+     * @return \Doctrine\Common\Collections\Collection 
+     */
+    public function getIngredientes()
+    {
+        return $this->ingredientes;
+    }
 }
