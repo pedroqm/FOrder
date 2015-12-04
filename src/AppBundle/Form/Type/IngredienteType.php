@@ -1,10 +1,5 @@
 <?php
-/**
- * Created by PhpStorm.
- * User: alumno
- * Date: 6/03/15
- * Time: 12:26
- */
+
 
 namespace AppBundle\Form\Type;
 
@@ -12,33 +7,28 @@ namespace AppBundle\Form\Type;
 use Symfony\Component\Form\AbstractType;
 use Symfony\Component\Form\FormBuilderInterface;
 
-class UsuarioType extends AbstractType
-{
 
+class IngredienteType extends AbstractType
+{
     public function buildForm(FormBuilderInterface $builder, array $options)
     {
         $builder
-            ->add('nombreUsuario', null, [
-                'label' => 'Nombre de usuario',
+            ->add('id', null, [
+                'label' => 'ID',
                 'required' => true
             ])
-            ->add('pass', 'password', [
-                'label' => 'Password',
+            ->add('cantidad', null, [
+                'label' => 'Cantidad:',
                 'required' => true
             ])
-            ->add('dni', null, [
-                'label' => 'Dni',
+            ->add('nombreIngrediente', null, [
+                'label' => 'Nombre',
                 'required' => true
             ])
-            ->add('apellidos', null, [
-                'label' => 'Apellidos',
-                'required' => false
+            ->add('nombreProducto', null, [
+                'label' => 'Nombre del producto',
+                'required' => true
             ])
-            ->add('email', null, [
-                'label' => 'email',
-                'required' => false
-            ])
-
             ->add('enviar', 'submit', [
                 'label' => 'Guardar cambios',
                 'attr' => [
@@ -47,6 +37,7 @@ class UsuarioType extends AbstractType
             ]);
     }
 
+
     /**
      * Returns the name of this type.
      *
@@ -54,6 +45,7 @@ class UsuarioType extends AbstractType
      */
     public function getName()
     {
-        return 'usuario';
+        return 'ingrediente';
     }
+
 }
