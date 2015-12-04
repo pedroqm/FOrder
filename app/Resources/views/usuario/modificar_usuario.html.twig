@@ -1,0 +1,11 @@
+{% extends '::index.html.twig' %}
+
+{% block title %}Modificar usuario{% endblock %}
+
+{% block content %}
+    <h1 class="well">Modificar datos de un usuario</h1>
+
+    {{ form(formulario) }}
+
+    <a href="{{ path('usuarios_listar') }}" class="btn btn-info">Volver al listado de usuarios</a>
+{% endblock %}

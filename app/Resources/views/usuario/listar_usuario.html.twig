@@ -5,9 +5,9 @@
 {% block content %}
     {% if usuarios %}
         <ol>
-            {% for tipo in usuarios %}
-                <li>{{ tipo }}</li>
-                <li><a href="">{{ tipo }}</a></li>
+            {% for user in usuarios %}
+                <li>{{ user }}</li>
+                <li><a href="">{{ user }}</a></li>
             {% endfor %}
         </ol>
     {% else %}

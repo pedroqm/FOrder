@@ -72,11 +72,6 @@ class Usuario
      * @ORM\Column(type="string")
      *
      * @var string
-     * @Assert\Regex(
-     *     pattern     = "/^([a-z ñáéíóú]{2,60})$/i",
-     *     htmlPattern = "/^([a-z ñáéíóú]{2,60})$/i",
-     *     message="Introduzca apellidos válidos, sin números ni caracteres especiales"
-     * )
      */
     protected $apellidos;
 
