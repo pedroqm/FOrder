@@ -13,10 +13,6 @@ class IngredienteType extends AbstractType
     public function buildForm(FormBuilderInterface $builder, array $options)
     {
         $builder
-            ->add('id', null, [
-                'label' => 'ID',
-                'required' => true
-            ])
             ->add('cantidad', null, [
                 'label' => 'Cantidad:',
                 'required' => true

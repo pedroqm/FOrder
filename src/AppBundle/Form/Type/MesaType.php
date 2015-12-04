@@ -13,10 +13,6 @@ class MesaType extends AbstractType
     public function buildForm(FormBuilderInterface $builder, array $options)
     {
         $builder
-            ->add('id', null, [
-                'label' => 'ID',
-                'required' => true
-            ])
             ->add('cuenta', null, [
                 'label' => 'cuenta',
                 'required' => false

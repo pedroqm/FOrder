@@ -13,10 +13,6 @@ class AlmacenType extends AbstractType
     public function buildForm(FormBuilderInterface $builder, array $options)
     {
         $builder
-            ->add('id', null, [
-                'label' => 'ID',
-                'required' => true
-            ])
             ->add('stock', null, [
                 'label' => 'Stock del producto',
                 'required' => false

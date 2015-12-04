@@ -12,10 +12,6 @@ class PedidoType extends AbstractType
     public function buildForm(FormBuilderInterface $builder, array $options)
     {
         $builder
-            ->add('id', null, [
-                'label' => 'ID',
-                'required' => true
-            ])
             ->add('estado', null, [
                 'label' => 'Estado',
                 'required' => true

@@ -1,10 +1,4 @@
 <?php
-/**
- * Created by PhpStorm.
- * User: alumno
- * Date: 6/03/15
- * Time: 12:26
- */
 
 namespace AppBundle\Form\Type;
 
@@ -36,6 +30,10 @@ class UsuarioType extends AbstractType
             ])
             ->add('email', null, [
                 'label' => 'email',
+                'required' => false
+            ])
+            ->add('telefono', null, [
+                'label' => 'telefono',
                 'required' => false
             ])
 
