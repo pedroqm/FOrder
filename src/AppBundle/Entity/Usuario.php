@@ -48,17 +48,6 @@ class Usuario
      */
     protected $pass;
 
-    /**
-     * @ORM\Column(type="string")
-     *
-     * @var string
-     * @Assert\Regex(
-     *     pattern     = "/^([a-z ñáéíóú]{2,60})$/i",
-     *     htmlPattern = "/^([a-z ñáéíóú]{2,60})$/i",
-     *     message="Introduzca un nombre completo válido, sin números ni caracteres especiales"
-     * )
-     */
-    protected $nombreCompleto;
 
     /**
      * @ORM\Column(type="string")
@@ -182,28 +171,6 @@ class Usuario
         return $this->pass;
     }
 
-    /**
-     * Set nombreCompleto
-     *
-     * @param string $nombreCompleto
-     * @return Usuario
-     */
-    public function setNombreCompleto($nombreCompleto)
-    {
-        $this->nombreCompleto = $nombreCompleto;
-
-        return $this;
-    }
-
-    /**
-     * Get nombreCompleto
-     *
-     * @return string 
-     */
-    public function getNombreCompleto()
-    {
-        return $this->nombreCompleto;
-    }
 
     /**
      * Set email

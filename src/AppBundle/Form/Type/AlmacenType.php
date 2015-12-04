@@ -17,6 +17,18 @@ class AlmacenType extends AbstractType
                 'label' => 'ID',
                 'required' => true
             ])
+            ->add('stock', null, [
+                'label' => 'Stock del producto',
+                'required' => false
+            ])
+            ->add('stockMin', null, [
+                'label' => 'Stock minimo del producto',
+                'required' => false
+            ])
+            ->add('nombreIngrediente', null, [
+                'label' => 'Nombre Ingrediente',
+                'required' => false
+            ])
             ->add('enviar', 'submit', [
                 'label' => 'Guardar cambios',
                 'attr' => [
