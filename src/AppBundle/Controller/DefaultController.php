@@ -31,7 +31,7 @@ class DefaultController extends Controller
     ]);
     }
     /**
-     * @Route("/cuenta", name="cuenta2")
+     * @Route("/cuenta", name="cuenta")
 */
     public function cuentaAction()
     {

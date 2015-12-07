@@ -82,21 +82,21 @@ class Usuario
     protected $nombreUsuario;
 
     /**
-     * @ORM\Column(type="boolean")
+     * @ORM\Column(type="boolean", options={"default"=true})
      *
      * @var boolean
      */
     protected $esAdmin;
 
     /**
-     * @ORM\Column(type="boolean")
+     * @ORM\Column(type="boolean", options={"default"=false})
      *
      * @var boolean
      */
     protected $esCliente;
 
     /**
-     * @ORM\Column(type="boolean")
+     * @ORM\Column(type="boolean", options={"default"=false})
      *
      * @var boolean
      */
@@ -110,6 +110,12 @@ class Usuario
     protected $mesa;
 
 
+    public function __construct()
+    {
+        $this->esCamarero = false;
+        $this->esAdmin=true;
+        $this->esCliente=false;
+    }
     /**
      * Get id
      *

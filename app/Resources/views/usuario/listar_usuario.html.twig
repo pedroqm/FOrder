@@ -1,16 +1,35 @@
 {% extends '::index.html.twig' %}
 
-{% block title %}listar usuarios{% endblock %}
+{% block title %}Listar usuarios{% endblock %}
 
 {% block content %}
+    <h1 class="well">Listado de usuarios de la empresa</h1>
+
     {% if usuarios %}
-        <ol>
-            {% for user in usuarios %}
-                <li>{{ user }}</li>
-                <li><a href="">{{ user }}</a></li>
+        <table class="table table-bordered table-condensed table-hover table-striped">
+            <thead>
+            <tr>
+                <th>Nombre de usuario</th>
+                <th>NIE</th>
+                <th></th>
+            </tr>
+            </thead>
+            <tbody>
+            {% for usuario in usuarios %}
+                <tr>
+                    <td>{{ usuario.nombreUsuario }}</td>
+                    <td>{{ usuario.telefono }}</td>
+                    <td>
+                        <a href="{{ path('usuarios_modificar', { 'usuario': usuario.id }) }}" class="btn btn-default btn-xs">
+                            <i class="glyphicon glyphicon-pencil"></i> Modificar
+                        </a>
+                    </td>
+                </tr>
             {% endfor %}
-        </ol>
+            </tbody>
+        </table>
     {% else %}
         <h2>No hay usuarios para mostrar</h2>
     {% endif %}
+
 {% endblock %}

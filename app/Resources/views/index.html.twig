@@ -19,7 +19,7 @@
       <div class="header clearfix">
          <nav>
             <ul class="nav nav-pills pull-right">
-               <li role="presentation" class="active"><a href="#">Home</a></li>
+               <li role="presentation" class="active"><a href="{{ path('inicio') }}">Inicio</a></li>
                <li role="presentation"><a href="#">About</a></li>
                <li role="presentation"><a href="#">Contact</a></li>
             </ul>
@@ -30,12 +30,15 @@
       <div class="jumbotron">
 
 
-         {% block content %} <h1>Bienvenido</h1>{% endblock %}
+         {% block content %} <h1>Bienvenido</h1>
+            <a href="{{ path('cuenta') }}"><button type="button" class="btn btn-lg btn-primary">cuenta</button></a>
+            <a href="{{ path('usuarios_listar') }}"><button type="button" class="btn btn-lg btn-primary">ver usuarios</button></a>
+
+         {% endblock %}
       </div>
 
 
-      <a href="{{ path('cuenta2') }}"><button type="button" class="btn btn-lg btn-primary">cuenta</button></a>
-      <a href="{{ path('usuarios_listar') }}"><button type="button" class="btn btn-lg btn-primary">ver usuarios</button></a>
+
       <div class="row marketing">
          <div class="col-lg-6">
 
