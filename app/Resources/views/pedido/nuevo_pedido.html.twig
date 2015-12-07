@@ -1,0 +1,11 @@
+{% extends '::index.html.twig' %}
+
+{% block title %}Nuevo pedido{% endblock %}
+
+{% block content %}
+    <h1 class="well">Crear un pedido</h1>
+
+    {{ form(formulario) }}
+
+    <a href="{{ path('usuarios_listar') }}" class="btn btn-info">Volver al listado de pedidos</a>
+{% endblock %}
