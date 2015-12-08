@@ -74,6 +74,18 @@ class Usuario
      * @var string
      */
     protected $apellidos;
+    /**
+     * @ORM\Column(type="string")
+     *
+     * @var string
+     */
+    protected $nombre;
+    /**
+     * @ORM\Column(type="decimal")
+     *
+     * @var decimal
+     */
+    protected $factura;
 
     /**
      * @ORM\Column(type="string")
@@ -115,6 +127,7 @@ class Usuario
         $this->esCamarero = false;
         $this->esAdmin=true;
         $this->esCliente=false;
+        $this->factura=0;
     }
     /**
      * Get id
@@ -355,5 +368,51 @@ class Usuario
     public function getMesa()
     {
         return $this->mesa;
+    }
+
+    /**
+     * Set nombre
+     *
+     * @param string $nombre
+     * @return Usuario
+     */
+    public function setNombre($nombre)
+    {
+        $this->nombre = $nombre;
+
+        return $this;
+    }
+
+    /**
+     * Get nombre
+     *
+     * @return string 
+     */
+    public function getNombre()
+    {
+        return $this->nombre;
+    }
+
+    /**
+     * Set factura
+     *
+     * @param string $factura
+     * @return Usuario
+     */
+    public function setFactura($factura)
+    {
+        $this->factura = $factura;
+
+        return $this;
+    }
+
+    /**
+     * Get factura
+     *
+     * @return string 
+     */
+    public function getFactura()
+    {
+        return $this->factura;
     }
 }

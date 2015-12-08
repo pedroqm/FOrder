@@ -21,6 +21,10 @@ class ProductoType extends AbstractType
                 'label' => 'Nombre',
                 'required' => false
             ])
+            ->add('tipo', null, [
+                'label' => 'Tipo',
+                'required' => false
+            ])
             ->add('enviar', 'submit', [
                 'label' => 'Guardar cambios',
                 'attr' => [

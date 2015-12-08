@@ -20,14 +20,19 @@ class UsuarioType extends AbstractType
                 'label' => 'Password',
                 'required' => true
             ])
-            ->add('dni', null, [
-                'label' => 'Dni',
-                'required' => true
+            ->add('nombre', null, [
+                'label' => 'Nombre',
+                'required' => false
             ])
             ->add('apellidos', null, [
                 'label' => 'Apellidos',
                 'required' => false
             ])
+            ->add('dni', null, [
+                'label' => 'Dni',
+                'required' => true
+            ])
+
             ->add('email', null, [
                 'label' => 'email',
                 'required' => false

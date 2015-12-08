@@ -27,6 +27,11 @@ class Producto{
      * @var string
      */
     protected $nombreProducto;
+    /**
+     * @ORM\Column(type="string")
+     * @var string
+     */
+    protected $tipo;
 
     /**
      * @ORM\ManyToMany(targetEntity="Pedido",
@@ -171,5 +176,28 @@ class Producto{
     public function getIngredientes()
     {
         return $this->ingredientes;
+    }
+
+    /**
+     * Set tipo
+     *
+     * @param string $tipo
+     * @return Producto
+     */
+    public function setTipo($tipo)
+    {
+        $this->tipo = $tipo;
+
+        return $this;
+    }
+
+    /**
+     * Get tipo
+     *
+     * @return string 
+     */
+    public function getTipo()
+    {
+        return $this->tipo;
     }
 }
