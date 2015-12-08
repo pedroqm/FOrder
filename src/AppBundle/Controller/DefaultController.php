@@ -12,7 +12,22 @@ class DefaultController extends Controller
      */
     public function loginAction()
     {
-        return $this->render('default/formulario.html.twig');
+        $user = $this->getUser();
+        $em = $this->getDoctrine()->getManager();
+
+
+        return $this->render(':default:formulario.html.twig',
+            [
+                'usuario' => $user
+            ]);
+    }
+
+    /**
+     * @Route("/admin", name="administracion")
+     */
+    public function adminAction()
+    {
+        return $this->render(':default:administracion.html.twig');
     }
     /**
      * @Route("/", name="inicio")

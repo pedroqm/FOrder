@@ -74,33 +74,55 @@ class UsuarioController extends Controller
         // Crear el formulario a partir de la clase
         $formulario = $this->createForm(new UsuarioType(), $usuario);
 
-        // Procesar el formulario si se ha enviado con un POST
-        $formulario->handleRequest($peticion);
+                // Procesar el formulario si se ha enviado con un POST
+                $formulario->handleRequest($peticion);
 
-        // Si se ha enviado y el contenido es válido, guardar los cambios
-        if ($formulario->isSubmitted() && $formulario->isValid()) {
+                // Si se ha enviado y el contenido es válido, guardar los cambios
+                if ($formulario->isSubmitted() && $formulario->isValid()) {
 
-            // Obtener el EntityManager
+                    // Obtener el EntityManager
+                    $em = $this->getDoctrine()->getManager();
+
+                    /*$helper =  $password = $this->container->get('security.password_encoder');
+                    $usuario->setPassword($helper->encodePassword($usuario, $usuario->getPassword()));*/
+
+                    // Asegurarse de que se tiene en cuenta el nuevo usuario
+                    $em->persist($usuario);
+                    // Guardar los cambios
+                    $em->flush();
+                    // Redirigir al usuario a la lista
+                    return new RedirectResponse(
+                        $this->generateUrl('usuarios_listar')
+                    );
+            }
+
+
+        return $this->render(':usuario:modificar_usuario.html.twig', [
+            'usuario' => $usuario,
+            'formulario' => $formulario->createView()
+        ]);
+    }
+    /**
+     * @Route("/eliminar/{usuario}", name="usuarios_eliminar")
+     */
+    public function eliminarAction(Request $peticion, Usuario $usuario)
+    {
+
+        //Eliminar usuario
+
+        if(isset($_POST['eliminar_user'])){
             $em = $this->getDoctrine()->getManager();
-
-            /*$helper =  $password = $this->container->get('security.password_encoder');
-            $usuario->setPassword($helper->encodePassword($usuario, $usuario->getPassword()));*/
-
-            // Asegurarse de que se tiene en cuenta el nuevo usuario
-            $em->persist($usuario);
-            // Guardar los cambios
+            $em->remove($usuario);
             $em->flush();
+            $this->addFlash('success', 'Usuario eliminado de forma correcta');
+
 
             // Redirigir al usuario a la lista
             return new RedirectResponse(
                 $this->generateUrl('usuarios_listar')
             );
         }
-        return $this->render(':usuario:modificar_usuario.html.twig', [
-            'usuario' => $usuario,
-            'formulario' => $formulario->createView()
-        ]);
-    }
 
+    }
 
 }
