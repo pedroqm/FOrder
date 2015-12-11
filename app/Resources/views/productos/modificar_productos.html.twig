@@ -1,0 +1,11 @@
+{% extends '::index.html.twig' %}
+
+{% block title %}Modificar {{ producto.nombreProducto }}{% endblock %}
+
+{% block content %}
+    <h1 class="well">Modificar  {{ producto.nombreProducto }}</h1>
+
+    {{ form(formulario) }}
+
+    <a href="{{ path('inicio') }}" class="btn btn-info">Volver al listado de productos</a>
+{% endblock %}

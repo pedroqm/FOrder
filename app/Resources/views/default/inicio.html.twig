@@ -1,0 +1,27 @@
+{% extends '::index.html.twig' %}
+{% block title %} Inicio {% endblock %}
+ {% block stylesheets %}
+     #a{
+     margin-top: 60px !important;
+     }
+ {% endblock %}
+ {% block content %}
+     {% if tipoProducto %}
+         <div class="row">
+         {% for t in tipoProducto %}
+
+             <form action="{{ path('ver_productos', { 'tipoProducto': t.id }) }}" method="post">
+                 <button class="btn btn-lg btn-primary" type="submit" name="ver_pro">{{ t.tipo }} </button>
+             </form>
+
+         {% endfor %}
+         </div>
+     {% else %}
+         <h2>No hay productos para mostrar</h2>
+     {% endif %}
+     <div class="row">
+     <div class="col-sm-12">
+     <a href="{{ path('cuenta') }}"><button type="button" class="btn btn-lg btn-primary" id="a">Ver cuenta</button></a>
+     </div>
+     </div>
+ {% endblock %}

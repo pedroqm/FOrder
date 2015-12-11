@@ -2,13 +2,17 @@
 
 namespace AppBundle\Controller;
 
+use AppBundle\Entity\Producto;
+use AppBundle\Form\Type\ProductoType;
+use AppBundle\Entity\Usuario;
+use AppBundle\Form\Type\UsuarioType;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Route;
 use Symfony\Bundle\FrameworkBundle\Controller\Controller;
 
 class DefaultController extends Controller
 {
     /**
-     * @Route("/entrada", name="formulario")
+     * @Route("/entrar", name="formulario")
      */
     public function loginAction()
     {
@@ -41,9 +45,15 @@ class DefaultController extends Controller
             ->orderBy('u.nombreUsuario')
             ->getQuery()
             ->getResult();
-        return $this->render('index.html.twig', [
-        'usuarios' => $usuarios
-    ]);
+
+        $em = $this->getDoctrine()->getManager();
+
+        $tipoProducto = $em->getRepository('AppBundle:TipoProducto')
+            ->findAll();
+
+        return $this->render(':default:inicio.html.twig', [
+            'tipoProducto' => $tipoProducto
+        ]);
     }
     /**
      * @Route("/cuenta", name="cuenta")

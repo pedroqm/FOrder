@@ -1,0 +1,11 @@
+{% extends '::index.html.twig' %}
+
+{% block title %}{% endblock %}
+
+{% block content %}
+    <h1 class="well">Crear un producto</h1>
+
+    {{ form(formulario) }}
+
+    <a href="{{ path('producto_listar') }}" class="btn btn-info">Volver al listado de producto</a>
+{% endblock %}
