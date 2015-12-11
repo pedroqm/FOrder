@@ -15,14 +15,23 @@ class AlmacenType extends AbstractType
         $builder
             ->add('stock', null, [
                 'label' => 'Stock del producto',
+                'attr' => [
+                    'class' => 'form-control'
+                ],
                 'required' => false
             ])
             ->add('stockMin', null, [
                 'label' => 'Stock minimo del producto',
+                'attr' => [
+                    'class' => 'form-control'
+                ],
                 'required' => false
             ])
             ->add('nombreIngrediente', null, [
                 'label' => 'Nombre Ingrediente',
+                'attr' => [
+                    'class' => 'form-control'
+                ],
                 'required' => false
             ])
             ->add('enviar', 'submit', [

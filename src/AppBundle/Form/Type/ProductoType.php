@@ -15,14 +15,23 @@ class ProductoType extends AbstractType
         $builder
             ->add('nombreProducto', null, [
                 'label' => 'Nombre',
+                'attr' => [
+                    'class' => 'form-control'
+                ],
                 'required' => false
             ])
             ->add('precio', null, [
                 'label' => 'Precio',
+                'attr' => [
+                    'class' => 'form-control'
+                ],
                 'required' => false
             ])
             ->add('tipo', null, [
                 'label' => 'Tipo',
+                'attr' => [
+                    'class' => 'form-control'
+                ],
                 'required' => false
             ])
             ->add('enviar', 'submit', [

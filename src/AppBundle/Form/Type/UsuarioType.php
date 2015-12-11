@@ -14,31 +14,52 @@ class UsuarioType extends AbstractType
         $builder
             ->add('nombreUsuario', null, [
                 'label' => 'Nombre de usuario',
+                'attr' => [
+                    'class' => 'form-control'
+                ],
                 'required' => true
             ])
             ->add('pass', 'password', [
                 'label' => 'Password',
+                'attr' => [
+                    'class' => 'form-control'
+                ],
                 'required' => true
             ])
             ->add('nombre', null, [
                 'label' => 'Nombre',
+                'attr' => [
+                    'class' => 'form-control'
+                ],
                 'required' => false
             ])
             ->add('apellidos', null, [
                 'label' => 'Apellidos',
+                'attr' => [
+                    'class' => 'form-control'
+                ],
                 'required' => false
             ])
             ->add('dni', null, [
                 'label' => 'Dni',
+                'attr' => [
+                    'class' => 'form-control'
+                ],
                 'required' => true
             ])
 
             ->add('email', null, [
                 'label' => 'email',
+                'attr' => [
+                    'class' => 'form-control'
+                ],
                 'required' => false
             ])
             ->add('telefono', null, [
                 'label' => 'telefono',
+                'attr' => [
+                    'class' => 'form-control'
+                ],
                 'required' => false
             ])
 

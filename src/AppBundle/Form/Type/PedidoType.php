@@ -14,10 +14,16 @@ class PedidoType extends AbstractType
         $builder
             ->add('estado', null, [
                 'label' => 'Estado',
+                'attr' => [
+                    'class' => 'form-control'
+                ],
                 'required' => true
             ])
             ->add('incidencias', null, [
                 'label' => 'Incidencias',
+                'attr' => [
+                    'class' => 'form-control'
+                ],
                 'required' => false
             ])
             ->add('enviar', 'submit', [

@@ -15,10 +15,16 @@ class MesaType extends AbstractType
         $builder
             ->add('cuenta', null, [
                 'label' => 'cuenta',
+                'attr' => [
+                    'class' => 'form-control'
+                ],
                 'required' => false
             ])
             ->add('factura', null, [
                 'label' => 'factura',
+                'attr' => [
+                    'class' => 'form-control'
+                ],
                 'required' => false
             ])
             ->add('enviar', 'submit', [

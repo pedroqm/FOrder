@@ -13,18 +13,28 @@ class IngredienteType extends AbstractType
     public function buildForm(FormBuilderInterface $builder, array $options)
     {
         $builder
-            ->add('cantidad', null, [
-                'label' => 'Cantidad:',
-                'required' => true
-            ])
             ->add('nombreIngrediente', null, [
                 'label' => 'Nombre',
+                'attr' => [
+                    'class' => 'form-control'
+                ],
                 'required' => true
             ])
+            ->add('cantidad', null, [
+                'label' => 'Cantidad:',
+                'attr' => [
+                    'class' => 'form-control'
+                ],
+                'required' => true
+            ])
+          /*
             ->add('nombreProducto', null, [
                 'label' => 'Nombre del producto',
+                'attr' => [
+                    'class' => 'form-control'
+                ],
                 'required' => true
-            ])
+            ])*/
             ->add('enviar', 'submit', [
                 'label' => 'Guardar cambios',
                 'attr' => [
