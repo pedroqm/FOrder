@@ -1,0 +1,25 @@
+{% extends '::index.html.twig' %}
+{% block title %} Gestión de la aplicación {% endblock %}
+ {% block stylesheets %}
+     #a{
+         margin-top: 60px !important;
+     }
+    a{
+     margin-bottom: 30px !important;
+     }
+ {% endblock %}
+ {% block content %}
+         <div class="col-lg-12" id="a">
+                <a href="{{ path('usuarios_listar') }}" class="btn btn-primary btn-lg btn-block">
+                   Gestión de Usuarios
+                </a>
+
+         </div>
+         <div class="col-lg-12">
+                <a href="{{ path('producto_listar') }}" class="btn btn-primary btn-lg btn-block">
+                    Gestión de Productos
+                </a>
+         </div> 
+
+
+ {% endblock %}
