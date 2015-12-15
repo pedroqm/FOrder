@@ -3,6 +3,8 @@ namespace AppBundle\Entity;
 use Doctrine\ORM\Mapping as ORM;
 use Symfony\Component\Validator\Constraints as Assert;
 use Symfony\Bridge\Doctrine\Validator\Constraints\UniqueEntity;
+use Symfony\Component\Security\Core\Role\Role;
+use Symfony\Component\Security\Core\User\UserInterface;
 
 /**
  * @ORM\Entity
@@ -122,13 +124,6 @@ class Usuario
     protected $mesa;
 
 
-    public function __construct()
-    {
-        $this->esCamarero = false;
-        $this->esAdmin=true;
-        $this->esCliente=false;
-        $this->factura=0;
-    }
     /**
      * Get id
      *
@@ -415,4 +410,18 @@ class Usuario
     {
         return $this->factura;
     }
+
+
+    public function __construct()
+    {
+        // el primer usuario es admin
+        if ($this->getEsAdmin()) {
+            $this->esAdmin=true;
+        }
+        $this->esCamarero = false;
+        $this->esAdmin=false;
+        $this->esCliente=true;
+        $this->factura=0;
+    }
+
 }
