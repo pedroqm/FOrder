@@ -1,0 +1,13 @@
+{% extends '::index.html.twig' %}
+
+{% block title %}{% endblock %}
+
+{% block content %}
+    <h1 class="well">Nueva categoria del menu </h1>
+
+    {{ form(formulario) }}
+
+
+
+    <a href="{{ path('listar_carta') }}" class="btn btn-info">Volver</a>
+{% endblock %}

@@ -1,0 +1,49 @@
+{% extends '::index.html.twig' %}
+
+{% block title %}Carta{% endblock %}
+
+{% block content %}
+    <h2 class="well">Carta</h2>
+
+    {% if TipoProducto %}
+        <table class="table table-bordered table-condensed table-hover table-striped">
+            <thead>
+            <tr>
+                <th>Categoria del menu</th>
+                <th></th>
+            </tr>
+            </thead>
+            <tbody>
+            {% for c in TipoProducto %}
+                <tr>
+                    <td>{{ c.tipo }}</td>
+
+
+                    <td>
+                        <a href="{{ path('carta_modificar', { 'TipoProducto': c.id }) }}" class="btn btn-warning btn-sm">
+                            <i class="glyphicon glyphicon-pencil"></i> Modificar
+                        </a>
+
+                    </td>
+                    <td>
+
+                        <form action="{{ path('carta_eliminar', {'TipoProducto': c.id}) }}" method="post">
+                            <button class="btn btn-danger btn-sm" type="submit" name="eliminar_categoria">Eliminar </button>
+                        </form>
+
+
+                    </td>
+                </tr>
+            {% endfor %}
+            </tbody>
+        </table>
+    {% else %}
+        <h2>No hay usuarios para mostrar</h2>
+    {% endif %}
+    <a href="{{ path('carta_nueva') }}" class="btn btn-success btn-lg">
+        Nuevo
+    </a>
+    <a href="{{ path('listar_carta') }}" class="btn btn-success btn-lg">
+        Volver
+    </a>
+{% endblock %}
