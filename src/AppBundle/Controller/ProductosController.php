@@ -35,39 +35,38 @@ class ProductosController extends Controller
         ]);
     }
 
-    /**
-     * @Route("/listarCarta", name="carta")
-     */
-    public function listarInicioAction()
-    {
-        $em = $this->getDoctrine()->getManager();
-
-        $tipoProducto = $em->getRepository('AppBundle:TipoProducto')
-            ->findAll();
-
-        return $this->render(':default:inicio.html.twig', [
-            'tipoProducto' => $tipoProducto
-        ]);
-    }
 
     /**
      * @Route("/tipo_producto/{tipoProducto}", name="ver_productos"), methods={'GET', 'POST'}
      */
     public function verRecetaAction(TipoProducto $tipoProducto)
     {
-
+        session_start();
         if(isset($_POST['ver_pro'])){
 
+            $em = $this->getDoctrine()->getManager();
+
+            $usuario=$em->getRepository('AppBundle:Usuario')->findOneBy(array('id'=>$_SESSION['id']));
             $em = $this->getDoctrine()->getManager();
 
             $producto = $em->getRepository('AppBundle:Producto')
                 ->findBy(array('tipo' => $tipoProducto->getTipo()));
 
+            if($usuario->getEsAdmin()==false){
+                return $this->render(':productos:ver_productos.html.twig', [
+                    'producto' => $producto,
+                    'tipoProducto'=>$tipoProducto,
+                    'usuarios'=>$usuario
+                ]);
+            }else{
+                return $this->render(':productos:listar_productos.html.twig', [
+                    'producto' => $producto,
+                    'tipoProducto'=>$tipoProducto,
+                    'usuarios'=>$usuario
+                ]);
+            }
 
-            return $this->render(':productos:listar_productos.html.twig', [
-                'producto' => $producto,
-                'tipoProducto'=>$tipoProducto
-            ]);
+
 
 
         }
@@ -96,16 +95,6 @@ class ProductosController extends Controller
            // Guardar los cambios
            $em->flush();
 
-           $tipo= new TipoProducto();
-           $em = $this->getDoctrine()->getManager();
-          $tipo->setTipo($producto->getTipo());
-
-           $em->persist($tipo);
-           // Guardar los cambios
-           $em->flush();
-           /*$tipoPro=new TipoProducto();
-           $tipoPro=$em->getRepository('AppBundle:Producto')
-               ->findBy(array('nombre'=>$producto->getTipo()));*/
 
            // Redirigir al usuario a la lista
            return new RedirectResponse(
@@ -152,21 +141,18 @@ class ProductosController extends Controller
     /**
      * @Route("/eliminar/{producto}", name="producto_eliminar")
      */
-    public function eliminarAction(Request $peticion, Producto $id)
+    public function eliminarAction(Producto $producto)
     {
-
         //Eliminar producto
 
         if(isset($_POST['eliminar_produc'])){
             $em = $this->getDoctrine()->getManager();
-            $em->remove($id);
+            $em->remove($producto);
             $em->flush();
-            $this->addFlash('success', 'Producto eliminado de forma correcta');
 
 
-            // Redirigir al usuario a la lista
             return new RedirectResponse(
-                $this->generateUrl('usuarios_listar')
+                $this->generateUrl('inicio')
             );
         }
 

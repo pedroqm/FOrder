@@ -3,7 +3,7 @@
 {% block title %}Gestión de Productos{% endblock %}
 
 {% block content %}
-    <h1>{{ tipoProducto.tipo }}</h1>
+    <h2 class="well">{{ tipoProducto.tipo }}</h2>
 
     {% if producto %}
         <table class="table table-bordered table-condensed table-hover table-striped">
@@ -19,16 +19,19 @@
                 <tr>
                     <td>{{ p.nombreProducto }}</td>
                     <td>{{ p.precio }}</td>
+                    {% if usuarios.esAdmin == true %}
+
+                        <td>
+                            <form action="{{ path('ver_receta', { 'id': p.id }) }}" method="post">
+                                <button class="btn btn-success btn-sm" type="submit" name="ver_receta">ver receta </button>
+                            </form>
+                        </td>
                     <td>
                         <a href="{{ path('producto_modificar', { 'producto': p.id }) }}" class="btn btn-warning btn-sm">
-                            <i class="glyphicon glyphicon-pencil"></i> Modificar productos
+                            <i class="glyphicon glyphicon-pencil"></i> Modificar producto
                         </a>
                     </td>
-                    <td>
-                        <form action="{{ path('ver_receta', { 'id': p.id }) }}" method="post">
-                            <button class="btn btn-success btn-sm" type="submit" name="ver_receta">ver receta </button>
-                        </form>
-                    </td>
+
                     <td>
                             <form action="{{ path('producto_eliminar', { 'producto': p.id }) }}" method="post">
                                 <button class="btn btn-danger btn-sm" type="submit" name="eliminar_produc">Eliminar </button>
@@ -36,6 +39,7 @@
 
 
                     </td>
+                    {% endif %}
                 </tr>
             {% endfor %}
             </tbody>
@@ -45,5 +49,8 @@
     {% endif %}
     <a href="{{ path('producto_nuevo') }}" class="btn btn-success btn-lg">
         Nuevo
+    </a>
+    <a href="{{ path('inicio') }}" class="btn btn-success btn-lg">
+        Volver
     </a>
 {% endblock %}
