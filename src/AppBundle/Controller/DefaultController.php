@@ -31,7 +31,6 @@ class DefaultController extends Controller
                 ->findOneBy(array('nombreUsuario'=>$nombre,'pass'=>$contraseña)))
             {
 
-
                 // Get the global context
 
                 session_start();
@@ -56,22 +55,21 @@ class DefaultController extends Controller
                         'usuarios'=>$usuario
                     ]);
                 }
-
-
-
             }else{
                 if( $usu = $em->getRepository('AppBundle:Usuario')
                     ->findOneBy(array('nombreUsuario'=>$nombre))){
-                    $this->addFlash('danger', 'Ha habido un error, compruebe los datos introducidos');
-                    echo "<div id='error' class='alert alert-danger alert-dismissable col-md-6 col-md-offset-3 col-sm-8 col-sm-offset-2'>contraseña incorrecta</div>";
+                    $this->get('session')->getFlashBag()->add(
+                        'notice',
+                        'Contraseña incorrecta.'
+                    );
 
-                    $this->get('session')->getFlashBag()->add('danger', 'Ha habido un error, compruebe los datos introducidos');
-                    //throw $this->createNotFoundException('contraseña incorrecta');
 
                 }else{
-                    echo "<div id='error' class='alert alert-danger alert-dismissable col-md-6 col-md-offset-3 col-sm-8 col-sm-offset-2'>El usuario no existe</div>";
+                    $this->get('session')->getFlashBag()->add(
+                        'notice',
+                        'Usuario incorrecto.'
+                    );
                 }
-
             }
         }
 
@@ -96,10 +94,6 @@ class DefaultController extends Controller
                 return $this->render(':default:administracion.html.twig');
             }
         }
-
-
-
-
 
     }
     /**
