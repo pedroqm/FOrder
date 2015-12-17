@@ -120,10 +120,32 @@ class DefaultController extends Controller
     }
     /**
      * @Route("/cuenta", name="cuenta")
-*/
+     */
     public function cuentaAction()
     {
-        return $this->render('default/cuenta.html.twig');
+        session_start();
+
+        $em = $this->getDoctrine()->getManager();
+
+        $pedido=$_SESSION['pedido'];
+        $cantidad=$pedido[0][1];
+        //$producto=$em->getRepository('AppBundle:Producto')->findAll();
+        $producto=$em->getRepository('AppBundle:Producto')->findBy(array('id'=>$pedido[0][0]));
+
+        for($i=0; $i<count($pedido)-1; $i++){
+            $producto=$em->getRepository('AppBundle:Producto')->findBy(array('id'=>$pedido[$i][0]));
+
+        }
+
+        for($i=0; $i<count($pedido)-1; $i++){
+            $producto=$em->getRepository('AppBundle:Producto')->findBy(array('id'=>$pedido[$i][0]));
+
+        }
+
+        return $this->render('default/cuenta.html.twig',[
+            'producto' => $producto,
+            'cantidad'=>$cantidad
+        ]);
     }
     /**
      * @Route("/camarero", name="camarero")

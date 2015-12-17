@@ -3,6 +3,8 @@
 namespace AppBundle\Controller;
 
 use AppBundle\Entity\Pedido;
+use AppBundle\Entity\Producto;
+use AppBundle\Entity\TipoProducto;
 use AppBundle\Form\Type\PedidoType;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Route;
 use Symfony\Bundle\FrameworkBundle\Controller\Controller;
@@ -43,7 +45,7 @@ class PedidoController extends Controller
         // Procesar el formulario si se ha enviado con un POST
         $formulario->handleRequest($peticion);
 
-        // Si se ha enviado y el contenido es válido, guardar los cambios
+        // Si se ha enviado y el contenido es vÃ¡lido, guardar los cambios
        if ($formulario->isSubmitted() && $formulario->isValid()) {
 
            // Obtener el EntityManager
@@ -64,6 +66,59 @@ class PedidoController extends Controller
         ]);
     }
     /**
+     * @Route("/pedir/{producto}", name="pedir")
+     */
+    public function pedirAction(Producto $producto)
+    {
+        session_start();
+        if (!isset($_SESSION['id'])) {
+            return $this->render(':default:formulario.html.twig');
+        }else{
+            if(isset($_POST['pedirP'])){
+
+                if(isset($_SESSION['pedido'])){
+                    $em = $this->getDoctrine()->getManager();
+                    $idProduc=$em->getRepository('AppBundle:Producto')
+                        ->findOneBy(array('id' => $producto->getId()));
+
+                    $p[]=[$idProduc,$_POST['cantidad']];
+
+                    //array_push($p, $idProduc,$_POST['cantidad']);
+                    $i = 0;
+                    while(isset($_SESSION["pedido"][$i]) <> ''){
+                        $i++;
+                    }
+                    $_SESSION["pedido"][$i] = $p;
+
+
+                }else{
+                    $em = $this->getDoctrine()->getManager();
+                    $idProduc=$em->getRepository('AppBundle:Producto')
+                        ->findOneBy(array('id' => $producto->getId()));
+                    $p[]=[$idProduc,$_POST['cantidad']];
+                    $_SESSION['pedido']=$p;
+                }
+
+            }
+
+            $em = $this->getDoctrine()->getManager();
+
+            //$tipoProducto=new TipoProducto();
+            $tipoProducto=$em->getRepository('AppBundle:TipoProducto')
+                ->findOneBy(array('id' =>$_SESSION['tipoProducto']));
+            $producto = $em->getRepository('AppBundle:Producto')
+                ->findBy(array('tipo' => $tipoProducto->getTipo()));
+
+            return $this->render(':productos:ver_productos.html.twig', [
+                'producto' => $producto,
+                'tipoProducto'=>$tipoProducto
+            ]);
+
+        }
+
+    }
+
+    /**
      * @Route("/modificar/{pedido}", name="pedido_modificar")
      */
     public function modificarAction(Request $peticion, Pedido $pedido)
@@ -74,7 +129,7 @@ class PedidoController extends Controller
         // Procesar el formulario si se ha enviado con un POST
         $formulario->handleRequest($peticion);
 
-        // Si se ha enviado y el contenido es válido, guardar los cambios
+        // Si se ha enviado y el contenido es vÃ¡lido, guardar los cambios
         if ($formulario->isSubmitted() && $formulario->isValid()) {
 
             // Obtener el EntityManager

@@ -34,15 +34,12 @@ class ProductosController extends Controller
             'producto' => $producto
         ]);
     }
-
-
     /**
      * @Route("/tipo_producto/{tipoProducto}", name="ver_productos"), methods={'GET', 'POST'}
      */
-    public function verRecetaAction(TipoProducto $tipoProducto)
+    public function verProductosAction(TipoProducto $tipoProducto)
     {
         session_start();
-        if(isset($_POST['ver_pro'])){
 
             $em = $this->getDoctrine()->getManager();
 
@@ -51,6 +48,8 @@ class ProductosController extends Controller
 
             $producto = $em->getRepository('AppBundle:Producto')
                 ->findBy(array('tipo' => $tipoProducto->getTipo()));
+
+            $_SESSION['tipoProducto']=$tipoProducto;
 
             if($usuario->getEsAdmin()==false){
                 return $this->render(':productos:ver_productos.html.twig', [
@@ -67,9 +66,6 @@ class ProductosController extends Controller
             }
 
 
-
-
-        }
     }
     /**
      * @Route("/nuevo", name="producto_nuevo")
