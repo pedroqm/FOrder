@@ -81,7 +81,7 @@ class PedidoController extends Controller
                     $idProduc=$em->getRepository('AppBundle:Producto')
                         ->findOneBy(array('id' => $producto->getId()));
 
-                    $p[]=[$idProduc,$_POST['cantidad']];
+                    $p=[$idProduc,$_POST['cantidad']];
 
                     //array_push($p, $idProduc,$_POST['cantidad']);
                     $i = 0;

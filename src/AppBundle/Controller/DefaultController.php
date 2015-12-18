@@ -2,6 +2,8 @@
 
 namespace AppBundle\Controller;
 
+use AppBundle\Entity\DetallePedido;
+use AppBundle\Entity\Mesa;
 use AppBundle\Entity\Producto;
 use AppBundle\Form\Type\ProductoType;
 use AppBundle\Entity\Usuario;
@@ -148,27 +150,78 @@ class DefaultController extends Controller
     public function cuentaAction()
     {
         session_start();
-
+    if(isset($_SESSION['pedido'])){
+        if($_SESSION['pedido']==''){
+            $em = $this->getDoctrine()->getManager();
+            $mesa=$em->getRepository('AppBundle:Mesa')->findOneBy(array('id'=>1));
+            $producto=new Producto();
+            $pedido=null;
+            return $this->render('default/cuenta.html.twig',[
+                'producto' => $producto,
+                'mesa'=>$mesa,
+                'pedido'=>$pedido
+            ]);
+        }
         $em = $this->getDoctrine()->getManager();
+
+        $mesa=$em->getRepository('AppBundle:Mesa')->findOneBy(array('id'=>1));
 
         $pedido=$_SESSION['pedido'];
         $cantidad=$pedido[0][1];
-        //$producto=$em->getRepository('AppBundle:Producto')->findAll();
-        $producto=$em->getRepository('AppBundle:Producto')->findBy(array('id'=>$pedido[0][0]));
 
         for($i=0; $i<count($pedido)-1; $i++){
             $producto=$em->getRepository('AppBundle:Producto')->findBy(array('id'=>$pedido[$i][0]));
-
         }
 
-        for($i=0; $i<count($pedido)-1; $i++){
-            $producto=$em->getRepository('AppBundle:Producto')->findBy(array('id'=>$pedido[$i][0]));
-
-        }
 
         return $this->render('default/cuenta.html.twig',[
             'producto' => $producto,
-            'cantidad'=>$cantidad
+            'mesa'=>$mesa,
+            'pedido'=>$pedido
+        ]);
+    }else{
+        return $this->render(':default:inicio.html.twig');
+    }
+    }
+
+    /**
+     * @Route("/realizar_pedido", name="realizar_pedido")
+     */
+    public function realizarPedidoAction()
+    {
+        session_start();
+        if(isset($_SESSION['pedido'])) {
+            $em = $this->getDoctrine()->getManager();
+
+            $pedido = $_SESSION['pedido'];
+
+
+            $newPedido = new DetallePedido();
+            $mesa = $em->getRepository('AppBundle:Mesa')->findOneBy(array('id' => 1));
+
+            for ($i = 0; $i < count($pedido) - 1; $i++) {
+                $producto = $em->getRepository('AppBundle:Producto')->findOneBy(array('id' => $pedido[$i][0]));
+                $precio = $producto->getPrecio();
+                $cantidad = $pedido[$i][1];
+                $cuenta=$mesa->getCuenta();
+                $mesa->setCuenta($cuenta+$precio*$cantidad);
+
+                $em->persist($mesa);
+                // Guardar los cambios
+                $em->flush();
+                $_SESSION['pedido']='';
+            }
+        }
+        $em = $this->getDoctrine()->getManager();
+
+        $usuario=$em->getRepository('AppBundle:Usuario')->findOneBy(array('id'=>$_SESSION['id']));
+
+        $tipoProducto = $em->getRepository('AppBundle:TipoProducto')
+            ->findAll();
+
+        return $this->render(':default:inicio.html.twig', [
+            'tipoProducto' => $tipoProducto,
+            'usuarios'=> $usuario
         ]);
     }
     /**

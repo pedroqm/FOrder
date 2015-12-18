@@ -3,29 +3,37 @@
  {% block content %}
 
   <h2 class="well">Cuenta</h2>
-  {% if producto %}
-   <table class="table table-bordered table-condensed table-hover table-striped">
-    <thead>
-    <tr>
-     <th>Nombre</th>
-     <th>Precio</th>
-     <th></th>
-    </tr>
-    </thead>
-    <tbody>
-    {% for p in producto %}
-     <tr>
-      <td>{{ p.nombreProducto }}</td>
-      <td>{{ p.precio }}</td>
-     </tr>
-    {% endfor %}
-    </tbody>
-   </table>
+
+  {% if mesa %}
+             <p>Su cuenta actual es de : {{ mesa.cuenta }} €</p>
+
+    {% endif %}
+  {% if pedido %}
+
+
+          <table class="table table-bordered table-condensed table-hover table-striped">
+              <thead>
+              <tr>
+                  <th>Nombre</th>
+                  <th>Precio</th>
+                  <th>Cantidad</th>
+              </tr>
+              </thead>
+              <tbody>
+              {% for pe in pedido %}
+                  <tr>
+                      <td>{{ pe.0.nombreProducto }}</td>
+                      <td>{{ pe.0.precio }}€</td>
+                     <td>{{ pe.1 }}</td>
+                  </tr>
+              {% endfor %}
+              </tbody>
+          </table>
   {% else %}
    <h2>No hay productos para mostrar</h2>
   {% endif %}
 
-  <a href="{{ path('inicio') }}" class="btn btn-success btn-lg">
+  <a href="{{ path('realizar_pedido') }}" class="btn btn-success btn-lg">
    Confirmar
   </a>
   <a href="{{ path('inicio') }}" class="btn btn-success btn-lg">

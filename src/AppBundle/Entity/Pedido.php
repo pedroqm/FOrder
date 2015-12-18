@@ -30,12 +30,21 @@ class Pedido
     protected $incidencias  ;
 
     /**
-     * @ORM\ManyToOne(targetEntity="Mesa",
+     * @ORM\ManyToOne(targetEntity="AppBundle\Entity\Mesa",
      * inversedBy="pedidos")
      *
      * @var Mesa
      */
     protected  $mesaOcupada;
+    /**
+     * @ORM\ManyToOne(targetEntity="AppBundle\Entity\DetallePedido",
+     * inversedBy="Dpedido")
+     *
+     * @var DetallePedido
+     */
+    protected  $Detallepedido;
+
+
     /**
      * @ORM\ManyToMany(targetEntity="Producto",
      * inversedBy="comanda")
@@ -161,5 +170,28 @@ class Pedido
     public function getProductos()
     {
         return $this->productos;
+    }
+
+    /**
+     * Set Detallepedido
+     *
+     * @param \AppBundle\Entity\DetallePedido $detallepedido
+     * @return Pedido
+     */
+    public function setDetallepedido(\AppBundle\Entity\DetallePedido $detallepedido = null)
+    {
+        $this->Detallepedido = $detallepedido;
+
+        return $this;
+    }
+
+    /**
+     * Get Detallepedido
+     *
+     * @return \AppBundle\Entity\DetallePedido 
+     */
+    public function getDetallepedido()
+    {
+        return $this->Detallepedido;
     }
 }
