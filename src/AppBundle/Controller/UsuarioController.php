@@ -56,7 +56,7 @@ class UsuarioController extends Controller
 
             // Redirigir al usuario a la lista
             return new RedirectResponse(
-                $this->generateUrl('inicio')
+                $this->generateUrl('entrar')
             );
         }
         return $this->render(':usuario:nueva_cuenta.html.twig' ,[

@@ -414,13 +414,15 @@ class Usuario
 
     public function __construct()
     {
-        // el primer usuario es admin
         if ($this->getEsAdmin()) {
             $this->esAdmin=true;
+            $this->esCamarero = false;
+            $this->esCliente = false;
+        }else {
+            $this->esCamarero = false;
+            $this->esAdmin = false;
+            $this->esCliente = true;
         }
-        $this->esCamarero = false;
-        $this->esAdmin=false;
-        $this->esCliente=true;
         $this->factura=0;
     }
 

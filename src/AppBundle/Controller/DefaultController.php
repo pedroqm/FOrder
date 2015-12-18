@@ -18,7 +18,31 @@ class DefaultController extends Controller
      */
     public function loginAction()
     {
+        $em = $this->getDoctrine()->getManager();
 
+        $usu = $em->getRepository('AppBundle:Usuario')
+            ->findAll();
+        if(!$usu){
+            $usuario= new Usuario();
+            $usuario->setNombreUsuario('admin');
+            $usuario->setPass('admin');
+            $usuario->setNombre('admin');
+            $usuario->setApellidos('admin');
+            $usuario->setDni('26502842B');
+            $usuario->setTelefono(99);
+            $usuario->setEmail('demo@demo.com');
+            $usuario->setEsAdmin(true);
+            $usuario->setEsCamarero(false);
+            $usuario->setEsCliente(false);
+
+            // Obtener el EntityManager
+            $em = $this->getDoctrine()->getManager();
+
+            $em->persist($usuario);
+            // Guardar los cambios
+            $em->flush();
+
+        }
 
         //comprobar usuario
         if(isset($_POST['user'])){
