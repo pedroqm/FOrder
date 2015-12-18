@@ -13,15 +13,17 @@ class UsuarioType extends AbstractType
     {
         $builder
             ->add('nombreUsuario', null, [
-                'label' => 'Nombre de usuario',
+                'label' => 'Nombre de usuario para acceder a la aplicación',
                 'attr' => [
+                    'placeholder'=>'Nombre de usuario',
                     'class' => 'form-control'
                 ],
                 'required' => true
             ])
             ->add('pass', 'password', [
-                'label' => 'Password',
+                'label' => 'Contraseña',
                 'attr' => [
+                    'placeholder'=>'contraseña',
                     'class' => 'form-control'
                 ],
                 'required' => true
@@ -29,6 +31,7 @@ class UsuarioType extends AbstractType
             ->add('nombre', null, [
                 'label' => 'Nombre',
                 'attr' => [
+                    'placeholder'=>'Nombre',
                     'class' => 'form-control'
                 ],
                 'required' => false
@@ -36,6 +39,7 @@ class UsuarioType extends AbstractType
             ->add('apellidos', null, [
                 'label' => 'Apellidos',
                 'attr' => [
+                    'placeholder'=>'Apellidos',
                     'class' => 'form-control'
                 ],
                 'required' => false
@@ -43,28 +47,31 @@ class UsuarioType extends AbstractType
             ->add('dni', null, [
                 'label' => 'Dni',
                 'attr' => [
+                    'placeholder'=>'Dni',
                     'class' => 'form-control'
                 ],
                 'required' => true
             ])
 
             ->add('email', null, [
-                'label' => 'email',
+                'label' => 'Email',
                 'attr' => [
+                    'placeholder'=>'Email',
                     'class' => 'form-control'
                 ],
                 'required' => false
             ])
             ->add('telefono', null, [
-                'label' => 'telefono',
+                'label' => 'Telefono',
                 'attr' => [
+                    'placeholder'=>'Telefono',
                     'class' => 'form-control'
                 ],
                 'required' => false
             ])
 
             ->add('enviar', 'submit', [
-                'label' => 'Guardar cambios',
+                'label' => 'Guardar',
                 'attr' => [
                     'class' => 'btn btn-success'
                 ]

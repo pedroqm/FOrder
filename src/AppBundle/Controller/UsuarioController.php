@@ -50,9 +50,6 @@ class UsuarioController extends Controller
             // Obtener el EntityManager
             $em = $this->getDoctrine()->getManager();
 
-            // $helper = $password = $this->container->get('security.password_encoder');
-            //$usuario->setPass($helper->encodePassword($usuario, $usuario->getPass()));
-
             $em->persist($usuario);
             // Guardar los cambios
             $em->flush();
@@ -87,9 +84,6 @@ class UsuarioController extends Controller
            // Obtener el EntityManager
            $em = $this->getDoctrine()->getManager();
 
-          // $helper = $password = $this->container->get('security.password_encoder');
-           //$usuario->setPass($helper->encodePassword($usuario, $usuario->getPass()));
-
            $em->persist($usuario);
            // Guardar los cambios
            $em->flush();
@@ -121,9 +115,6 @@ class UsuarioController extends Controller
                     // Obtener el EntityManager
                     $em = $this->getDoctrine()->getManager();
 
-                    /*$helper =  $password = $this->container->get('security.password_encoder');
-                    $usuario->setPassword($helper->encodePassword($usuario, $usuario->getPassword()));*/
-
                     // Asegurarse de que se tiene en cuenta el nuevo usuario
                     $em->persist($usuario);
                     // Guardar los cambios
@@ -140,6 +131,47 @@ class UsuarioController extends Controller
             'formulario' => $formulario->createView()
         ]);
     }
+
+
+    /**
+     * @Route("/cambiar/{usuario}", name="cambiarRol")
+     */
+    public function cambiarAction(Request $peticion, Usuario $usuario)
+    {
+        if(isset($_POST['cambiar'])) {
+            // Obtener el EntityManager
+            $em = $this->getDoctrine()->getManager();
+
+            if($_POST['rol']=='admin') {
+                $usuario->setEsAdmin(true);
+                $usuario->setEsCamarero(false);
+                $usuario->setEsCliente(false);
+            }
+            if($_POST['rol']=='servicio') {
+                $usuario->setEsAdmin(false);
+                $usuario->setEsCamarero(true);
+                $usuario->setEsCliente(false);
+            }
+            if($_POST['rol']=='cliente') {
+                $usuario->setEsAdmin(false);
+                $usuario->setEsCamarero(false);
+                $usuario->setEsCliente(true);
+            }
+                // Asegurarse de que se tiene en cuenta el nuevo usuario
+                $em->persist($usuario);
+                // Guardar los cambios
+                $em->flush();
+        }
+
+
+
+            // Redirigir al usuario a la lista
+            return new RedirectResponse(
+                $this->generateUrl('usuarios_listar')
+            );
+    }
+
+
     /**
      * @Route("/eliminar/{usuario}", name="usuarios_eliminar")
      */

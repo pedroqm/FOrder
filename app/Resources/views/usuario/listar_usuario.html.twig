@@ -10,14 +10,27 @@
             <thead>
             <tr>
                 <th>Nombre de usuario</th>
-                <th></th>
-                <th></th>
+                <th>Email</th>
+                <th>Telefono</th>
+                <th>Rol</th>
             </tr>
             </thead>
             <tbody>
             {% for usuario in usuarios %}
                 <tr>
                     <td>{{ usuario.nombreUsuario }}</td>
+                    <td>{{ usuario.email }}</td>
+                    <td>{{ usuario.telefono }}</td>
+                    {% if usuario.esAdmin == true %}
+                        <td>admin</td>
+                    {% endif %}
+                    {% if usuario.esCamarero == true %}
+                        <td>servicio</td>
+                        {% endif %}
+                    {% if usuario.esCliente == true %}
+                        <td>cliente</td>
+                    {% endif %}
+
                     <td>
                             <a href="{{ path('usuarios_modificar', { 'usuario': usuario.id }) }}" class="btn btn-warning btn-sm">
                                 <i class="glyphicon glyphicon-pencil"></i> Modificar
@@ -41,5 +54,8 @@
     {% endif %}
     <a href="{{ path('usuarios_nuevo') }}" class="btn btn-success btn-lg">
         Nuevo
+    </a>
+    <a href="{{ path('administracion') }}" class="btn btn-success btn-lg">
+        Volver
     </a>
 {% endblock %}

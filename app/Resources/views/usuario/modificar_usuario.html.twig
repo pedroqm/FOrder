@@ -1,11 +1,22 @@
 {% extends '::index.html.twig' %}
 
-{% block title %}Modificar usuario{% endblock %}
+{% block title %}Modificar usuario {{ usuario.nombreUsuario }}{% endblock %}
 
 {% block content %}
-    <h1 class="well">Modificar datos de un usuario</h1>
-
+    <h1 class="well">Modificar datos de  {{ usuario.nombreUsuario }}</h1>
+    <div class="form-group">
     {{ form(formulario) }}
 
+        <form action="{{ path('cambiarRol', {'usuario': usuario.id}) }}" method="post">
+
+        <h4>Cambiar Rol</h4>
+        <select name="rol" id="rol">
+            <option value="admin">Admin</option>
+            <option value="servicio">Servicio</option>
+            <option value="cliente">Cliente</option>
+        </select>
+            <button class="btn btn-danger btn-sm" type="submit" name="cambiar">Cambiar Rol </button>
+        </form>
+    </div>
     <a href="{{ path('usuarios_listar') }}" class="btn btn-info">Volver al listado de usuarios</a>
 {% endblock %}
