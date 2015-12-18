@@ -1,0 +1,11 @@
+{% extends '::index.html.twig' %}
+
+{% block title %}{% endblock %}
+
+{% block content %}
+    <h1 class="well">Crear un </h1>
+
+    {{ form(formulario) }}
+
+    <a href="{{ path('mesa_listar') }}" class="btn btn-info">Volver al listado de </a>
+{% endblock %}

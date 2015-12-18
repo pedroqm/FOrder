@@ -1,0 +1,53 @@
+{% extends '::index.html.twig' %}
+
+{% block title %}Mesa{% endblock %}
+
+{% block content %}
+    {% if mesa %}
+        <table class="table table-bordered table-condensed table-hover table-striped">
+        <thead>
+        <tr>
+            <th>Nº Mesa</th>
+            <th>Cuenta</th>
+            <th></th>
+            <th></th>
+        </tr>
+        </thead>
+        <tbody>
+        {% for m in mesa %}
+            <tr>
+                <td>{{ m.id }}</td>
+                <td>{{ m.cuenta }}</td>
+                <td>
+
+                    <form method="post" action="{{ path('pagado', {'id': m.id}) }}" >
+                        <button class="btn btn-warning btn-sm" type="submit" name="pagar">Pagar </button>
+                    </form>
+
+
+                </td>
+                <td>
+                    <a href="{{ path('mesa_modificar', {'mesa': m.id}) }}" class="btn btn-warning btn-sm">
+                        <i class="glyphicon glyphicon-pencil"></i> Modificar
+                    </a>
+
+                </td>
+                <td>
+
+                    <form action="{{ path('mesa_eliminar', {'mesa': m.id}) }}" method="post">
+                        <button class="btn btn-danger btn-sm" type="submit" name="eliminar_mesa">Eliminar mesa</button>
+                    </form>
+
+
+                </td>
+            </tr>
+        {% endfor %}
+        </tbody>
+        </table>
+    {% else %}
+        <h2>No hay mesas para mostrar</h2>
+    {% endif %}
+    <a href="{{ path('mesa_nuevo') }}" class="btn btn-success btn-lg">
+        Nueva mesa
+    </a>
+{% endblock %}
