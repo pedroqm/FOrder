@@ -24,8 +24,11 @@ class MesaController extends Controller
         $mesa = $em->getRepository('AppBundle:Mesa')
             ->findAll();
 
+        $pedidoRealizado=$em->getRepository('AppBundle:Pedido')->findBy(array('estado'=>'pendiente'));
+
         return $this->render(':mesa:listar_mesa.html.twig', [
-            'mesa' => $mesa
+            'mesa' => $mesa,
+            'pedido'=>$pedidoRealizado
         ]);
     }
 

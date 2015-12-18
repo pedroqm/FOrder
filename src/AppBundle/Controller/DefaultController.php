@@ -5,6 +5,7 @@ namespace AppBundle\Controller;
 use AppBundle\Entity\DetallePedido;
 use AppBundle\Entity\Mesa;
 use AppBundle\Entity\Producto;
+use AppBundle\Entity\Pedido;
 use AppBundle\Form\Type\ProductoType;
 use AppBundle\Entity\Usuario;
 use AppBundle\Form\Type\UsuarioType;
@@ -201,14 +202,30 @@ class DefaultController extends Controller
 
             for ($i = 0; $i < count($pedido) - 1; $i++) {
                 $producto = $em->getRepository('AppBundle:Producto')->findOneBy(array('id' => $pedido[$i][0]));
+
+                //actualizamos la cuenta
                 $precio = $producto->getPrecio();
                 $cantidad = $pedido[$i][1];
                 $cuenta=$mesa->getCuenta();
                 $mesa->setCuenta($cuenta+$precio*$cantidad);
 
+
                 $em->persist($mesa);
                 // Guardar los cambios
                 $em->flush();
+
+                //creamos un nuevo pedido
+                $pedidoRealizado=new Pedido();
+                $pedidoRealizado->setEstado('pendiente');
+
+
+                $em->persist($mesa);
+                // Guardar los cambios
+                $em->flush();
+
+
+
+
                 $_SESSION['pedido']='';
             }
         }

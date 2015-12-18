@@ -119,6 +119,22 @@ class PedidoController extends Controller
     }
 
     /**
+     * @Route("/cambiar/{pedido}", name="terminado")
+     */
+    public function cambiarAction( Pedido $pedido)
+    {
+        $em = $this->getDoctrine()->getManager();
+        $pedido->setEstado('terminado');
+        // Asegurarse de que se tiene en cuenta el nuevo pedido
+        $em->persist($pedido);
+        // Guardar los cambios
+        $em->flush();
+        return new RedirectResponse(
+            $this->generateUrl('mesa_listar')
+        );
+    }
+
+    /**
      * @Route("/modificar/{pedido}", name="pedido_modificar")
      */
     public function modificarAction(Request $peticion, Pedido $pedido)
