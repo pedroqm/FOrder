@@ -182,21 +182,16 @@ class DefaultController extends Controller
             'mesa'=>$mesa,
             'pedido'=>$pedido
         ]);
-    }else{
-        //si no se a iniciado una sesion se manda al usuario al formulario
-        if (!isset($_SESSION['id'])) {
-            return $this->render(':default:formulario.html.twig');
-        }
+    }else{    //Se muestra la cuenta sin pedidos.
+
         $em = $this->getDoctrine()->getManager();
-
-        $usuario=$em->getRepository('AppBundle:Usuario')->findOneBy(array('id'=>$_SESSION['id']));
-
-        $tipoProducto = $em->getRepository('AppBundle:TipoProducto')
-            ->findAll();
-
-        return $this->render(':default:inicio.html.twig', [
-            'tipoProducto' => $tipoProducto,
-            'usuarios'=> $usuario
+        $mesa=$em->getRepository('AppBundle:Mesa')->findOneBy(array('id'=>1));
+        $producto=new Producto();
+        $pedido=null;
+        return $this->render('default/cuenta.html.twig',[
+            'producto' => $producto,
+            'mesa'=>$mesa,
+            'pedido'=>$pedido
         ]);
     }
     }
