@@ -171,7 +171,9 @@ class DefaultController extends Controller
         $cantidad=$pedido[0][1];
 
         for($i=0; $i<count($pedido)-1; $i++){
-            $producto=$em->getRepository('AppBundle:Producto')->findBy(array('id'=>$pedido[$i][0]));
+            //fallo!!!
+            //no se puede usar la entidad producto como array
+            $producto=$em->getRepository('AppBundle:Producto')->findOneBy(array('id'=>$pedido[$i][0]));
         }
 
 
@@ -181,7 +183,21 @@ class DefaultController extends Controller
             'pedido'=>$pedido
         ]);
     }else{
-        return $this->render(':default:inicio.html.twig');
+        //si no se a iniciado una sesion se manda al usuario al formulario
+        if (!isset($_SESSION['id'])) {
+            return $this->render(':default:formulario.html.twig');
+        }
+        $em = $this->getDoctrine()->getManager();
+
+        $usuario=$em->getRepository('AppBundle:Usuario')->findOneBy(array('id'=>$_SESSION['id']));
+
+        $tipoProducto = $em->getRepository('AppBundle:TipoProducto')
+            ->findAll();
+
+        return $this->render(':default:inicio.html.twig', [
+            'tipoProducto' => $tipoProducto,
+            'usuarios'=> $usuario
+        ]);
     }
     }
 
