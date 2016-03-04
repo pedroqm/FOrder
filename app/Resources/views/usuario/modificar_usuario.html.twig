@@ -11,9 +11,22 @@
 
         <h4>Cambiar Rol</h4>
         <select name="rol" id="rol">
-            <option value="admin">Admin</option>
-            <option value="servicio">Servicio</option>
-            <option value="cliente">Cliente</option>
+            {%  if usuario.esAdmin==true %}
+                <option value="admin" selected>Admin</option>
+                <option value="servicio">Servicio</option>
+                <option value="cliente">Cliente</option>
+            {% endif %}
+            {%  if usuario.esCamarero==true %}
+                <option value="admin">Admin</option>
+                <option value="servicio" selected>Servicio</option>
+                <option value="cliente">Cliente</option>
+            {% endif %}
+            {%  if usuario.esCliente==true %}
+                <option value="admin">Admin</option>
+                <option value="servicio">Servicio</option>
+                <option value="cliente" selected>Cliente</option>
+            {% endif %}
+
         </select>
             <button class="btn btn-danger btn-sm" type="submit" name="cambiar">Cambiar Rol </button>
         </form>
