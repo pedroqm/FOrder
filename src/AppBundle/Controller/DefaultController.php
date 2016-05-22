@@ -162,26 +162,27 @@ class DefaultController extends Controller
                 'mesa'=>$mesa,
                 'pedido'=>$pedido
             ]);
+        }else {
+
+            $em = $this->getDoctrine()->getManager();
+            $mesa=$em->getRepository('AppBundle:Mesa')->findOneBy(array('id'=>1));
+
+            $producto=new Producto();
+            $pedido=$_SESSION['pedido'];
+
+            return $this->render('default/cuenta.html.twig',[
+                'producto' => $producto,
+                'mesa'=>$mesa,
+                'pedido'=>$pedido
+            ]);
+            /*
+            //HAY QUE ALMACENAR LA INFORMACION EN DETALLE PEDIDO!!!! idPedido, cantidad y NombreProducto
+            for ($i = 0; $i < count($pedido) - 1; $i++) {
+
+                //$idproducto=$em->getRepository('AppBundle:Producto')->findOneBy(array('id'=>$pedido[$i][0]));
+            }*/
+
         }
-        $em = $this->getDoctrine()->getManager();
-
-        $mesa=$em->getRepository('AppBundle:Mesa')->findOneBy(array('id'=>1));
-
-        $pedido=$_SESSION['pedido'];
-        $cantidad=$pedido[0][1];
-
-        for($i=0; $i<count($pedido)-1; $i++){
-            //fallo!!!
-            //no se puede usar la entidad producto como array
-            $producto=$em->getRepository('AppBundle:Producto')->findOneBy(array('id'=>$pedido[$i][0]));
-        }
-
-
-        return $this->render('default/cuenta.html.twig',[
-            'producto' => $producto,
-            'mesa'=>$mesa,
-            'pedido'=>$pedido
-        ]);
     }else{    //Se muestra la cuenta sin pedidos.
 
         $em = $this->getDoctrine()->getManager();

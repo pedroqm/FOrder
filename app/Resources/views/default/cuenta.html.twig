@@ -5,6 +5,7 @@
   <h2 class="well">Cuenta</h2>
 
   {% if mesa %}
+      <p>Mesa {{ mesa.id }}</p>
              <p>Su cuenta actual es de : {{ mesa.cuenta }} €</p>
 
     {% endif %}
@@ -30,7 +31,7 @@
               </tbody>
           </table>
   {% else %}
-   <h2>No hay productos para mostrar</h2>
+   <h2>No hay productos para mostrar </h2>
   {% endif %}
 
   <a href="{{ path('realizar_pedido') }}" class="btn btn-success btn-lg">
