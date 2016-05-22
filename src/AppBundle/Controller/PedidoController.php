@@ -83,7 +83,6 @@ class PedidoController extends Controller
 
                     $p=[$idProduc,$_POST['cantidad']];
 
-                    //array_push($p, $idProduc,$_POST['cantidad']);
                     $i = 0;
                     while(isset($_SESSION["pedido"][$i]) <> ''){
                         $i++;
@@ -95,8 +94,10 @@ class PedidoController extends Controller
                     $em = $this->getDoctrine()->getManager();
                     $idProduc=$em->getRepository('AppBundle:Producto')
                         ->findOneBy(array('id' => $producto->getId()));
-                    $p[]=[$idProduc,$_POST['cantidad']];
-                    $_SESSION['pedido']=$p;
+                    $p=[$idProduc,$_POST['cantidad']];
+
+                    //Ahora guarda correctamente el primer registro
+                    $_SESSION['pedido'][0]=$p;
                 }
 
             }
