@@ -1,0 +1,11 @@
+{% extends '::index.html.twig' %}
+
+{% block title %}Modificar almacen{% endblock %}
+
+{% block content %}
+    <h1 class="well">Modificar datos de almacen</h1>
+
+    {{ form(formulario) }}
+
+    <a href="{{ path('almacen_listar') }}" class="btn btn-info">Volver al listado de almacen </a>
+{% endblock %}
