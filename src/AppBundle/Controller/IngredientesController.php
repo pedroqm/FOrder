@@ -24,7 +24,6 @@ class IngredientesController extends Controller
      */
     public function verRecetaAction(Producto $id)
     {
-        session_start();
 
         if(isset($_POST['ver_receta'])){
 
@@ -54,9 +53,9 @@ class IngredientesController extends Controller
      */
     public function listarAction()
     {
-        if(!isset($_SESSION['idprod'])){
+        /*if(!isset($_SESSION['idprod'])){
             session_start();
-        }
+        }*/
         $em = $this->getDoctrine()->getManager();
 
         $ingrediente = $em->getRepository('AppBundle:Ingredientes')

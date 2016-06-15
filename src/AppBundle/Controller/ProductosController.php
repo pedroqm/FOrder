@@ -29,9 +29,12 @@ class ProductosController extends Controller
         $producto = $em->getRepository('AppBundle:Producto')
             ->findAll();
 
+        $tipoProducto="";
 
-        return $this->render(':productos:listar_productos.html.twig', [
-            'producto' => $producto
+        return $this->render(':productos:ver_productos.html.twig', [
+            'producto' => $producto,
+            'tipoProducto'=>$tipoProducto
+
         ]);
     }
     /**
@@ -39,11 +42,31 @@ class ProductosController extends Controller
      */
     public function verProductosAction(TipoProducto $tipoProducto)
     {
-        session_start();
+
+        $session = $this->get('session');
+
+        if(isset($_SESSION['pedido'])){
+            if($_SESSION['pedido']!=''){
+                $pedido=$_SESSION['pedido'];
+            }else{
+                $pedido=null; //buscar los pedidos realizados y no pagados en la base de datos
+            }
+            $em = $this->getDoctrine()->getManager();
+            $mesa=$em->getRepository('AppBundle:Mesa')->findOneBy(array('id'=>1));
+
+
+        }else{    //Se muestra la cuenta sin pedidos.
 
             $em = $this->getDoctrine()->getManager();
+            $mesa=$em->getRepository('AppBundle:Mesa')->findOneBy(array('id'=>1));
+            $pedido=null;
 
-            $usuario=$em->getRepository('AppBundle:Usuario')->findOneBy(array('id'=>$_SESSION['id']));
+        }
+
+
+
+        $usuario = $this->getUser();
+
             $em = $this->getDoctrine()->getManager();
 
             $producto = $em->getRepository('AppBundle:Producto')
@@ -55,13 +78,17 @@ class ProductosController extends Controller
                 return $this->render(':productos:ver_productos.html.twig', [
                     'producto' => $producto,
                     'tipoProducto'=>$tipoProducto,
-                    'usuarios'=>$usuario
+                    'usuarios'=>$usuario,
+                    'mesa'=>$mesa,
+                    'pedido'=>$pedido
                 ]);
             }else{
                 return $this->render(':productos:listar_productos.html.twig', [
                     'producto' => $producto,
                     'tipoProducto'=>$tipoProducto,
-                    'usuarios'=>$usuario
+                    'usuarios'=>$usuario,
+                    'mesa'=>$mesa,
+                    'pedido'=>$pedido
                 ]);
             }
 

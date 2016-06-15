@@ -6,8 +6,11 @@
 
   {% if mesa %}
       <p>Mesa {{ mesa.id }}</p>
-             <p>Su cuenta actual es de : {{ mesa.cuenta }} €</p>
-
+             <p>Su cuenta actual es de : {{ mesa.cuenta }} €
+      <a href="" class="btn btn-success btn-lg">
+          Pagar
+      </a>
+             </p>
     {% endif %}
   {% if pedido %}
 

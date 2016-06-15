@@ -54,10 +54,8 @@ class UsuarioController extends Controller
             // Guardar los cambios
             $em->flush();
 
-            // Redirigir al usuario a la lista
-            return new RedirectResponse(
-                $this->generateUrl('entrar')
-            );
+            $this->addFlash('success', 'Se ha completado el registro de forma correcta. Elija su imagen de perfil para terminar de configurar su perfil');
+
         }
         return $this->render(':usuario:nueva_cuenta.html.twig' ,[
             'usuario' => $usuario,

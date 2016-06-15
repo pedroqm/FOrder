@@ -15,11 +15,11 @@ use Sensio\Bundle\FrameworkExtraBundle\Configuration\Security;
 
 class DefaultController extends Controller
 {
+
     /**
-     * @Route("/entrar", name="usuario_entrar")
-     * @Route("/", name="entrar")
+     * @Route("/instalar", name="instalar")
      */
-    public function loginAction()
+    public function instalarAction()
     {
         $em = $this->getDoctrine()->getManager();
 
@@ -46,96 +46,41 @@ class DefaultController extends Controller
             $em->flush();
 
         }
+        return $this->render(':default:formulario.html.twig');
 
-        //comprobar usuario
-        if(isset($_POST['user'])){
-            $nombre=$_POST['username'];
-            $contraseña=$_POST['password'];
+    }
 
-            $em = $this->getDoctrine()->getManager();
-            $usu= new Usuario();
-            if( $usu = $em->getRepository('AppBundle:Usuario')
-                ->findOneBy(array('nombreUsuario'=>$nombre,'pass'=>$contraseña)))
-            {
-
-                // Get the global context
-
-                session_start();
-                $_SESSION['id']=$em->getRepository('AppBundle:Usuario')
-                    ->findOneBy(array('nombreUsuario'=>$nombre,'pass'=>$contraseña))
-                    ->getId();
-                if($em->getRepository('AppBundle:Usuario')
-                    ->findOneBy(array('nombreUsuario'=>$nombre,'pass'=>$contraseña))
-                    ->getEsAdmin()==true){
-                    return $this->render(':default:administracion.html.twig');
-
-
-                }else{
-                    $em = $this->getDoctrine()->getManager();
-
-                    $usuario=$em->getRepository('AppBundle:Usuario')->findOneBy(array('id'=>$_SESSION['id']));
-
-                    $tipoProducto = $em->getRepository('AppBundle:TipoProducto')
-                        ->findAll();
-                    return $this->render(':default:inicio.html.twig', [
-                        'tipoProducto' => $tipoProducto,
-                        'usuarios'=>$usuario
-                    ]);
-                }
-            }else{
-                if( $usu = $em->getRepository('AppBundle:Usuario')
-                    ->findOneBy(array('nombreUsuario'=>$nombre))){
-                    $this->get('session')->getFlashBag()->add(
-                        'notice',
-                        'Contraseña incorrecta.'
-                    );
-
-
-                }else{
-                    $this->get('session')->getFlashBag()->add(
-                        'notice',
-                        'Usuario incorrecto.'
-                    );
-                }
-            }
-        }
-
+    /**
+     * @Route("/entrar", name="usuario_entrar")
+     */
+    public function loginAction()
+    {
         return $this->render(':default:formulario.html.twig');
     }
 
     /**
+     * @Route("/comprobar", name="usuario_comprobar")
+     */
+    public function comprobarAction()
+    {
+    }
+
+    /**
      * @Route("/admin", name="administracion")
+     * @Security("is_granted('ROLE_ADMIN')")
      */
     public function adminAction()
     {
-        session_start();
-        if (!isset($_SESSION['id'])) {
-            return $this->render(':default:formulario.html.twig');
-        }else{
-            $em = $this->getDoctrine()->getManager();
-
-            $usuario=$em->getRepository('AppBundle:Usuario')->findOneBy(array('id'=>$_SESSION['id']));
-            if($usuario->getEsAdmin()==false){
-                return $this->render(':default:inicio.html.twig');
-            }else{
-                return $this->render(':default:administracion.html.twig');
-            }
-        }
-
+        return $this->render(':default:administracion.html.twig');
     }
     /**
-     * @Route("/inicio", name="inicio")
+     * @Route("/", name="inicio")
      */
     public function indexAction()
     {
-        session_start();
-        //si no se a iniciado una sesion se manda al usuario al formulario
-        if (!isset($_SESSION['id'])) {
-            return $this->render(':default:formulario.html.twig');
-        }
         $em = $this->getDoctrine()->getManager();
 
-        $usuario=$em->getRepository('AppBundle:Usuario')->findOneBy(array('id'=>$_SESSION['id']));
+        $usuario = $this->getUser();
 
         $tipoProducto = $em->getRepository('AppBundle:TipoProducto')
             ->findAll();
@@ -150,9 +95,33 @@ class DefaultController extends Controller
      */
     public function cuentaAction()
     {
-        session_start();
-    if(isset($_SESSION['pedido'])){
-        if($_SESSION['pedido']==''){
+        $session = $this->get('session');
+
+        if(isset($_SESSION['pedido'])){
+            if($_SESSION['pedido']==''){
+                $pedido=null;
+            }else {
+                $pedido=$_SESSION['pedido'];
+
+                /*
+                //HAY QUE ALMACENAR LA INFORMACION EN DETALLE PEDIDO!!!! idPedido, cantidad y NombreProducto
+                for ($i = 0; $i < count($pedido) - 1; $i++) {
+
+                    //$idproducto=$em->getRepository('AppBundle:Producto')->findOneBy(array('id'=>$pedido[$i][0]));
+                }*/
+
+            }
+            $em = $this->getDoctrine()->getManager();
+            $mesa=$em->getRepository('AppBundle:Mesa')->findOneBy(array('id'=>1));
+
+            $producto=new Producto();
+            return $this->render('default/cuenta.html.twig',[
+                'producto' => $producto,
+                'mesa'=>$mesa,
+                'pedido'=>$pedido
+            ]);
+        }else{    //Se muestra la cuenta sin pedidos.
+
             $em = $this->getDoctrine()->getManager();
             $mesa=$em->getRepository('AppBundle:Mesa')->findOneBy(array('id'=>1));
             $producto=new Producto();
@@ -162,48 +131,19 @@ class DefaultController extends Controller
                 'mesa'=>$mesa,
                 'pedido'=>$pedido
             ]);
-        }else {
-
-            $em = $this->getDoctrine()->getManager();
-            $mesa=$em->getRepository('AppBundle:Mesa')->findOneBy(array('id'=>1));
-
-            $producto=new Producto();
-            $pedido=$_SESSION['pedido'];
-
-            return $this->render('default/cuenta.html.twig',[
-                'producto' => $producto,
-                'mesa'=>$mesa,
-                'pedido'=>$pedido
-            ]);
-            /*
-            //HAY QUE ALMACENAR LA INFORMACION EN DETALLE PEDIDO!!!! idPedido, cantidad y NombreProducto
-            for ($i = 0; $i < count($pedido) - 1; $i++) {
-
-                //$idproducto=$em->getRepository('AppBundle:Producto')->findOneBy(array('id'=>$pedido[$i][0]));
-            }*/
-
         }
-    }else{    //Se muestra la cuenta sin pedidos.
+    }
 
-        $em = $this->getDoctrine()->getManager();
-        $mesa=$em->getRepository('AppBundle:Mesa')->findOneBy(array('id'=>1));
-        $producto=new Producto();
-        $pedido=null;
-        return $this->render('default/cuenta.html.twig',[
-            'producto' => $producto,
-            'mesa'=>$mesa,
-            'pedido'=>$pedido
-        ]);
-    }
-    }
 
     /**
      * @Route("/realizar_pedido", name="realizar_pedido")
      */
     public function realizarPedidoAction()
     {
-        session_start();
         if(isset($_SESSION['pedido'])) {
+            if($_SESSION['pedido']!=''){
+
+
             $em = $this->getDoctrine()->getManager();
 
             $pedido = $_SESSION['pedido'];
@@ -212,14 +152,14 @@ class DefaultController extends Controller
             $newPedido = new DetallePedido();
             $mesa = $em->getRepository('AppBundle:Mesa')->findOneBy(array('id' => 1));
 
-            for ($i = 0; $i < count($pedido) - 1; $i++) {
+            for ($i = 0; $i < count($pedido); $i++) {
                 $producto = $em->getRepository('AppBundle:Producto')->findOneBy(array('id' => $pedido[$i][0]));
 
                 //actualizamos la cuenta
                 $precio = $producto->getPrecio();
                 $cantidad = $pedido[$i][1];
-                $cuenta=$mesa->getCuenta();
-                $mesa->setCuenta($cuenta+$precio*$cantidad);
+                $cuenta = $mesa->getCuenta();
+                $mesa->setCuenta($cuenta + $precio * $cantidad);
 
 
                 $em->persist($mesa);
@@ -227,7 +167,7 @@ class DefaultController extends Controller
                 $em->flush();
 
                 //creamos un nuevo pedido
-                $pedidoRealizado=new Pedido();
+                $pedidoRealizado = new Pedido();
                 $pedidoRealizado->setEstado('pendiente');
 
 
@@ -236,22 +176,49 @@ class DefaultController extends Controller
                 $em->flush();
 
 
-
-
-                $_SESSION['pedido']='';
+                $_SESSION['pedido'] = '';
+            }
             }
         }
-        $em = $this->getDoctrine()->getManager();
+        if(isset($_SESSION['pedido'])){
+            if($_SESSION['pedido']==''){
+                $pedido=null;
+            }else {
+                $pedido=$_SESSION['pedido'];
 
-        $usuario=$em->getRepository('AppBundle:Usuario')->findOneBy(array('id'=>$_SESSION['id']));
+                /*
+                //HAY QUE ALMACENAR LA INFORMACION EN DETALLE PEDIDO!!!! idPedido, cantidad y NombreProducto
+                for ($i = 0; $i < count($pedido) - 1; $i++) {
 
-        $tipoProducto = $em->getRepository('AppBundle:TipoProducto')
-            ->findAll();
+                    //$idproducto=$em->getRepository('AppBundle:Producto')->findOneBy(array('id'=>$pedido[$i][0]));
+                }*/
 
-        return $this->render(':default:inicio.html.twig', [
+            }
+            $em = $this->getDoctrine()->getManager();
+            $mesa=$em->getRepository('AppBundle:Mesa')->findOneBy(array('id'=>1));
+
+            $producto=new Producto();
+            return $this->render('default/cuenta.html.twig',[
+                'producto' => $producto,
+                'mesa'=>$mesa,
+                'pedido'=>$pedido
+            ]);
+        }else{    //Se muestra la cuenta sin pedidos.
+
+            $em = $this->getDoctrine()->getManager();
+            $mesa=$em->getRepository('AppBundle:Mesa')->findOneBy(array('id'=>1));
+            $producto=new Producto();
+            $pedido=null;
+            return $this->render('default/cuenta.html.twig',[
+                'producto' => $producto,
+                'mesa'=>$mesa,
+                'pedido'=>$pedido
+            ]);
+        }
+        /*return $this->render(':default:inicio.html.twig', [
             'tipoProducto' => $tipoProducto,
             'usuarios'=> $usuario
-        ]);
+        ]);*/
     }
     /**
      * @Route("/camarero", name="camarero")
@@ -266,10 +233,10 @@ class DefaultController extends Controller
      */
     public function salirAction()
     {
-       session_start();
+       /*session_start();
         if (isset($_SESSION['id'])) {
             session_destroy();
-        }
+        }*/
         // replace this example code with whatever you need
         return $this->render('default/formulario.html.twig', array());
     }

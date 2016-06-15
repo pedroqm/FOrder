@@ -70,10 +70,13 @@ class PedidoController extends Controller
      */
     public function pedirAction(Producto $producto)
     {
-        session_start();
-        if (!isset($_SESSION['id'])) {
-            return $this->render(':default:formulario.html.twig');
-        }else{
+
+        $usuario = $this->getUser();
+
+
+
+
+
             if(isset($_POST['pedirP'])){
 
                 if(isset($_SESSION['pedido'])){
@@ -110,14 +113,34 @@ class PedidoController extends Controller
             $producto = $em->getRepository('AppBundle:Producto')
                 ->findBy(array('tipo' => $tipoProducto->getTipo()));
 
+        if(isset($_SESSION['pedido'])){
+            if($_SESSION['pedido']!=''){
+                $pedido=$_SESSION['pedido'];
+            }
+            $em = $this->getDoctrine()->getManager();
+            $mesa=$em->getRepository('AppBundle:Mesa')->findOneBy(array('id'=>1));
+
+
+        }else{    //Se muestra la cuenta sin pedidos.
+
+            $em = $this->getDoctrine()->getManager();
+            $mesa=$em->getRepository('AppBundle:Mesa')->findOneBy(array('id'=>1));
+            $pedido=null;
+
+        }
+
             return $this->render(':productos:ver_productos.html.twig', [
                 'producto' => $producto,
-                'tipoProducto'=>$tipoProducto
+                'tipoProducto'=>$tipoProducto,
+                'usuarios'=>$usuario,
+                'mesa'=>$mesa,
+                'pedido'=>$pedido
+
             ]);
 
         }
 
-    }
+
 
     /**
      * @Route("/cambiar/{pedido}", name="terminado")
