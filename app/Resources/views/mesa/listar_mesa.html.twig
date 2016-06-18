@@ -16,32 +16,34 @@
 
    {% endif %}
 
+    <a href="{{ path('pedidoManual') }}" class="btn btn-success btn-lg">
+       Realizar pedido manual
+    </a>
     {% if mesa %}
         <table class="table table-bordered table-condensed table-hover table-striped">
         <thead>
         <tr>
             <th>Nº Mesa</th>
             <th>Cuenta</th>
-            <th></th>
-            <th></th>
+
         </tr>
         </thead>
         <tbody>
         {% for m in mesa %}
             <tr>
                 <td>{{ m.id }}</td>
-                <td>{{ m.cuenta }}</td>
+                <td>{{ m.cuenta }}€</td>
                 <td>
 
                     <form method="post" action="{{ path('pagado', {'id': m.id}) }}" >
-                        <button class="btn btn-warning btn-sm" type="submit" name="pagar">Pagar </button>
+                        <button class="btn btn-info btn-sm" type="submit" name="pagar">Pagado </button>
                     </form>
 
 
                 </td>
                 <td>
                     <a href="{{ path('mesa_modificar', {'mesa': m.id}) }}" class="btn btn-warning btn-sm">
-                        <i class="glyphicon glyphicon-pencil"></i> Modificar
+                        <i class="glyphicon glyphicon-pencil"></i> Modificar cuenta
                     </a>
 
                 </td>

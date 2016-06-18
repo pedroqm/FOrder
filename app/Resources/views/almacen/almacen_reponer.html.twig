@@ -4,9 +4,7 @@
 
 {% block content %}
     <h2 class="well">Almacén</h2>
-    <a href="{{ path('almacen_reponer') }}" class="btn btn-success btn-lg">
-        Ver sólo productos que se tienen que reponer
-    </a>
+
     {% if almacen %}
         <table class="table table-bordered table-condensed table-hover table-striped">
             <thead>
@@ -20,20 +18,20 @@
             <tbody>
             {% for al in almacen %}
                 <tr>
+                    {% if al.stock < al.stockMin %}
                     <td>{{ al.nombreIngrediente }}</td>
                     <td>{{ al.stock }}</td>
                     <td>{{ al.stockMin }}</td>
-                    {% if al.stock < al.stockMin %}
+
                         <td>Si</td>
-                    {% else %}
-                        <td>No</td>
-                    {% endif %}
+
 
                     <td>
                         <a href="{{ path('almacen_modificar', { 'almacen': al.id }) }}" class="btn btn-warning btn-xs">
                             <i class="glyphicon glyphicon-pencil"></i> Modificar stock
                         </a>
                     </td>
+                    {% endif %}
                 </tr>
             {% endfor %}
             </tbody>
