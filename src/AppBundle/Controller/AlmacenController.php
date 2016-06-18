@@ -23,8 +23,20 @@ class AlmacenController extends Controller
 
         $almacen = $em->getRepository('AppBundle:Almacen')
             ->findAll();
-
         return $this->render(':almacen:listar_almacen.html.twig', [
+            'almacen' => $almacen
+        ]);
+    }
+    /**
+     * @Route("/reponer", name="almacen_reponer")
+     */
+    public function reponerAction()
+    {
+        $em = $this->getDoctrine()->getManager();
+
+        $almacen = $em->getRepository('AppBundle:Almacen')
+            ->findAll();
+        return $this->render(':almacen:almacen_reponer.html.twig', [
             'almacen' => $almacen
         ]);
     }
