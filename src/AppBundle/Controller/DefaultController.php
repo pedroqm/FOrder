@@ -24,7 +24,7 @@ class DefaultController extends Controller
         $em = $this->getDoctrine()->getManager();
 
         $usu = $em->getRepository('AppBundle:Usuario')
-            ->findAll();
+            ->findOneById(1);
         if(!$usu){
             $usuario= new Usuario();
             $usuario->setNombreUsuario('admin');

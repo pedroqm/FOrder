@@ -25,6 +25,14 @@ security:
             security: false
         # the login page has to be accessible for everybody
 
+        registro:
+            pattern: /nuevaCuenta
+            security: false
+
+        intalacion:
+            pattern: /instalar
+            security: false
+
         login:
             pattern: /entrar
             security: false

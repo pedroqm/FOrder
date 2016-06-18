@@ -58,7 +58,6 @@ class UsuarioController extends Controller
 
         }
         return $this->render(':usuario:nueva_cuenta.html.twig' ,[
-            'usuario' => $usuario,
             'formulario' => $formulario->createView()
         ]);
     }
