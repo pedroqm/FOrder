@@ -96,7 +96,12 @@ class DefaultController extends Controller
                     'pedido'=>$pedidoRealizado
                 ]);
             }else{
-                return $this->render(':default:administracion.html.twig');
+                $tipoProducto = $em->getRepository('AppBundle:TipoProducto')
+                    ->findAll();
+                return $this->render(':default:inicio.html.twig',[
+                    'tipoProducto' => $tipoProducto,
+                    'usuarios'=> $usuario
+                ]);
             }
         }
     }
