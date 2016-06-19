@@ -8,6 +8,8 @@ use Sensio\Bundle\FrameworkExtraBundle\Configuration\Route;
 use Symfony\Bundle\FrameworkBundle\Controller\Controller;
 use Symfony\Component\HttpFoundation\RedirectResponse;
 use Symfony\Component\HttpFoundation\Request;
+use Sensio\Bundle\FrameworkExtraBundle\Configuration\Security;
+
 
 /**
  * @Route("/mesa")
@@ -64,7 +66,13 @@ class MesaController extends Controller
 
         if(isset($_POST['pagar'])){
             $em = $this->getDoctrine()->getManager();
+            $factura=$id->getFactura();
+            $cuenta=$id->getCuenta();
+
+            //sumamos la cuenta a la factura de la mesa
             $id->setCuenta(0);
+            $id->setFactura($factura+$cuenta);
+
             $em->persist($id);
             $em->flush();
 
