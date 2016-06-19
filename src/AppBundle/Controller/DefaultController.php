@@ -202,13 +202,14 @@ class DefaultController extends Controller
                     var_dump($al);
                     var_dump('uno');*/
                 }
-                $_SESSION['pedido'] = '';
             }else{
                 $pedido=null;
             }
             $em = $this->getDoctrine()->getManager();
             $mesa=$em->getRepository('AppBundle:Mesa')->findOneBy(array('id'=>1));
             $producto=new Producto();
+            $_SESSION['pedido'] = '';
+            $pedido=null;
             return $this->render('default/cuenta.html.twig',[
                 'producto' => $producto,
                 'mesa'=>$mesa,
