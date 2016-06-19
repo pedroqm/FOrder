@@ -1,0 +1,42 @@
+{% extends '::index.html.twig' %}
+
+{% block title %}Mesa{% endblock %}
+
+{% block content %}
+    <h1 class="well">Detalle pedido {{ pedido.id }}</h1>
+    {% if detalle %}
+
+            <table class="table table-bordered table-condensed table-hover table-striped">
+                <thead>
+                <tr>
+                    <th>Producto</th>
+                    <th>Cantidad</th>
+                </tr>
+                </thead>
+                <tbody>
+                {% for de in detalle %}
+                    <tr>
+                        {% if de.idPedido == pedido.id %}
+                        <td>{{ de.nombreProducto }}</td>
+                        <td>{{ de.cantidad }}</td>
+
+                        {% else %}
+                            <td>No hay detalles</td>
+                        {% endif %}
+                    </tr>
+                {% endfor %}
+                </tbody>
+            </table>
+        {% else %}
+            <h2>No hay usuarios para mostrar</h2>
+
+
+   {% endif %}
+
+
+
+    <a href="{{ path('inicio') }}" class="btn btn-success btn-lg">
+        Volver
+    </a>
+    <a href="{{ path('terminado', {'pedido': pedido.id}) }}" class="btn btn-success btn-lg">Terminado</a></p>
+{% endblock %}

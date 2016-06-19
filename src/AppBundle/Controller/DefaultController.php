@@ -160,10 +160,31 @@ class DefaultController extends Controller
             if($_SESSION['pedido']!=''){
                 $em = $this->getDoctrine()->getManager();
                 $pedido = $_SESSION['pedido'];
+
+                //creamos un nuevo pedido
+                $pedidoRealizado = new Pedido();
+                $pedidoRealizado->setEstado('pendiente');
+                $pedidoRealizado->setIncidencias('Sin incidencias');
+                $em->persist($pedidoRealizado);
+                // Guardar los cambios
+                $em->flush();
+
+                //creamos los detalles del pedido
                 $newPedido = new DetallePedido();
                 $mesa = $em->getRepository('AppBundle:Mesa')->findOneBy(array('id' => 1));
+
+
                 for ($i = 0; $i < count($pedido); $i++) {
                     $producto = $em->getRepository('AppBundle:Producto')->findOneBy(array('id' => $pedido[$i][0]));
+
+
+                    //guardamos los detalles del pedido
+                    $newPedido->setIdPedido($pedidoRealizado->getId());
+                    $newPedido->setNombreProducto($pedido[$i][0]->getNombreProducto());
+                    $newPedido->setCantidad($pedido[$i][1]);
+                    $em->persist($newPedido);
+                    // Guardar los cambios
+                    $em->flush();
 
                     //actualizamos la cuenta
                     $precio = $producto->getPrecio();
@@ -174,16 +195,14 @@ class DefaultController extends Controller
 
                     // Guardar los cambios
                     $em->flush();
-                    $_SESSION['pedido'] = '';
+
+                    //descontamos los productos en el almacen
+                    /*
+                    $al = $em->getRepository('AppBundle:Ingredientes')->findAll(array('nombreProducto'=>$pedido[$i][0]->getNombreProducto()));
+                    var_dump($al);
+                    var_dump('uno');*/
                 }
-                //creamos un nuevo pedido
-                $pedidoRealizado = new Pedido();
-                $pedidoRealizado->setEstado('pendiente');
-                $pedidoRealizado->setIncidencias('Sin incidencias');
-                $em->persist($pedidoRealizado);
-                // Guardar los cambios
-                $em->flush();
-                //creamos los detalles del pedido
+                $_SESSION['pedido'] = '';
             }else{
                 $pedido=null;
             }

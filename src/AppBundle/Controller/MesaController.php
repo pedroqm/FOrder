@@ -2,7 +2,9 @@
 
 namespace AppBundle\Controller;
 
+use AppBundle\Entity\DetallePedido;
 use AppBundle\Entity\Mesa;
+use AppBundle\Entity\Pedido;
 use AppBundle\Form\Type\MesaType;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Route;
 use Symfony\Bundle\FrameworkBundle\Controller\Controller;
@@ -57,6 +59,22 @@ class MesaController extends Controller
                $this->generateUrl('mesa_listar')
            );
 
+    }
+
+    /**
+     * @Route("/detallePedido/{pedido}", name="detallePedido")
+     */
+    public function detallePedidoAction(Pedido $pedido)
+    {
+        $em = $this->getDoctrine()->getManager();
+
+        $Dpedido=$em->getRepository('AppBundle:DetallePedido')->findAll();
+
+
+        return $this->render(':mesa:detalle_pedido.html.twig', [
+            'detalle'=>$Dpedido,
+            'pedido'=>$pedido
+        ]);
     }
     /**
      * @Route("/pagado/{id}", name="pagado"), methods={'GET', 'POST'}
