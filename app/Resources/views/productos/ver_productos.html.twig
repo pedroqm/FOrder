@@ -29,6 +29,11 @@
                     <td>{{ pe.0.nombreProducto }}</td>
                     <td>{{ pe.0.precio }}€</td>
                     <td>{{ pe.1 }}</td>
+                     <td>
+                        <form action="{{ path('pedir', { 'producto': pe.0.id }) }}" method="post">
+                            <button class="btn btn-danger btn-sm" type="submit" name="borrarP">Borrar </button>
+                        </form>
+                     </td>
                 </tr>
             {% endfor %}
             </tbody>

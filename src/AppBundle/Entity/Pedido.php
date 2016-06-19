@@ -27,7 +27,7 @@ class Pedido
      * @ORM\Column(type="string")
      * @var string
      */
-    protected $incidencias  ;
+    protected $incidencias;
 
     /**
      * @ORM\ManyToOne(targetEntity="AppBundle\Entity\Mesa",

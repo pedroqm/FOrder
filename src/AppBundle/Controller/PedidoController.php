@@ -65,80 +65,137 @@ class PedidoController extends Controller
             'formulario' => $formulario->createView()
         ]);
     }
+
     /**
      * @Route("/pedir/{producto}", name="pedir")
      */
     public function pedirAction(Producto $producto)
     {
-
         $usuario = $this->getUser();
 
+            //si se pulsa en el boton pedir almacenamos el pedido en una sesión
+            if(isset($_POST['pedirP'])) {
+                if ($_POST['cantidad'] < 0) {
+                    echo "<script>alert('No puedes introducir números negativos')</script>";
 
+                } else {
+                    if (isset($_SESSION['pedido']) != '') {
 
+                        $DatoYaExistente = false;
+                        $encontrado=false;
+                        $em = $this->getDoctrine()->getManager();
+                        $idProduc = $em->getRepository('AppBundle:Producto')
+                            ->findOneBy(array('id' => $producto->getId()));
 
+                        $p = [$idProduc, $_POST['cantidad']];
+                        //guardamos una copia del carrito para comprobarla y modificarla
+                        $carrito = $_SESSION["pedido"];
 
-            if(isset($_POST['pedirP'])){
+                        $i = 0;
+                        while (isset($_SESSION["pedido"][$i]) <> '') {
+                            for ($j = 0; $j <= $i; $j++) {
+                                //comprobamos si existe ese producto en el carrito
+                                if ($carrito[$j][0]->getId() == $idProduc->getId() && $encontrado==false) {
 
-                if(isset($_SESSION['pedido'])){
-                    $em = $this->getDoctrine()->getManager();
-                    $idProduc=$em->getRepository('AppBundle:Producto')
-                        ->findOneBy(array('id' => $producto->getId()));
+                                    //sumamos la cantidad pedida
+                                    $p = [$idProduc, $_POST['cantidad'] + $carrito[$j][1]];
+                                    $_SESSION["pedido"][$i] = $p;
+                                    $encontrado=true;
 
-                    $p=[$idProduc,$_POST['cantidad']];
+                                }
+                            }
+                            $i++;
+                        }
 
-                    $i = 0;
-                    while(isset($_SESSION["pedido"][$i]) <> ''){
-                        $i++;
+                        for ($j = 0; $j < $i; $j++) {
+                            if ($carrito[$j][0]->getId() == $idProduc->getId()) {
+                                $DatoYaExistente = true;
+                            }
+                        }
+                        if (!$DatoYaExistente) {
+                            $_SESSION["pedido"][$i] = $p;
+
+                        }
+
+                    } else {
+                        //Primer registro de la sesión del carrito de la compra
+                        $em = $this->getDoctrine()->getManager();
+                        $idProduc = $em->getRepository('AppBundle:Producto')
+                            ->findOneBy(array('id' => $producto->getId()));
+                        $p = [$idProduc, $_POST['cantidad']];
+
+                        //Ahora guarda correctamente el primer registro
+                        $_SESSION['pedido'][0] = $p;
+
                     }
-                    $_SESSION["pedido"][$i] = $p;
 
-
-                }else{
-                    $em = $this->getDoctrine()->getManager();
-                    $idProduc=$em->getRepository('AppBundle:Producto')
-                        ->findOneBy(array('id' => $producto->getId()));
-                    $p=[$idProduc,$_POST['cantidad']];
-
-                    //Ahora guarda correctamente el primer registro
-                    $_SESSION['pedido'][0]=$p;
                 }
 
+
             }
 
+        //si se pulsa en el boton borrar quitamos el producto del carrito
+        if(isset($_POST['borrarP'])) {
+            $encontrado=false;
             $em = $this->getDoctrine()->getManager();
+            $idProduc = $em->getRepository('AppBundle:Producto')
+                ->findOneBy(array('id' => $producto->getId()));
+            $carrito = $_SESSION["pedido"];
 
-            //$tipoProducto=new TipoProducto();
-            $tipoProducto=$em->getRepository('AppBundle:TipoProducto')
-                ->findOneBy(array('id' =>$_SESSION['tipoProducto']));
-            $producto = $em->getRepository('AppBundle:Producto')
-                ->findBy(array('tipo' => $tipoProducto->getTipo()));
-
-        if(isset($_SESSION['pedido'])){
-            if($_SESSION['pedido']!=''){
-                $pedido=$_SESSION['pedido'];
+            $i=0;
+            while (isset($_SESSION["pedido"][$i]) <> '') {
+                for ($j = 0; $j <= $i; $j++) {
+                    //buscamos el producto en el carrito
+                    if ($carrito[$j][0]->getId() == $idProduc->getId()&& $encontrado==false) {
+                        //borramos la cantidad pedida
+                        if($carrito[$j][1]!=0){
+                            $p = [$idProduc, 0];
+                            $_SESSION["pedido"][$i] = $p;
+                            $encontrado=true;
+                        }
+                    }
+                }
+                $i++;
             }
-            $em = $this->getDoctrine()->getManager();
-            $mesa=$em->getRepository('AppBundle:Mesa')->findOneBy(array('id'=>1));
 
-
-        }else{    //Se muestra la cuenta sin pedidos.
-
-            $em = $this->getDoctrine()->getManager();
-            $mesa=$em->getRepository('AppBundle:Mesa')->findOneBy(array('id'=>1));
-            $pedido=null;
 
         }
 
-            return $this->render(':productos:ver_productos.html.twig', [
-                'producto' => $producto,
-                'tipoProducto'=>$tipoProducto,
-                'usuarios'=>$usuario,
-                'mesa'=>$mesa,
-                'pedido'=>$pedido
+        $em = $this->getDoctrine()->getManager();
 
-            ]);
+        $tipoProducto = $em->getRepository('AppBundle:TipoProducto')
+            ->findOneBy(array('id' => $_SESSION['tipoProducto']));
+        $producto = $em->getRepository('AppBundle:Producto')
+            ->findBy(array('tipo' => $tipoProducto->getTipo()));
+
+        if (isset($_SESSION['pedido'])) {  //Se muestra la cuenta con los productos que lleva seleccionados
+            if ($_SESSION['pedido'] != '') {
+                $pedido = $_SESSION['pedido'];
+            }else{
+                $pedido = null;
+            }
+            $em = $this->getDoctrine()->getManager();
+            $mesa = $em->getRepository('AppBundle:Mesa')->findOneBy(array('id' => 1));
+
+
+        } else {    //Se muestra la cuenta sin pedidos.
+
+            $em = $this->getDoctrine()->getManager();
+            $mesa = $em->getRepository('AppBundle:Mesa')->findOneBy(array('id' => 1));
+            $pedido = null;
 
         }
+
+        return $this->render(':productos:ver_productos.html.twig', [
+            'producto' => $producto,
+            'tipoProducto' => $tipoProducto,
+            'usuarios' => $usuario,
+            'mesa' => $mesa,
+            'pedido' => $pedido
+
+        ]);
+
+    }
 
 
 
