@@ -8,6 +8,8 @@ use Sensio\Bundle\FrameworkExtraBundle\Configuration\Route;
 use Symfony\Bundle\FrameworkBundle\Controller\Controller;
 use Symfony\Component\HttpFoundation\RedirectResponse;
 use Symfony\Component\HttpFoundation\Request;
+use Sensio\Bundle\FrameworkExtraBundle\Configuration\Security;
+
 
 /**
  * @Route("/usuario")
@@ -16,6 +18,7 @@ class UsuarioController extends Controller
 {
     /**
      * @Route("/listar", name="usuarios_listar")
+     * @Security("is_granted('ROLE_ADMIN')")
      */
     public function listarAction()
     {
@@ -64,6 +67,7 @@ class UsuarioController extends Controller
 
     /**
      * @Route("/nuevo", name="usuarios_nuevo")
+     * @Security("is_granted('ROLE_ADMIN')")
      */
     public function nuevoAction(Request $peticion)
     {
@@ -97,6 +101,7 @@ class UsuarioController extends Controller
     }
     /**
      * @Route("/modificar/{usuario}", name="usuarios_modificar")
+     * @Security("is_granted('ROLE_ADMIN')")
      */
     public function modificarAction(Request $peticion, Usuario $usuario)
     {
@@ -132,6 +137,7 @@ class UsuarioController extends Controller
 
     /**
      * @Route("/cambiar/{usuario}", name="cambiarRol")
+     * @Security("is_granted('ROLE_ADMIN')")
      */
     public function cambiarAction(Request $peticion, Usuario $usuario)
     {
@@ -171,6 +177,7 @@ class UsuarioController extends Controller
 
     /**
      * @Route("/eliminar/{usuario}", name="usuarios_eliminar")
+     * @Security("is_granted('ROLE_ADMIN')")
      */
     public function eliminarAction(Usuario $usuario)
     {

@@ -12,6 +12,8 @@ use Symfony\Bundle\FrameworkBundle\Controller\Controller;
 use Symfony\Component\Config\Tests\Definition\IntegerNodeTest;
 use Symfony\Component\HttpFoundation\RedirectResponse;
 use Symfony\Component\HttpFoundation\Request;
+use Sensio\Bundle\FrameworkExtraBundle\Configuration\Security;
+
 
 /**
  * @Route("/ingredientes")
@@ -21,6 +23,7 @@ class IngredientesController extends Controller
 
     /**
      * @Route("/receta/{id}", name="ver_receta"), methods={'GET', 'POST'}
+     * @Security("is_granted('ROLE_ADMIN')")
      */
     public function verRecetaAction(Producto $id)
     {
@@ -50,6 +53,7 @@ class IngredientesController extends Controller
     }
     /**
      * @Route("/listar", name="ingrediente_listar")
+     * @Security("is_granted('ROLE_ADMIN')")
      */
     public function listarAction()
     {
@@ -72,6 +76,7 @@ class IngredientesController extends Controller
 
     /**
      * @Route("/nuevo", name="ingrediente_nuevo")
+     * @Security("is_granted('ROLE_ADMIN')")
      */
     public function nuevoAction(Request $peticion)
     {
@@ -110,6 +115,7 @@ class IngredientesController extends Controller
     }
     /**
      * @Route("/modificar/{ingrediente}", name="ingrediente_modificar")
+     * @Security("is_granted('ROLE_ADMIN')")
      */
     public function modificarAction(Request $peticion, Ingredientes $ingrediente)
     {
@@ -143,6 +149,7 @@ class IngredientesController extends Controller
 
     /**
      * @Route("/eliminar/{ingrediente}", name="ingrediente_eliminar")
+     * @Security("is_granted('ROLE_ADMIN')")
      */
     public function eliminarAction(Ingredientes $ingrediente)
     {

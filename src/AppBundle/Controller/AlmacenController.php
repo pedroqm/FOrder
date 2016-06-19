@@ -8,6 +8,7 @@ use Sensio\Bundle\FrameworkExtraBundle\Configuration\Route;
 use Symfony\Bundle\FrameworkBundle\Controller\Controller;
 use Symfony\Component\HttpFoundation\RedirectResponse;
 use Symfony\Component\HttpFoundation\Request;
+use Sensio\Bundle\FrameworkExtraBundle\Configuration\Security;
 
 /**
  * @Route("/almacen")
@@ -16,6 +17,7 @@ class AlmacenController extends Controller
 {
     /**
      * @Route("/listar", name="almacen_listar")
+     * @Security("is_granted('ROLE_ADMIN')")
      */
     public function listarAction()
     {
@@ -29,6 +31,7 @@ class AlmacenController extends Controller
     }
     /**
      * @Route("/reponer", name="almacen_reponer")
+     * @Security("is_granted('ROLE_ADMIN')")
      */
     public function reponerAction()
     {
@@ -44,6 +47,7 @@ class AlmacenController extends Controller
 
     /**
      * @Route("/nuevo", name="almacen_nuevo")
+     * @Security("is_granted('ROLE_ADMIN')")
      */
     public function nuevoAction(Request $peticion)
     {
@@ -77,6 +81,7 @@ class AlmacenController extends Controller
     }
     /**
      * @Route("/modificar/{almacen}", name="almacen_modificar")
+     * @Security("is_granted('ROLE_ADMIN')")
      */
     public function modificarAction(Request $peticion, Almacen $almacen)
     {
