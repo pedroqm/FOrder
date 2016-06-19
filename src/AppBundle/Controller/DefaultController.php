@@ -73,10 +73,56 @@ class DefaultController extends Controller
     {
         return $this->render(':default:administracion.html.twig');
     }
+
+    /**
+     * @Route("/mesas", name="mesas")
+     * @Security("is_granted('ROLE_CAMARERO')")
+     */
+    public function servicioAction()
+    {
+        return $this->render(':mesa:listar_mesa.html.twig');
+    }
     /**
      * @Route("/", name="inicio")
      */
     public function indexAction()
+    {
+        $em = $this->getDoctrine()->getManager();
+
+        $usuario = $this->getUser();
+        $cliente=$usuario->getEsCliente();
+        if($cliente){
+            $tipoProducto = $em->getRepository('AppBundle:TipoProducto')
+                ->findAll();
+
+            return $this->render(':default:inicio.html.twig', [
+                'tipoProducto' => $tipoProducto,
+                'usuarios'=> $usuario
+            ]);
+        }else{
+            $camarero=$usuario->getEsCamarero();
+            if($camarero){
+                $em = $this->getDoctrine()->getManager();
+
+                $mesa = $em->getRepository('AppBundle:Mesa')
+                    ->findAll();
+
+                $pedidoRealizado=$em->getRepository('AppBundle:Pedido')->findBy(array('estado'=>'pendiente'));
+
+                return $this->render(':mesa:listar_mesa.html.twig', [
+                    'mesa' => $mesa,
+                    'pedido'=>$pedidoRealizado
+                ]);
+            }else{
+                return $this->render(':default:administracion.html.twig');
+            }
+
+        }
+    }
+    /**
+     * @Route("/pedidoManual", name="pedidoManual")
+     */
+    public function pedManualAction()
     {
         $em = $this->getDoctrine()->getManager();
 
@@ -90,50 +136,46 @@ class DefaultController extends Controller
             'usuarios'=> $usuario
         ]);
     }
+
     /**
      * @Route("/cuenta", name="cuenta")
      */
     public function cuentaAction()
     {
-        $session = $this->get('session');
+        $em = $this->getDoctrine()->getManager();
+
+        //cambiar mesa por defecto por una mesa especifica
+
+        $mesa=$em->getRepository('AppBundle:Mesa')->findOneBy(array('id'=>1));
+        $producto=new Producto();
 
         if(isset($_SESSION['pedido'])){
             if($_SESSION['pedido']==''){
                 $pedido=null;
+                $total=null;
             }else {
-                $pedido=$_SESSION['pedido'];
-
-                /*
-                //HAY QUE ALMACENAR LA INFORMACION EN DETALLE PEDIDO!!!! idPedido, cantidad y NombreProducto
-                for ($i = 0; $i < count($pedido) - 1; $i++) {
-
-                    //$idproducto=$em->getRepository('AppBundle:Producto')->findOneBy(array('id'=>$pedido[$i][0]));
-                }*/
-
+                $pedido = $_SESSION['pedido'];
+                $total = 0;
+                $i = 0;
+                while (isset($_SESSION["pedido"][$i]) <> '') {
+                    for ($j = 0; $j <= $i; $j++) {
+                        $total = $total + ($pedido[$j][0]->getPrecio() * $pedido[$j][1]);
+                    }
+                    $i++;
+                }
             }
-            $em = $this->getDoctrine()->getManager();
-            $mesa=$em->getRepository('AppBundle:Mesa')->findOneBy(array('id'=>1));
 
-            $producto=new Producto();
-            return $this->render('default/cuenta.html.twig',[
-                'producto' => $producto,
-                'mesa'=>$mesa,
-                'pedido'=>$pedido
-            ]);
         }else{    //Se muestra la cuenta sin pedidos.
-
-            $em = $this->getDoctrine()->getManager();
-            $mesa=$em->getRepository('AppBundle:Mesa')->findOneBy(array('id'=>1));
-            $producto=new Producto();
             $pedido=null;
-            return $this->render('default/cuenta.html.twig',[
-                'producto' => $producto,
-                'mesa'=>$mesa,
-                'pedido'=>$pedido
-            ]);
+            $total=null;
         }
+        return $this->render('default/cuenta.html.twig',[
+            'producto' => $producto,
+            'mesa'=>$mesa,
+            'total'=>$total,
+            'pedido'=>$pedido
+        ]);
     }
-
 
     /**
      * @Route("/realizar_pedido", name="realizar_pedido")
@@ -166,34 +208,26 @@ class DefaultController extends Controller
                 // Guardar los cambios
                 $em->flush();
 
+                $_SESSION['pedido'] = '';
+            }
+
                 //creamos un nuevo pedido
                 $pedidoRealizado = new Pedido();
                 $pedidoRealizado->setEstado('pendiente');
+                $pedidoRealizado->setIncidencias('Sin incidencias');
 
 
-                $em->persist($mesa);
+                $em->persist($pedidoRealizado);
                 // Guardar los cambios
                 $em->flush();
 
+                //creamos los detalles del pedido
 
-                $_SESSION['pedido'] = '';
-            }
-            }
-        }
-        if(isset($_SESSION['pedido'])){
-            if($_SESSION['pedido']==''){
+            }else{
                 $pedido=null;
-            }else {
-                $pedido=$_SESSION['pedido'];
-
-                /*
-                //HAY QUE ALMACENAR LA INFORMACION EN DETALLE PEDIDO!!!! idPedido, cantidad y NombreProducto
-                for ($i = 0; $i < count($pedido) - 1; $i++) {
-
-                    //$idproducto=$em->getRepository('AppBundle:Producto')->findOneBy(array('id'=>$pedido[$i][0]));
-                }*/
-
             }
+
+
             $em = $this->getDoctrine()->getManager();
             $mesa=$em->getRepository('AppBundle:Mesa')->findOneBy(array('id'=>1));
 
@@ -215,17 +249,8 @@ class DefaultController extends Controller
                 'pedido'=>$pedido
             ]);
         }
-        /*return $this->render(':default:inicio.html.twig', [
-            'tipoProducto' => $tipoProducto,
-            'usuarios'=> $usuario
-        ]);*/
-    }
-    /**
-     * @Route("/camarero", name="camarero")
-     */
-    public function camareroAction()
-    {
-        return $this->render('camarero/inicioCamarero.html.twig');
+
+
     }
 
     /**
@@ -233,11 +258,7 @@ class DefaultController extends Controller
      */
     public function salirAction()
     {
-       /*session_start();
-        if (isset($_SESSION['id'])) {
-            session_destroy();
-        }*/
-        // replace this example code with whatever you need
+        // Al salir se redirecciona al formulario de login
         return $this->render('default/formulario.html.twig', array());
     }
 

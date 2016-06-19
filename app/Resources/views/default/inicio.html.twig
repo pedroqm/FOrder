@@ -28,7 +28,12 @@
          {% endif %}
      {% if usuarios.esAdmin == true %}
          <div class="row">
-             <a href="{{ path('administracion') }}" role="button" class="btn btn-success btn-block active" id="a">Ir al panel de administracion</a>
+             <a href="{{ path('inicio') }}" role="button" class="btn btn-success btn-block active" id="a">Ir al panel de administracion</a>
+         </div>
+     {% endif %}
+     {% if usuarios.esCamarero == true %}
+         <div class="row">
+             <a href="{{ path('inicio') }}" role="button" class="btn btn-success btn-block active" id="a">Ver las mesas y pedidos</a>
          </div>
      {% endif %}
  {% endblock %}
