@@ -1,7 +1,5 @@
 <?php
-
 namespace AppBundle\Controller;
-
 use AppBundle\Entity\DetallePedido;
 use AppBundle\Entity\Mesa;
 use AppBundle\Entity\Producto;
@@ -12,17 +10,14 @@ use AppBundle\Form\Type\UsuarioType;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Route;
 use Symfony\Bundle\FrameworkBundle\Controller\Controller;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Security;
-
 class DefaultController extends Controller
 {
-
     /**
      * @Route("/instalar", name="instalar")
      */
     public function instalarAction()
     {
         $em = $this->getDoctrine()->getManager();
-
         $usu = $em->getRepository('AppBundle:Usuario')
             ->findOneById(1);
         if(!$usu){
@@ -37,19 +32,14 @@ class DefaultController extends Controller
             $usuario->setEsAdmin(true);
             $usuario->setEsCamarero(false);
             $usuario->setEsCliente(false);
-
             // Obtener el EntityManager
             $em = $this->getDoctrine()->getManager();
-
             $em->persist($usuario);
             // Guardar los cambios
             $em->flush();
-
         }
         return $this->render(':default:formulario.html.twig');
-
     }
-
     /**
      * @Route("/entrar", name="usuario_entrar")
      */
@@ -57,14 +47,12 @@ class DefaultController extends Controller
     {
         return $this->render(':default:formulario.html.twig');
     }
-
     /**
      * @Route("/comprobar", name="usuario_comprobar")
      */
     public function comprobarAction()
     {
     }
-
     /**
      * @Route("/admin", name="administracion")
      * @Security("is_granted('ROLE_ADMIN')")
@@ -73,7 +61,6 @@ class DefaultController extends Controller
     {
         return $this->render(':default:administracion.html.twig');
     }
-
     /**
      * @Route("/mesas", name="mesas")
      * @Security("is_granted('ROLE_CAMARERO')")
@@ -88,13 +75,11 @@ class DefaultController extends Controller
     public function indexAction()
     {
         $em = $this->getDoctrine()->getManager();
-
         $usuario = $this->getUser();
         $cliente=$usuario->getEsCliente();
         if($cliente){
             $tipoProducto = $em->getRepository('AppBundle:TipoProducto')
                 ->findAll();
-
             return $this->render(':default:inicio.html.twig', [
                 'tipoProducto' => $tipoProducto,
                 'usuarios'=> $usuario
@@ -103,12 +88,9 @@ class DefaultController extends Controller
             $camarero=$usuario->getEsCamarero();
             if($camarero){
                 $em = $this->getDoctrine()->getManager();
-
                 $mesa = $em->getRepository('AppBundle:Mesa')
                     ->findAll();
-
                 $pedidoRealizado=$em->getRepository('AppBundle:Pedido')->findBy(array('estado'=>'pendiente'));
-
                 return $this->render(':mesa:listar_mesa.html.twig', [
                     'mesa' => $mesa,
                     'pedido'=>$pedidoRealizado
@@ -116,7 +98,6 @@ class DefaultController extends Controller
             }else{
                 return $this->render(':default:administracion.html.twig');
             }
-
         }
     }
     /**
@@ -125,37 +106,31 @@ class DefaultController extends Controller
     public function pedManualAction()
     {
         $em = $this->getDoctrine()->getManager();
-
         $usuario = $this->getUser();
-
         $tipoProducto = $em->getRepository('AppBundle:TipoProducto')
             ->findAll();
-
         return $this->render(':default:inicio.html.twig', [
             'tipoProducto' => $tipoProducto,
             'usuarios'=> $usuario
         ]);
     }
-
     /**
      * @Route("/cuenta", name="cuenta")
      */
     public function cuentaAction()
     {
         $em = $this->getDoctrine()->getManager();
-
         //cambiar mesa por defecto por una mesa especifica
-
         $mesa=$em->getRepository('AppBundle:Mesa')->findOneBy(array('id'=>1));
         $producto=new Producto();
-
+        $total = 0;
         if(isset($_SESSION['pedido'])){
             if($_SESSION['pedido']==''){
                 $pedido=null;
                 $total=null;
             }else {
                 $pedido = $_SESSION['pedido'];
-                $total = 0;
+
                 $i = 0;
                 while (isset($_SESSION["pedido"][$i]) <> '') {
                     for ($j = 0; $j <= $i; $j++) {
@@ -164,7 +139,6 @@ class DefaultController extends Controller
                     $i++;
                 }
             }
-
         }else{    //Se muestra la cuenta sin pedidos.
             $pedido=null;
             $total=null;
@@ -176,69 +150,53 @@ class DefaultController extends Controller
             'pedido'=>$pedido
         ]);
     }
-
     /**
      * @Route("/realizar_pedido", name="realizar_pedido")
      */
     public function realizarPedidoAction()
     {
+        $total = 0;
         if(isset($_SESSION['pedido'])) {
             if($_SESSION['pedido']!=''){
+                $em = $this->getDoctrine()->getManager();
+                $pedido = $_SESSION['pedido'];
+                $newPedido = new DetallePedido();
+                $mesa = $em->getRepository('AppBundle:Mesa')->findOneBy(array('id' => 1));
+                for ($i = 0; $i < count($pedido); $i++) {
+                    $producto = $em->getRepository('AppBundle:Producto')->findOneBy(array('id' => $pedido[$i][0]));
 
+                    //actualizamos la cuenta
+                    $precio = $producto->getPrecio();
+                    $cantidad = $pedido[$i][1];
+                    $cuenta = $mesa->getCuenta();
+                    $mesa->setCuenta($cuenta + $precio * $cantidad);
+                    $em->persist($mesa);
 
-            $em = $this->getDoctrine()->getManager();
-
-            $pedido = $_SESSION['pedido'];
-
-
-            $newPedido = new DetallePedido();
-            $mesa = $em->getRepository('AppBundle:Mesa')->findOneBy(array('id' => 1));
-
-            for ($i = 0; $i < count($pedido); $i++) {
-                $producto = $em->getRepository('AppBundle:Producto')->findOneBy(array('id' => $pedido[$i][0]));
-
-                //actualizamos la cuenta
-                $precio = $producto->getPrecio();
-                $cantidad = $pedido[$i][1];
-                $cuenta = $mesa->getCuenta();
-                $mesa->setCuenta($cuenta + $precio * $cantidad);
-
-
-                $em->persist($mesa);
-                // Guardar los cambios
-                $em->flush();
-
-                $_SESSION['pedido'] = '';
-            }
-
+                    // Guardar los cambios
+                    $em->flush();
+                    $_SESSION['pedido'] = '';
+                }
                 //creamos un nuevo pedido
                 $pedidoRealizado = new Pedido();
                 $pedidoRealizado->setEstado('pendiente');
                 $pedidoRealizado->setIncidencias('Sin incidencias');
-
-
                 $em->persist($pedidoRealizado);
                 // Guardar los cambios
                 $em->flush();
-
                 //creamos los detalles del pedido
-
             }else{
                 $pedido=null;
             }
-
-
             $em = $this->getDoctrine()->getManager();
             $mesa=$em->getRepository('AppBundle:Mesa')->findOneBy(array('id'=>1));
-
             $producto=new Producto();
             return $this->render('default/cuenta.html.twig',[
                 'producto' => $producto,
                 'mesa'=>$mesa,
+                'total'=>$total,
                 'pedido'=>$pedido
             ]);
         }else{    //Se muestra la cuenta sin pedidos.
-
             $em = $this->getDoctrine()->getManager();
             $mesa=$em->getRepository('AppBundle:Mesa')->findOneBy(array('id'=>1));
             $producto=new Producto();
@@ -246,13 +204,11 @@ class DefaultController extends Controller
             return $this->render('default/cuenta.html.twig',[
                 'producto' => $producto,
                 'mesa'=>$mesa,
+                'total'=>$total,
                 'pedido'=>$pedido
             ]);
         }
-
-
     }
-
     /**
      * @Route("/salir", name="salir")
      */
@@ -261,5 +217,4 @@ class DefaultController extends Controller
         // Al salir se redirecciona al formulario de login
         return $this->render('default/formulario.html.twig', array());
     }
-
-    }
+}

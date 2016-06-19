@@ -21,16 +21,19 @@
      {% else %}
          <h2>No hay productos para mostrar</h2>
      {% endif %}
+
      {% if usuarios.esCliente == true %}
-     <div class="row">
-     <a href="{{ path('cuenta') }}" role="button" class="btn btn-success btn-block active" id="a">Ver cuenta</a>
-     </div>
-         {% endif %}
+         <div class="row">
+            <a href="{{ path('cuenta') }}" role="button" class="btn btn-success btn-block active" id="a">Ver cuenta</a>
+         </div>
+     {% endif %}
+
      {% if usuarios.esAdmin == true %}
          <div class="row">
              <a href="{{ path('inicio') }}" role="button" class="btn btn-success btn-block active" id="a">Ir al panel de administracion</a>
          </div>
      {% endif %}
+
      {% if usuarios.esCamarero == true %}
          <div class="row">
              <a href="{{ path('inicio') }}" role="button" class="btn btn-success btn-block active" id="a">Ver las mesas y pedidos</a>

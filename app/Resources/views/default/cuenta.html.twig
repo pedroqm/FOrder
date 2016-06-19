@@ -36,7 +36,8 @@
                       </td>
                   </tr>
               {% endfor %}
-                <tr><td>Total: {% if total %} {{ total }}  {% endif %}€</td></tr>
+
+              <tr><td>Total: {% if total %} {{ total }} {% else %} 0 {% endif %}€</td></tr>
 
               </tbody>
           </table>
