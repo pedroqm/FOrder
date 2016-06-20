@@ -26,14 +26,19 @@ class ProductosController extends Controller
     {
         $em = $this->getDoctrine()->getManager();
 
+        $usuario = $this->getUser();
         $producto = $em->getRepository('AppBundle:Producto')
             ->findAll();
-
+        $mesa=$em->getRepository('AppBundle:Mesa')->findOneBy(array('id'=>1));
         $tipoProducto="";
+        $pedido=null;
 
         return $this->render(':productos:ver_productos.html.twig', [
             'producto' => $producto,
-            'tipoProducto'=>$tipoProducto
+            'tipoProducto'=>$tipoProducto,
+            'usuarios'=>$usuario,
+            'mesa'=>$mesa,
+            'pedido'=>$pedido
 
         ]);
     }
@@ -121,7 +126,7 @@ class ProductosController extends Controller
 
            // Redirigir al usuario a la lista
            return new RedirectResponse(
-               $this->generateUrl('producto_listar')
+               $this->generateUrl('inicio')
            );
        }
         return $this->render(':productos:nuevo_productos.html.twig' ,[

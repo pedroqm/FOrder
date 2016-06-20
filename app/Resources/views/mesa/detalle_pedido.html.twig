@@ -17,8 +17,8 @@
                 {% for de in detalle %}
                     <tr>
                         {% if de.idPedido == pedido.id %}
-                        <td>{{ de.nombreProducto }}</td>
-                        <td>{{ de.cantidad }}</td>
+                            <td>{{ de.nombreProducto }}</td>
+                            <td>{{ de.cantidad }}</td>
                         {% endif %}
                     </tr>
                 {% endfor %}
