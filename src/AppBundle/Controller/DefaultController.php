@@ -175,7 +175,7 @@ class DefaultController extends Controller
                 $em->flush();
 
                 //creamos los detalles del pedido
-                $newPedido = new DetallePedido();
+
                 $mesa = $em->getRepository('AppBundle:Mesa')->findOneBy(array('id' => 1));
 
 
@@ -184,6 +184,7 @@ class DefaultController extends Controller
 
 
                     //guardamos los detalles del pedido
+                    $newPedido = new DetallePedido();
                     $newPedido->setIdPedido($pedidoRealizado->getId());
                     $newPedido->setNombreProducto($pedido[$i][0]->getNombreProducto());
                     $newPedido->setCantidad($pedido[$i][1]);
