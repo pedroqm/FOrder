@@ -18,7 +18,13 @@
                     <tr>
                         {% if de.idPedido == pedido.id %}
                             <td>{{ de.nombreProducto }}</td>
-                            <td>{{ de.cantidad }}</td>
+                            {% if de.cantidad==0 %}
+                                <td>Listo</td>
+                            {% else %}
+                                    <td>{{ de.cantidad }}</td>
+                            {% endif %}
+
+                            <td> <a href="{{ path('listo', {'deP': de.id }) }}" class="btn btn-success btn-lg">Listo</a></td>
                         {% endif %}
                     </tr>
                 {% endfor %}
@@ -35,5 +41,5 @@
     <a href="{{ path('inicio') }}" class="btn btn-success btn-lg">
         Volver
     </a>
-    <a href="{{ path('terminado', {'pedido': pedido.id}) }}" class="btn btn-success btn-lg">Terminado</a></p>
+    <a href="{{ path('terminado', {'pedido': pedido.id}) }}" class="btn btn-success btn-lg">Terminado</a>
 {% endblock %}

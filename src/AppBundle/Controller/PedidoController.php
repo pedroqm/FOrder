@@ -1,5 +1,6 @@
 <?php
 namespace AppBundle\Controller;
+use AppBundle\Entity\DetallePedido;
 use AppBundle\Entity\Pedido;
 use AppBundle\Entity\Producto;
 use AppBundle\Entity\TipoProducto;
@@ -174,6 +175,26 @@ class PedidoController extends Controller
         return new RedirectResponse(
             $this->generateUrl('mesa_listar')
         );
+    }
+    /**
+     * @Route("/listo/{deP}", name="listo")
+     */
+    public function listoAction(DetallePedido $deP)
+    {
+        $em = $this->getDoctrine()->getManager();
+        $deP->setCantidad(0);
+        // Asegurarse de que se tiene en cuenta el nuevo pedido
+        $em->persist($deP);
+        // Guardar los cambios
+        $em->flush();
+
+        $pedido=$em->getRepository('AppBundle:DetallePedido')->findOneBy(array('id'=>$deP->getIdPedido()));
+
+        $Dpedido=$em->getRepository('AppBundle:DetallePedido')->findAll();
+        return $this->render(':mesa:detalle_pedido.html.twig', [
+            'detalle'=>$Dpedido,
+            'pedido'=>$pedido
+        ]);
     }
     /**
      * @Route("/modificar/{pedido}", name="pedido_modificar")
