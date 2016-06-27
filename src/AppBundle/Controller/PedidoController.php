@@ -132,11 +132,17 @@ class PedidoController extends Controller
             ->findOneBy(array('id' => $_SESSION['tipoProducto']));
         $producto = $em->getRepository('AppBundle:Producto')
             ->findBy(array('tipo' => $tipoProducto->getTipo()));
+
+        $total=0;
         if (isset($_SESSION['pedido'])) {  //Se muestra la cuenta con los productos que lleva seleccionados
             if ($_SESSION['pedido'] != '') {
                 $pedido = $_SESSION['pedido'];
+                for ($j = 0; $j < count($pedido); $j++) {
+                    $total = $total + ($pedido[$j][0]->getPrecio() * $pedido[$j][1]);
+                }
             }else{
                 $pedido = null;
+                $total=0;
             }
             $em = $this->getDoctrine()->getManager();
             $mesa = $em->getRepository('AppBundle:Mesa')->findOneBy(array('id' => 1));
@@ -149,6 +155,7 @@ class PedidoController extends Controller
             'producto' => $producto,
             'tipoProducto' => $tipoProducto,
             'usuarios' => $usuario,
+            'total'=>$total,
             'mesa' => $mesa,
             'pedido' => $pedido
         ]);

@@ -132,21 +132,17 @@ class DefaultController extends Controller
         if(isset($_SESSION['pedido'])){
             if($_SESSION['pedido']==''){
                 $pedido=null;
-                $total=null;
+                $total=0;
             }else {
                 $pedido = $_SESSION['pedido'];
 
-                $i = 0;
-                while (isset($_SESSION["pedido"][$i]) <> '') {
-                    for ($j = 0; $j <= $i; $j++) {
-                        $total = $total + ($pedido[$j][0]->getPrecio() * $pedido[$j][1]);
-                    }
-                    $i++;
+                for ($j = 0; $j < count($pedido); $j++) {
+                    $total = $total + ($pedido[$j][0]->getPrecio() * $pedido[$j][1]);
                 }
             }
         }else{    //Se muestra la cuenta sin pedidos.
             $pedido=null;
-            $total=null;
+            $total=0;
         }
         return $this->render('default/cuenta.html.twig',[
             'producto' => $producto,

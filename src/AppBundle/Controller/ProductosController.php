@@ -48,12 +48,16 @@ class ProductosController extends Controller
     public function verProductosAction(TipoProducto $tipoProducto)
     {
 
-        $session = $this->get('session');
+        $total=0;
 
         if(isset($_SESSION['pedido'])){
             if($_SESSION['pedido']!=''){
                 $pedido=$_SESSION['pedido'];
+                for ($j = 0; $j < count($pedido); $j++) {
+                    $total = $total + ($pedido[$j][0]->getPrecio() * $pedido[$j][1]);
+                }
             }else{
+                $total=0;
                 $pedido=null; //buscar los pedidos realizados y no pagados en la base de datos
             }
             $em = $this->getDoctrine()->getManager();
@@ -84,6 +88,7 @@ class ProductosController extends Controller
                     'producto' => $producto,
                     'tipoProducto'=>$tipoProducto,
                     'usuarios'=>$usuario,
+                    'total'=>$total,
                     'mesa'=>$mesa,
                     'pedido'=>$pedido
                 ]);
