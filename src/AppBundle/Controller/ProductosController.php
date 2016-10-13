@@ -29,7 +29,7 @@ class ProductosController extends Controller
         $usuario = $this->getUser();
         $producto = $em->getRepository('AppBundle:Producto')
             ->findAll();
-        $mesa=$em->getRepository('AppBundle:Mesa')->findOneBy(array('id'=>1));
+        $mesa=$em->getRepository('AppBundle:Mesa')->findOneBy($this->getUser()->getMesaOcupada());
         $tipoProducto="";
         $pedido=null;
 
@@ -61,13 +61,13 @@ class ProductosController extends Controller
                 $pedido=null; //buscar los pedidos realizados y no pagados en la base de datos
             }
             $em = $this->getDoctrine()->getManager();
-            $mesa=$em->getRepository('AppBundle:Mesa')->findOneBy(array('id'=>1));
+            $mesa=$em->getRepository('AppBundle:Mesa')->findOneBy($this->getUser()->getMesaOcupada());
 
 
         }else{    //Se muestra la cuenta sin pedidos.
 
             $em = $this->getDoctrine()->getManager();
-            $mesa=$em->getRepository('AppBundle:Mesa')->findOneBy(array('id'=>1));
+            $mesa=$em->getRepository('AppBundle:Mesa')->findOneBy($this->getUser()->getMesaOcupada());
             $pedido=null;
 
         }
