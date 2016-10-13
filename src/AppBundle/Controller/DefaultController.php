@@ -155,8 +155,7 @@ class DefaultController extends Controller
     public function cuentaAction()
     {
         $em = $this->getDoctrine()->getManager();
-        //cambiar mesa por defecto por una mesa especifica
-        $mesa=$em->getRepository('AppBundle:Mesa')->findOneBy(array('id'=>1));
+        $mesa=$em->getRepository('AppBundle:Mesa')->findOneById($this->getUser()->getMesaOcupada());
         $producto=new Producto();
         $total = 0;
         if(isset($_SESSION['pedido'])){
@@ -202,7 +201,7 @@ class DefaultController extends Controller
 
                 //creamos los detalles del pedido
 
-                $mesa = $em->getRepository('AppBundle:Mesa')->findOneBy(array('id' => 1));
+                $mesa = $em->getRepository('AppBundle:Mesa')->findOneById($this->getUser()->getMesaOcupada());
 
 
                 for ($i = 0; $i < count($pedido); $i++) {
@@ -234,14 +233,15 @@ class DefaultController extends Controller
                     var_dump($al);
                     var_dump('uno');*/
                 }
-            }else{
-                $pedido=null;
             }
+
             $em = $this->getDoctrine()->getManager();
-            $mesa=$em->getRepository('AppBundle:Mesa')->findOneBy(array('id'=>1));
+            $mesa=$em->getRepository('AppBundle:Mesa')->findOneById($this->getUser()->getMesaOcupada());
             $producto=new Producto();
             $_SESSION['pedido'] = '';
             $pedido=null;
+
+
             return $this->render('default/cuenta.html.twig',[
                 'producto' => $producto,
                 'mesa'=>$mesa,
@@ -250,7 +250,7 @@ class DefaultController extends Controller
             ]);
         }else{    //Se muestra la cuenta sin pedidos.
             $em = $this->getDoctrine()->getManager();
-            $mesa=$em->getRepository('AppBundle:Mesa')->findOneBy(array('id'=>1));
+            $mesa=$em->getRepository('AppBundle:Mesa')->findOneById($this->getUser()->getMesaOcupada());
             $producto=new Producto();
             $pedido=null;
             return $this->render('default/cuenta.html.twig',[

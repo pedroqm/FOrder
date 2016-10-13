@@ -145,13 +145,12 @@ class PedidoController extends Controller
                 $pedido = null;
                 $total=0;
             }
-            $em = $this->getDoctrine()->getManager();
-            $mesa = $em->getRepository('AppBundle:Mesa')->findOneBy(array('id' => 1));
         } else {    //Se muestra la cuenta sin pedidos.
-            $em = $this->getDoctrine()->getManager();
-            $mesa = $em->getRepository('AppBundle:Mesa')->findOneBy(array('id' => 1));
             $pedido = null;
         }
+
+        $em = $this->getDoctrine()->getManager();
+        $mesa = $em->getRepository('AppBundle:Mesa')->findOneById($this->getUser()->getMesaOcupada());
         return $this->render(':productos:ver_productos.html.twig', [
             'producto' => $producto,
             'tipoProducto' => $tipoProducto,

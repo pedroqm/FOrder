@@ -29,7 +29,7 @@ class ProductosController extends Controller
         $usuario = $this->getUser();
         $producto = $em->getRepository('AppBundle:Producto')
             ->findAll();
-        $mesa=$em->getRepository('AppBundle:Mesa')->findOneBy($this->getUser()->getMesaOcupada());
+        $mesa=$em->getRepository('AppBundle:Mesa')->findOneById($this->getUser()->getMesaOcupada());
         $tipoProducto="";
         $pedido=null;
 
@@ -60,28 +60,21 @@ class ProductosController extends Controller
                 $total=0;
                 $pedido=null; //buscar los pedidos realizados y no pagados en la base de datos
             }
-            $em = $this->getDoctrine()->getManager();
-            $mesa=$em->getRepository('AppBundle:Mesa')->findOneBy($this->getUser()->getMesaOcupada());
-
 
         }else{    //Se muestra la cuenta sin pedidos.
-
-            $em = $this->getDoctrine()->getManager();
-            $mesa=$em->getRepository('AppBundle:Mesa')->findOneBy($this->getUser()->getMesaOcupada());
             $pedido=null;
-
         }
 
-
+        $em = $this->getDoctrine()->getManager();
+        $mesa=$em->getRepository('AppBundle:Mesa')->findOneById($this->getUser()->getMesaOcupada());
 
         $usuario = $this->getUser();
 
-            $em = $this->getDoctrine()->getManager();
 
-            $producto = $em->getRepository('AppBundle:Producto')
+        $producto = $em->getRepository('AppBundle:Producto')
                 ->findBy(array('tipo' => $tipoProducto->getTipo()));
 
-            $_SESSION['tipoProducto']=$tipoProducto;
+        $_SESSION['tipoProducto']=$tipoProducto;
 
             if($usuario->getEsAdmin()==false){
                 return $this->render(':productos:ver_productos.html.twig', [
