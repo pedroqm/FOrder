@@ -91,7 +91,10 @@ class MesaController extends Controller
             $id->setCuenta(0);
             $id->setFactura($factura+$cuenta);
 
+            //ponemos el estado de la mesa a "libre"
+            $id->setEstado("libre");
             $em->persist($id);
+            //guardamos los cambios
             $em->flush();
 
 

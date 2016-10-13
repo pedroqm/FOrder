@@ -25,6 +25,8 @@
         <tr>
             <th>Nº Mesa</th>
             <th>Cuenta</th>
+            <th>Estado</th>
+
 
         </tr>
         </thead>
@@ -33,6 +35,7 @@
             <tr>
                 <td>{{ m.id }}</td>
                 <td>{{ m.cuenta }}€</td>
+                <td>{{ m.estado }}</td>
                 <td>
 
                     <form method="post" action="{{ path('pagado', {'id': m.id}) }}" >
