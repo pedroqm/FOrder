@@ -30,6 +30,12 @@ class Mesa
     protected $factura;
 
     /**
+     * @ORM\Column(type="string")
+     * @var string
+     */
+    protected $estado;
+
+    /**
      * @ORM\OneToMany(targetEntity="Pedido"
      * , mappedBy="mesaOcupada")
      *
@@ -161,5 +167,28 @@ class Mesa
     public function getUser()
     {
         return $this->user;
+    }
+
+    /**
+     * Set estado
+     *
+     * @param string $estado
+     * @return Mesa
+     */
+    public function setEstado($estado)
+    {
+        $this->estado = $estado;
+
+        return $this;
+    }
+
+    /**
+     * Get estado
+     *
+     * @return string 
+     */
+    public function getEstado()
+    {
+        return $this->estado;
     }
 }

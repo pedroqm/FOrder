@@ -8,18 +8,41 @@
  {% block content %}
      <h3>Bienvenido {{ usuarios.nombreUsuario }}</h3>
      <br/>
-     {% if tipoProducto %}
-         <div class="row">
-         {% for t in tipoProducto %}
+     {% if usuarios.esCliente == true %}
+         {% if usuarios.mesaOcupada == 0 %}
 
-             <form action="{{ path('ver_productos', { 'tipoProducto': t.id }) }}" method="post">
-                 <button class="btn btn-lg btn-primary btn-block" type="submit" name="ver_pro">{{ t.tipo }} </button>
-             </form>
+             {% if mesa %}
+                 <form action="{{ path('inicio')}}" method="post">
+                 <p>Seleccione la mesa</p>
 
-         {% endfor %}
-         </div>
-     {% else %}
-         <h2>No hay productos para mostrar</h2>
+                     <select name="Nmesa" class="form-control">
+                     {% for m in mesa %}
+                         {% if m.estado != "ocupado" %}
+                            <option value="{{ m.id }}" name="Nmesa2"><label>Mesa : {{ m.id }}  {{ m.estado }}</label></option>
+                         {% endif %}
+                     {% endfor %}
+                 </select>
+                     <button class="btn btn-success btn-block active" type="submit" name="ocupar" >Ocupar mesa</button>
+                 </form>
+
+             {% endif %}
+
+         {% else %}
+
+             {% if tipoProducto %}
+                 <div class="row">
+                 {% for t in tipoProducto %}
+
+                     <form action="{{ path('ver_productos', { 'tipoProducto': t.id }) }}" method="post">
+                         <button class="btn btn-lg btn-primary btn-block" type="submit" name="ver_pro">{{ t.tipo }} </button>
+                     </form>
+
+                 {% endfor %}
+                 </div>
+             {% else %}
+                 <h2>No hay productos para mostrar</h2>
+             {% endif %}
+         {% endif %}
      {% endif %}
 
      {% if usuarios.esCliente == true %}

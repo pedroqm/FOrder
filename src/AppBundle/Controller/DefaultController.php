@@ -45,6 +45,13 @@ class DefaultController extends Controller
      */
     public function loginAction()
     {
+        /**$helper = $this->get('security.authentication_utils');
+
+        return $this->render(':default:formulario.html.twig',
+            [
+                'ultimo_usuario' => $helper->getLastUsername(),
+                'error' => $helper->getLastAuthenticationError()
+            ]);*/
         return $this->render(':default:formulario.html.twig');
     }
     /**
@@ -76,34 +83,57 @@ class DefaultController extends Controller
     {
         $em = $this->getDoctrine()->getManager();
         $usuario = $this->getUser();
-        $cliente=$usuario->getEsCliente();
-        if($cliente){
-            $tipoProducto = $em->getRepository('AppBundle:TipoProducto')
-                ->findAll();
-            return $this->render(':default:inicio.html.twig', [
-                'tipoProducto' => $tipoProducto,
-                'usuarios'=> $usuario
-            ]);
-        }else{
-            $camarero=$usuario->getEsCamarero();
-            if($camarero){
-                $em = $this->getDoctrine()->getManager();
-                $mesa = $em->getRepository('AppBundle:Mesa')
-                    ->findAll();
-                $pedidoRealizado=$em->getRepository('AppBundle:Pedido')->findBy(array('estado'=>'pendiente'));
-                return $this->render(':mesa:listar_mesa.html.twig', [
-                    'mesa' => $mesa,
-                    'pedido'=>$pedidoRealizado
-                ]);
-            }else{
+        $cliente = $usuario->getEsCliente();
+        $mesas = $em->getRepository('AppBundle:Mesa')
+            ->findAll();
+
+        if (isset($_POST['ocupar'])) {
+
+            $usuario = $this->getUser()->setMesaOcupada($_POST['Nmesa']);
+            $mesa=$em->getRepository('AppBundle:Mesa')->findOneById($_POST['Nmesa'])->setEstado("ocupado");
+            $em->persist($usuario);
+            $em->persist($mesa);
+            // Guardar los cambios
+            $em->flush();
+
+        }
+
+            if ($cliente) {
                 $tipoProducto = $em->getRepository('AppBundle:TipoProducto')
                     ->findAll();
-                return $this->render(':default:inicio.html.twig',[
+                $produc = $em->getRepository('AppBundle:Producto')->findby(array('id' => 4));
+
+                // $prueba=$em->getRepository('AppBundle:Producto')->findBy(array('ingredientes'=> $produc->getIngredientes()));
+                $prueba = $em->getRepository('AppBundle:Ingredientes')->findBy(array('nombreProducto' => 'bocadillo de lomo')); //funciona
+                //$produc = $em->getRepository('AppBundle:Producto')->findby(array('id'=>4));
+                // $prueba=$em->getRepository('AppBundle:Ingredientes')->findBy(array('producto'=>getProducto(1)));
+
+                return $this->render(':default:inicio.html.twig', [
                     'tipoProducto' => $tipoProducto,
-                    'usuarios'=> $usuario
+                    'mesa' => $mesas,
+                    'prueba' => $prueba,
+                    'usuarios' => $usuario
                 ]);
+            } else {
+                $camarero = $usuario->getEsCamarero();
+                if ($camarero) {
+                    $em = $this->getDoctrine()->getManager();
+
+                    $pedidoRealizado = $em->getRepository('AppBundle:Pedido')->findBy(array('estado' => 'pendiente'));
+                    return $this->render(':mesa:listar_mesa.html.twig', [
+                        'mesa' => $mesas,
+                        'pedido' => $pedidoRealizado
+                    ]);
+                } else {
+                    $tipoProducto = $em->getRepository('AppBundle:TipoProducto')
+                        ->findAll();
+                    return $this->render(':default:inicio.html.twig', [
+                        'tipoProducto' => $tipoProducto,
+                        'mesa' => $mesas,
+                        'usuarios' => $usuario
+                    ]);
+                }
             }
-        }
     }
     /**
      * @Route("/pedidoManual", name="pedidoManual")

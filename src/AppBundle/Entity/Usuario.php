@@ -96,6 +96,14 @@ class Usuario implements UserInterface
     protected $nombreUsuario;
 
     /**
+     * @ORM\Column(type="decimal")
+     *
+     * @var decimal
+     *
+     */
+    protected $mesaOcupada; //opcion 0 si no ocupa mesa
+
+    /**
      * @ORM\Column(type="boolean", options={"default"=true})
      *
      * @var boolean
@@ -501,5 +509,28 @@ class Usuario implements UserInterface
     public function eraseCredentials()
     {
         // TODO: Implement eraseCredentials() method.
+    }
+
+    /**
+     * Set mesaOcupada
+     *
+     * @param string $mesaOcupada
+     * @return Usuario
+     */
+    public function setMesaOcupada($mesaOcupada)
+    {
+        $this->mesaOcupada = $mesaOcupada;
+
+        return $this;
+    }
+
+    /**
+     * Get mesaOcupada
+     *
+     * @return string 
+     */
+    public function getMesaOcupada()
+    {
+        return $this->mesaOcupada;
     }
 }
