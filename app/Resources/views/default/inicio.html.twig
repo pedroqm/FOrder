@@ -17,7 +17,7 @@
 
                      <select name="Nmesa" class="form-control">
                      {% for m in mesa %}
-                         {% if m.estado != "ocupado" %}
+                         {% if m.estado != "ocupado" and m.estado != "cuenta pedida"%}
                             <option value="{{ m.id }}" name="Nmesa2"><label>Mesa : {{ m.id }}  {{ m.estado }}</label></option>
                          {% endif %}
                      {% endfor %}

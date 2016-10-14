@@ -103,10 +103,21 @@ class DefaultController extends Controller
                     ->findAll();
                 $produc = $em->getRepository('AppBundle:Producto')->findby(array('id' => 4));
 
+
+
+                
+
+
                 // $prueba=$em->getRepository('AppBundle:Producto')->findBy(array('ingredientes'=> $produc->getIngredientes()));
                 $prueba = $em->getRepository('AppBundle:Ingredientes')->findBy(array('nombreProducto' => 'bocadillo de lomo')); //funciona
                 //$produc = $em->getRepository('AppBundle:Producto')->findby(array('id'=>4));
                 // $prueba=$em->getRepository('AppBundle:Ingredientes')->findBy(array('producto'=>getProducto(1)));
+
+
+
+
+
+
 
                 return $this->render(':default:inicio.html.twig', [
                     'tipoProducto' => $tipoProducto,
@@ -191,17 +202,19 @@ class DefaultController extends Controller
                 $em = $this->getDoctrine()->getManager();
                 $pedido = $_SESSION['pedido'];
 
+                $mesa = $em->getRepository('AppBundle:Mesa')->findOneById($this->getUser()->getMesaOcupada());
+
                 //creamos un nuevo pedido
                 $pedidoRealizado = new Pedido();
                 $pedidoRealizado->setEstado('pendiente');
                 $pedidoRealizado->setIncidencias('Sin incidencias');
+                $pedidoRealizado->setMesaOcupada($mesa);
                 $em->persist($pedidoRealizado);
                 // Guardar los cambios
                 $em->flush();
 
                 //creamos los detalles del pedido
 
-                $mesa = $em->getRepository('AppBundle:Mesa')->findOneById($this->getUser()->getMesaOcupada());
 
 
                 for ($i = 0; $i < count($pedido); $i++) {
@@ -260,6 +273,39 @@ class DefaultController extends Controller
                 'pedido'=>$pedido
             ]);
         }
+    }
+
+    /**
+     * @Route("/pagar_cuenta", name="pagar")
+     */
+    public function PagarAction()
+    {
+        $total=0;
+        $em = $this->getDoctrine()->getManager();
+        var_dump($this->getUser()->getMesaOcupada());
+        $mesa=$em->getRepository('AppBundle:Mesa')->findOneById($this->getUser()->getMesaOcupada())->setEstado("cuenta pedida");
+        var_dump($mesa->getEstado());
+        $em->persist($mesa);
+        // Guardar los cambios
+        $em->flush();
+
+        $usuario=$this->getUser()->setMesaOcupada(0);
+        $em->persist($usuario);
+
+        $em->flush();
+
+
+        $mesa=$em->getRepository('AppBundle:Mesa')->findOneById($this->getUser()->getMesaOcupada());
+        $producto=new Producto();
+        $pedido=null;
+
+
+        return $this->render('default/cuenta.html.twig',[
+            'producto' => $producto,
+            'mesa'=>$mesa,
+            'total'=>$total,
+            'pedido'=>$pedido
+        ]);
     }
     /**
      * @Route("/salir", name="salir")
