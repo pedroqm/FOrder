@@ -58,8 +58,35 @@
      {% endif %}
 
      {% if usuarios.esCamarero == true %}
+
+             {% if mesa %}
+             <form action="{{ path('inicio')}}" method="post">
+                 <p>Seleccione la mesa</p>
+
+                 <select name="Nmesa" class="form-control">
+                     {% for m in mesa %}
+                             <option value="{{ m.id }}" name="Nmesa2"><label>Mesa : {{ m.id }}  {{ m.estado }}</label></option>
+                     {% endfor %}
+                 </select>
+                 <button class="btn btn-success btn-block active" type="submit" name="ocupar" >Ocupar mesa</button>
+             </form>
+
+         {% endif %}
+         {% if tipoProducto %}
+             <div class="row">
+                 {% for t in tipoProducto %}
+
+                     <form action="{{ path('ver_productos', { 'tipoProducto': t.id }) }}" method="post">
+                         <button class="btn btn-lg btn-primary btn-block" type="submit" name="ver_pro">{{ t.tipo }} </button>
+                     </form>
+
+                 {% endfor %}
+             </div>
+         {% else %}
+             <h2>No hay productos para mostrar</h2>
+         {% endif %}
          <div class="row">
-             <a href="{{ path('inicio') }}" role="button" class="btn btn-success btn-block active" id="a">Ver las mesas y pedidos</a>
+             <a href="{{ path('inicioCamarero') }}" role="button" class="btn btn-success btn-block active" id="a">Ver las mesas y pedidos</a>
          </div>
      {% endif %}
  {% endblock %}

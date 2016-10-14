@@ -32,7 +32,6 @@ class ProductosController extends Controller
         $mesa=$em->getRepository('AppBundle:Mesa')->findOneById($this->getUser()->getMesaOcupada());
         $tipoProducto="";
         $pedido=null;
-
         return $this->render(':productos:ver_productos.html.twig', [
             'producto' => $producto,
             'tipoProducto'=>$tipoProducto,

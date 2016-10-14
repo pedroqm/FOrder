@@ -105,7 +105,7 @@ class DefaultController extends Controller
 
 
 
-                
+
 
 
                 // $prueba=$em->getRepository('AppBundle:Producto')->findBy(array('ingredientes'=> $produc->getIngredientes()));
@@ -128,13 +128,26 @@ class DefaultController extends Controller
             } else {
                 $camarero = $usuario->getEsCamarero();
                 if ($camarero) {
-                    $em = $this->getDoctrine()->getManager();
 
-                    $pedidoRealizado = $em->getRepository('AppBundle:Pedido')->findBy(array('estado' => 'pendiente'));
-                    return $this->render(':mesa:listar_mesa.html.twig', [
-                        'mesa' => $mesas,
-                        'pedido' => $pedidoRealizado
-                    ]);
+
+                    if($this->getUser()->getMesaOcupada()==0){
+                        $em = $this->getDoctrine()->getManager();
+                        $pedidoRealizado = $em->getRepository('AppBundle:Pedido')->findBy(array('estado' => 'pendiente'));
+                        return $this->render(':mesa:listar_mesa.html.twig', [
+                            'mesa' => $mesas,
+                            'pedido' => $pedidoRealizado
+                        ]);
+                    }else{
+                        $tipoProducto = $em->getRepository('AppBundle:TipoProducto')
+                            ->findAll();
+
+                        return $this->render(':default:inicio.html.twig', [
+                            'tipoProducto' => $tipoProducto,
+                            'mesa' => $mesas,
+                            'usuarios' => $usuario
+                        ]);
+                    }
+
                 } else {
                     $tipoProducto = $em->getRepository('AppBundle:TipoProducto')
                         ->findAll();
@@ -146,6 +159,26 @@ class DefaultController extends Controller
                 }
             }
     }
+
+    /**
+     * @Route("/camarero", name="inicioCamarero")
+     */
+    public function inicioCamareroAction()
+    {
+        $em = $this->getDoctrine()->getManager();
+
+        $usuario = $this->getUser();
+        $mesas = $em->getRepository('AppBundle:Mesa')
+            ->findAll();
+        $this->getUser()->setMesaOcupada(0);
+        $em->flush();
+
+        $pedidoRealizado = $em->getRepository('AppBundle:Pedido')->findBy(array('estado' => 'pendiente'));
+        return $this->render(':mesa:listar_mesa.html.twig', [
+            'mesa' => $mesas,
+            'pedido' => $pedidoRealizado
+        ]);
+    }
     /**
      * @Route("/pedidoManual", name="pedidoManual")
      */
@@ -155,8 +188,11 @@ class DefaultController extends Controller
         $usuario = $this->getUser();
         $tipoProducto = $em->getRepository('AppBundle:TipoProducto')
             ->findAll();
+        $mesas = $em->getRepository('AppBundle:Mesa')
+            ->findAll();
         return $this->render(':default:inicio.html.twig', [
             'tipoProducto' => $tipoProducto,
+            'mesa'=>$mesas,
             'usuarios'=> $usuario
         ]);
     }
@@ -216,7 +252,6 @@ class DefaultController extends Controller
                 //creamos los detalles del pedido
 
 
-
                 for ($i = 0; $i < count($pedido); $i++) {
                     $producto = $em->getRepository('AppBundle:Producto')->findOneBy(array('id' => $pedido[$i][0]));
 
@@ -239,6 +274,9 @@ class DefaultController extends Controller
 
                     // Guardar los cambios
                     $em->flush();
+
+                    echo "<script>alert('Pedido realizado')</script>";
+
 
                     //descontamos los productos en el almacen
                     /*
