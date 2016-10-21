@@ -132,7 +132,7 @@ class DefaultController extends Controller
 
                     if($this->getUser()->getMesaOcupada()==0){
                         $em = $this->getDoctrine()->getManager();
-                        $pedidoRealizado = $em->getRepository('AppBundle:Pedido')->findBy(array('estado' => 'pendiente'));
+                        $pedidoRealizado = $em->getRepository('AppBundle:Pedido')->findBy(array('estado' => array('pendiente','preparado')));
                         return $this->render(':mesa:listar_mesa.html.twig', [
                             'mesa' => $mesas,
                             'pedido' => $pedidoRealizado
@@ -173,7 +173,8 @@ class DefaultController extends Controller
         $this->getUser()->setMesaOcupada(0);
         $em->flush();
 
-        $pedidoRealizado = $em->getRepository('AppBundle:Pedido')->findBy(array('estado' => 'pendiente'));
+        $pedidoRealizado = $em->getRepository('AppBundle:Pedido')->findBy(array('estado' => array('pendiente','preparado')));
+
         return $this->render(':mesa:listar_mesa.html.twig', [
             'mesa' => $mesas,
             'pedido' => $pedidoRealizado
@@ -261,6 +262,8 @@ class DefaultController extends Controller
                     $newPedido->setIdPedido($pedidoRealizado->getId());
                     $newPedido->setNombreProducto($pedido[$i][0]->getNombreProducto());
                     $newPedido->setCantidad($pedido[$i][1]);
+                    //$newPedido->setDpedido($pedidoRealizado);
+        //var_dump($pedidoRealizado);
                     $em->persist($newPedido);
                     // Guardar los cambios
                     $em->flush();

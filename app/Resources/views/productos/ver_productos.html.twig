@@ -10,7 +10,8 @@
                 Pagar
             </a>
         </p>
-    {% endif %}
+
+
     {% if pedido %}
 
 
@@ -39,6 +40,7 @@
             </tbody>
         </table>
     {% endif %}
+
     {% if producto %}
 
            <table>
@@ -77,4 +79,7 @@
     <a href="{{ path('inicio') }}" class="btn btn-success btn-lg">
         Seguir pidiendo
     </a>
+    {% else %}
+        <h2>No hay mesa seleccionada</h2>
+    {% endif %}
 {% endblock %}

@@ -181,15 +181,33 @@ class PedidoController extends Controller
     public function listoAction(DetallePedido $deP)
     {
         $em = $this->getDoctrine()->getManager();
+        $pedido=$em->getRepository('AppBundle:Pedido')->findOneBy(array('id'=>$deP->getIdPedido()));
+
+        $todoPreparado=false;
+
+        // Recorremos todos los registros de detalle pedido, y si encontramos todos los registros listos cambiamos el estado del pedido
+        for($i=0; $i<=count($deP)-1 ; $i++){
+            if($deP->getCantidad()==0){
+                $todoPreparado=true;
+            }else{
+                $todoPreparado=false;
+            }
+        }
+
+        if($todoPreparado){
+            $pedido->setEstado('preparado');
+            $em->persist($pedido);
+            $em->flush();
+        }
+
         $deP->setCantidad(0);
         // Asegurarse de que se tiene en cuenta el nuevo pedido
         $em->persist($deP);
         // Guardar los cambios
         $em->flush();
 
-        $pedido=$em->getRepository('AppBundle:DetallePedido')->findOneBy(array('id'=>$deP->getIdPedido()));
+        $Dpedido=$em->getRepository('AppBundle:DetallePedido')->findBy(array('idPedido'=>$pedido->getId()));
 
-        $Dpedido=$em->getRepository('AppBundle:DetallePedido')->findAll();
         return $this->render(':mesa:detalle_pedido.html.twig', [
             'detalle'=>$Dpedido,
             'pedido'=>$pedido

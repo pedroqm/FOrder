@@ -3,7 +3,9 @@
 {% block title %}Mesa{% endblock %}
 
 {% block content %}
-    <h1 class="well">Detalle pedido {{ pedido.id }}</h1>
+    {% if pedido %}
+        <h1 class="well">Detalle pedido {{ pedido.id }}</h1>
+
     {% if detalle %}
 
             <table class="table table-bordered table-condensed table-hover table-striped">
@@ -37,9 +39,15 @@
    {% endif %}
 
 
+        <a href="{{ path('inicio') }}" class="btn btn-success btn-lg">
+            Volver
+        </a>
 
-    <a href="{{ path('inicio') }}" class="btn btn-success btn-lg">
-        Volver
-    </a>
     <a href="{{ path('terminado', {'pedido': pedido.id}) }}" class="btn btn-success btn-lg">Terminado</a>
+        {% else %}
+            <a href="{{ path('inicio') }}" class="btn btn-success btn-lg">
+                Volver
+            </a>
+        <h2>No hay pedido</h2>
+    {% endif %}
 {% endblock %}

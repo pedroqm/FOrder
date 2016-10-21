@@ -18,6 +18,7 @@ use Sensio\Bundle\FrameworkExtraBundle\Configuration\Security;
  */
 class MesaController extends Controller
 {
+
     /**
      * @Route("/listar", name="mesa_listar")
      */
@@ -28,7 +29,7 @@ class MesaController extends Controller
         $mesa = $em->getRepository('AppBundle:Mesa')
             ->findAll();
 
-        $pedidoRealizado=$em->getRepository('AppBundle:Pedido')->findBy(array('estado'=>'pendiente'));
+        $pedidoRealizado=$em->getRepository('AppBundle:Pedido')->findBy(array('estado'=>array('pendiente','preparado')));
 
         return $this->render(':mesa:listar_mesa.html.twig', [
             'mesa' => $mesa,
@@ -68,8 +69,7 @@ class MesaController extends Controller
     {
         $em = $this->getDoctrine()->getManager();
 
-        $Dpedido=$em->getRepository('AppBundle:DetallePedido')->findAll();
-
+        $Dpedido=$em->getRepository('AppBundle:DetallePedido')->findBy(array('idPedido'=>$pedido->getId()));
 
         return $this->render(':mesa:detalle_pedido.html.twig', [
             'detalle'=>$Dpedido,
