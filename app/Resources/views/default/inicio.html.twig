@@ -52,6 +52,19 @@
      {% endif %}
 
      {% if usuarios.esAdmin == true %}
+         {% if tipoProducto %}
+             <div class="row">
+                 {% for t in tipoProducto %}
+
+                     <form action="{{ path('ver_productos', { 'tipoProducto': t.id }) }}" method="post">
+                         <button class="btn btn-lg btn-primary btn-block" type="submit" name="ver_pro">{{ t.tipo }} </button>
+                     </form>
+
+                 {% endfor %}
+             </div>
+         {% else %}
+             <h2>No hay productos para mostrar</h2>
+         {% endif %}
          <div class="row">
              <a href="{{ path('administracion') }}" role="button" class="btn btn-success btn-block active" id="a">Ir al panel de administracion</a>
          </div>
