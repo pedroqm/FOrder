@@ -44,7 +44,7 @@ class Mesa
     protected $pedidos;
     /**
      * @ORM\OneToOne(targetEntity="Usuario",
-     *  mappedBy="mesa")
+     *  inversedBy="mesa")
      *
      * @var Usuario
      */

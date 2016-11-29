@@ -124,12 +124,25 @@ class Usuario implements UserInterface
      */
     protected $esCamarero;
     /**
-     * @ORM\OneToOne(targetEntity="Mesa"
-     * , inversedBy="user")
+     * @ORM\OneToOne(targetEntity="Mesa",
+     * mappedBy="user")
      *
      * @var Mesa
      */
     protected $mesa;
+
+    /**
+     * @ORM\OneToMany(targetEntity="FacturaPagada",
+     * mappedBy="usuario")
+     * @var FacturaPagada
+     */
+    protected $FacturaP;
+    /**
+     * @ORM\OneToMany(targetEntity="FacturaNoPagada",
+     * mappedBy="usuario")
+     * @var FacturaNoPagada
+     */
+    protected $FacturaNoP;
 
 
     /**
@@ -532,5 +545,71 @@ class Usuario implements UserInterface
     public function getMesaOcupada()
     {
         return $this->mesaOcupada;
+    }
+
+    /**
+     * Add FacturaP
+     *
+     * @param \AppBundle\Entity\FacturaPagada $facturaP
+     * @return Usuario
+     */
+    public function addFacturaP(\AppBundle\Entity\FacturaPagada $facturaP)
+    {
+        $this->FacturaP[] = $facturaP;
+
+        return $this;
+    }
+
+    /**
+     * Remove FacturaP
+     *
+     * @param \AppBundle\Entity\FacturaPagada $facturaP
+     */
+    public function removeFacturaP(\AppBundle\Entity\FacturaPagada $facturaP)
+    {
+        $this->FacturaP->removeElement($facturaP);
+    }
+
+    /**
+     * Get FacturaP
+     *
+     * @return \Doctrine\Common\Collections\Collection 
+     */
+    public function getFacturaP()
+    {
+        return $this->FacturaP;
+    }
+
+    /**
+     * Add FacturaNoP
+     *
+     * @param \AppBundle\Entity\FacturaNoPagada $facturaNoP
+     * @return Usuario
+     */
+    public function addFacturaNoP(\AppBundle\Entity\FacturaNoPagada $facturaNoP)
+    {
+        $this->FacturaNoP[] = $facturaNoP;
+
+        return $this;
+    }
+
+    /**
+     * Remove FacturaNoP
+     *
+     * @param \AppBundle\Entity\FacturaNoPagada $facturaNoP
+     */
+    public function removeFacturaNoP(\AppBundle\Entity\FacturaNoPagada $facturaNoP)
+    {
+        $this->FacturaNoP->removeElement($facturaNoP);
+    }
+
+    /**
+     * Get FacturaNoP
+     *
+     * @return \Doctrine\Common\Collections\Collection 
+     */
+    public function getFacturaNoP()
+    {
+        return $this->FacturaNoP;
     }
 }
