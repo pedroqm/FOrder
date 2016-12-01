@@ -3,8 +3,10 @@
 namespace AppBundle\Controller;
 
 use AppBundle\Entity\DetallePedido;
+use AppBundle\Entity\FacturaPagada;
 use AppBundle\Entity\Mesa;
 use AppBundle\Entity\Pedido;
+use AppBundle\Entity\Usuario;
 use AppBundle\Form\Type\MesaType;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Route;
 use Symfony\Bundle\FrameworkBundle\Controller\Controller;
@@ -46,7 +48,8 @@ class MesaController extends Controller
         $mesa = new mesa();
 
         $mesa->setCuenta(0)
-            ->setFactura(0);
+            ->setFactura(0)
+            ->setEstado("libre");
 
         // Obtener el EntityManager
         $em = $this->getDoctrine()->getManager();
@@ -83,9 +86,11 @@ class MesaController extends Controller
     {
 
         if(isset($_POST['pagar'])){
+
             $em = $this->getDoctrine()->getManager();
             $factura=$id->getFactura();
             $cuenta=$id->getCuenta();
+            $cliente=$id->getUser();
 
             //sumamos la cuenta a la factura de la mesa
             $id->setCuenta(0);
@@ -93,6 +98,76 @@ class MesaController extends Controller
 
             //ponemos el estado de la mesa a "libre"
             $id->setEstado("libre");
+
+            $em->persist($id);
+            //guardamos los cambios
+            $em->flush();
+
+            if($cliente) {
+                //ponemos la mesa libre
+                $usuario = $em->getRepository('AppBundle:Usuario')->findById($cliente);
+                $usuario[0]->setMesaOcupada(0);
+
+                $em->persist($usuario[0]);
+                $em->flush();
+
+
+                //poner las facturas en facturas pagadas
+                $facturas = $em->getRepository('AppBundle:FacturaNoPagada')->findBy(array('usuario' => $cliente));
+
+                if ($facturas) {
+
+                    while ($facturas) {
+                        $facturaPagada = new FacturaPagada();
+                        $facturaPagada->setUsuario($cliente);
+                        $facturaPagada->setHora(new \DateTime());
+                        $facturaPagada->setIdPedido($facturas[0]->getIdPedido());
+
+                        $em->persist($facturaPagada);
+                        $em->flush();
+
+                        $em->remove($facturas[0]);
+                        $em->flush();
+
+
+                        $facturas = $em->getRepository('AppBundle:FacturaNoPagada')->findBy(array('usuario' => $cliente));
+                    };
+                }
+
+
+            }
+
+            //quitamos el usuario de la mesa
+            $id->setUser(null);
+            $em->persist($id);
+            //guardamos los cambios
+            $em->flush();
+
+            return new RedirectResponse(
+                $this->generateUrl('mesa_listar')
+            );
+        }
+    }
+    /**
+     * @Route("/NOpagado/{id}", name="NOpagado"), methods={'GET', 'POST'}
+     */
+    public function NOpagadoAction(Mesa $id)
+    {
+
+        if(isset($_POST['SinPagar'])){
+            $em = $this->getDoctrine()->getManager();
+            $factura=$id->getFactura();
+            $cuenta=$id->getCuenta();
+
+
+            //sumamos la cuenta a la factura de la mesa
+            $id->setCuenta(0);
+            $id->setFactura($factura+$cuenta);
+
+
+            //ponemos el estado de la mesa a "libre"
+            $id->setEstado("libre");
+            $id->setUser(null);
             $em->persist($id);
             //guardamos los cambios
             $em->flush();
@@ -148,7 +223,6 @@ class MesaController extends Controller
             $em = $this->getDoctrine()->getManager();
            //cambiar estado de la cuenta
             $em->flush();
-            $this->addFlash('success', 'Mesa eliminada de forma correcta');
 
 
             // Redirigir al usuario a la lista

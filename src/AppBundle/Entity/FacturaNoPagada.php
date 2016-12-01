@@ -48,28 +48,6 @@ class FacturaNoPagada
         return $this->id;
     }
 
-    /**
-     * Set idDetallePedido
-     *
-     * @param integer $idDetallePedido
-     * @return FacturaNoPagada
-     */
-    public function setIdDetallePedido($idDetallePedido)
-    {
-        $this->idDetallePedido = $idDetallePedido;
-
-        return $this;
-    }
-
-    /**
-     * Get idDetallePedido
-     *
-     * @return integer 
-     */
-    public function getIdDetallePedido()
-    {
-        return $this->idDetallePedido;
-    }
 
     /**
      * Set hora

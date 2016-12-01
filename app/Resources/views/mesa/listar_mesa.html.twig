@@ -41,7 +41,9 @@
                     <form method="post" action="{{ path('pagado', {'id': m.id}) }}" >
                         <button class="btn btn-info btn-sm" type="submit" name="pagar">Pagado </button>
                     </form>
-
+                    <form method="post" action="{{ path('NOpagado', {'id': m.id}) }}" >
+                        <button class="btn btn-danger btn-sm" type="submit" name="SinPagar">No Pagado </button>
+                    </form>
 
                 </td>
                 <td>

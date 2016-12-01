@@ -1,6 +1,7 @@
 <?php
 namespace AppBundle\Controller;
 use AppBundle\Entity\DetallePedido;
+use AppBundle\Entity\FacturaNoPagada;
 use AppBundle\Entity\Mesa;
 use AppBundle\Entity\Producto;
 use AppBundle\Entity\Pedido;
@@ -18,8 +19,7 @@ class DefaultController extends Controller
     public function instalarAction()
     {
         $em = $this->getDoctrine()->getManager();
-        $usu = $em->getRepository('AppBundle:Usuario')
-            ->findOneById(1);
+        $usu = $em->getRepository('AppBundle:Usuario')->findOneBy(array('id'=>1));
         if(!$usu){
             $usuario= new Usuario();
             $usuario->setNombreUsuario('admin');
@@ -91,6 +91,7 @@ class DefaultController extends Controller
 
             $usuario = $this->getUser()->setMesaOcupada($_POST['Nmesa']);
             $mesa=$em->getRepository('AppBundle:Mesa')->findOneById($_POST['Nmesa'])->setEstado("ocupado");
+            $mesa->setUser($this->getUser());
             $em->persist($usuario);
             $em->persist($mesa);
             // Guardar los cambios
@@ -101,11 +102,6 @@ class DefaultController extends Controller
             if ($cliente) {
                 $tipoProducto = $em->getRepository('AppBundle:TipoProducto')
                     ->findAll();
-                $produc = $em->getRepository('AppBundle:Producto')->findby(array('id' => 4));
-
-
-
-
 
 
                 // $prueba=$em->getRepository('AppBundle:Producto')->findBy(array('ingredientes'=> $produc->getIngredientes()));
@@ -122,14 +118,12 @@ class DefaultController extends Controller
                 return $this->render(':default:inicio.html.twig', [
                     'tipoProducto' => $tipoProducto,
                     'mesa' => $mesas,
-                    'prueba' => $prueba,
+                    'prueba' => $prueba, //---------------------------------------------------------------------------
                     'usuarios' => $usuario
                 ]);
             } else {
                 $camarero = $usuario->getEsCamarero();
                 if ($camarero) {
-
-
                     if($this->getUser()->getMesaOcupada()==0){
                         $em = $this->getDoctrine()->getManager();
                         $pedidoRealizado = $em->getRepository('AppBundle:Pedido')->findBy(array('estado' => array('pendiente','preparado')));
@@ -250,6 +244,15 @@ class DefaultController extends Controller
                 // Guardar los cambios
                 $em->flush();
 
+                //creamos una factura
+                $factura= new FacturaNoPagada();
+                $factura->setHora(new \DateTime());
+                $factura->setIdPedido($pedidoRealizado->getId());
+                $factura->setUsuario($this->getUser());
+                $em->persist($factura);
+                // Guardar los cambios
+                $em->flush();
+
                 //creamos los detalles del pedido
 
 
@@ -262,8 +265,6 @@ class DefaultController extends Controller
                     $newPedido->setIdPedido($pedidoRealizado->getId());
                     $newPedido->setNombreProducto($pedido[$i][0]->getNombreProducto());
                     $newPedido->setCantidad($pedido[$i][1]);
-                    //$newPedido->setDpedido($pedidoRealizado);
-        //var_dump($pedidoRealizado);
                     $em->persist($newPedido);
                     // Guardar los cambios
                     $em->flush();
@@ -278,7 +279,7 @@ class DefaultController extends Controller
                     // Guardar los cambios
                     $em->flush();
 
-                    echo "<script>alert('Pedido realizado')</script>";
+
 
 
                     //descontamos los productos en el almacen
@@ -287,6 +288,12 @@ class DefaultController extends Controller
                     var_dump($al);
                     var_dump('uno');*/
                 }
+
+                $this->addFlash(
+                    'notice',
+                    'Pedido realizado!'
+                );
+
             }
 
             $em = $this->getDoctrine()->getManager();
@@ -323,20 +330,12 @@ class DefaultController extends Controller
     {
         $total=0;
         $em = $this->getDoctrine()->getManager();
-        var_dump($this->getUser()->getMesaOcupada());
-        $mesa=$em->getRepository('AppBundle:Mesa')->findOneById($this->getUser()->getMesaOcupada())->setEstado("cuenta pedida");
-        var_dump($mesa->getEstado());
+        $mesa=$em->getRepository('AppBundle:Mesa')->findOneById($this->getUser()->getMesaOcupada());
+        $mesa->setEstado("cuenta pedida");
         $em->persist($mesa);
         // Guardar los cambios
         $em->flush();
 
-        $usuario=$this->getUser()->setMesaOcupada(0);
-        $em->persist($usuario);
-
-        $em->flush();
-
-
-        $mesa=$em->getRepository('AppBundle:Mesa')->findOneById($this->getUser()->getMesaOcupada());
         $producto=new Producto();
         $pedido=null;
 
