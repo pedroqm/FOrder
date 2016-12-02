@@ -222,6 +222,75 @@ class DefaultController extends Controller
             'pedido'=>$pedido
         ]);
     }
+
+    /**
+    * @Route("/ver_cuenta", name="ver_cuenta")
+    */
+    public function VerCuentaAction()
+    {
+        $em = $this->getDoctrine()->getManager();
+        $factura=$em->getRepository('AppBundle:FacturaNoPagada')->findBy(array('usuario'=>$this->getUser()));
+        $mesa=$em->getRepository('AppBundle:Mesa')->findOneById($this->getUser()->getMesaOcupada());
+
+        //creamos un array con los pedidos que tiene el cliente en la factura
+        $arrayPedidos=array();
+        $i=0;
+        foreach($factura as $f){
+
+            $arrayPedidos[$i]=$f->getIdPedido();
+            $i++;
+    }
+        //creamos un array con los detalles delpedido para que no haya duplicados
+
+
+        $arrayDetallePedido=array();
+
+        $j=0;
+        $i=0;
+        $z=0;
+        $cantidad=0;
+
+        do{
+
+            $dpedido=$em->getRepository('AppBundle:DetallePedido')->findBy(array('idPedido'=>$arrayPedidos[$j]));
+            //var_dump($dpedido); //bien
+
+
+                if(!$arrayDetallePedido){
+                    $arrayDetallePedido[$j] = $dpedido;
+                    //var_dump($arrayDetallePedido[0][0]->getCantidad());  //bien
+                }else{
+              $arrayDetallePedido[$j] = $dpedido;
+                //recorremos los pedidos que tenga el cliente y comprobamos si el producto está en dpedido
+                  /*  for ($z = 0; $z < count($arrayDetallePedido); $z++) {
+                        // Si el Id pedido es = a IdPedido de DetallePedido
+                        var_dump($arrayPedidos[$j]);
+                        var_dump($arrayDetallePedido[$z][0]->getIdPedido());
+                        if ($arrayPedidos[$j] == $arrayDetallePedido[$z][0]->getIdPedido()) {
+                            var_dump("iguales");
+                            $arrayDetallePedido[$j] = $dpedido;
+                            $cantidad = $arrayDetallePedido[$z][0]->getCantidad();
+                            //var_dump($cantidad);
+                            $arrayDetallePedido[$z][0]->setCantidad($dpedido[0]->getCantidad() + $cantidad);
+                            //var_dump($arrayDetallePedido[$z][0]->getCantidad());
+                        } else {
+                            $arrayDetallePedido[$j] = $dpedido;
+                        }
+                    }*/
+                }
+
+
+        $j++;
+        }while($j<count($arrayPedidos));
+
+
+        return $this->render('default/VerCuenta.html.twig',[
+            'factura' => $factura,
+            'mesa'=>$mesa,
+            'dpedido'=>$arrayDetallePedido
+
+        ]);
+    }
     /**
      * @Route("/realizar_pedido", name="realizar_pedido")
      */

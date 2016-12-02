@@ -1,0 +1,44 @@
+{% extends '::index.html.twig' %}
+{% block title %}Cuenta{% endblock %}
+ {% block content %}
+
+  <h2 class="well">Cuenta</h2>
+
+  {% if mesa %}
+      <p>Mesa {{ mesa.id }}</p>
+             <p>Su cuenta actual es de : {{ mesa.cuenta }} €
+                  <a href="{{ path('pagar') }}" class="btn btn-success btn-lg">
+                      Pedir la cuenta
+                  </a>
+
+             </p>
+    {% endif %}
+  {% if factura %}
+
+
+          <table class="table table-bordered table-condensed table-hover table-striped">
+              <thead>
+              <tr>
+                  <th>Nombre</th>
+                  <th>Cantidad</th>
+                  <th>Precio</th>
+              </tr>
+              </thead>
+              <tbody>
+              {% for dp in dpedido %}
+                  <tr>
+
+                            <td>{{ dp.0.nombreProducto }}</td>
+                              <td>{{ dp.0.cantidad }}</td>
+
+                  </tr>
+              {% endfor %}
+              </tbody>
+          </table>
+
+  {% endif %}
+
+  <a href="{{ path('inicio') }}" class="btn btn-success btn-lg">
+   Volver
+  </a>
+ {% endblock %}
