@@ -11,6 +11,7 @@ use Symfony\Component\HttpFoundation\Request;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Security;
 
 
+
 /**
  * @Route("/usuario")
  */
@@ -49,9 +50,13 @@ class UsuarioController extends Controller
             $usuario->setEsAdmin(false);
             $usuario->setEsCamarero(false);
             $usuario->setEsCliente(true);
+            $usuario->setMesaOcupada(0);
 
             // Obtener el EntityManager
             $em = $this->getDoctrine()->getManager();
+
+            $helper =  $password = $this->container->get('security.password_encoder');
+            $usuario->setPass($helper->encodePassword($usuario, $usuario->getPassword()));
 
             $em->persist($usuario);
             // Guardar los cambios
@@ -84,6 +89,10 @@ class UsuarioController extends Controller
 
            // Obtener el EntityManager
            $em = $this->getDoctrine()->getManager();
+
+           $helper =  $password = $this->container->get('security.password_encoder');
+           $usuario->setPass($helper->encodePassword($usuario, $usuario->getPassword()));
+
 
            $em->persist($usuario);
            // Guardar los cambios

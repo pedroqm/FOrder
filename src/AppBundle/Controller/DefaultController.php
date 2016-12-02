@@ -13,45 +13,19 @@ use Symfony\Bundle\FrameworkBundle\Controller\Controller;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Security;
 class DefaultController extends Controller
 {
-    /**
-     * @Route("/instalar", name="instalar")
-     */
-    public function instalarAction()
-    {
-        $em = $this->getDoctrine()->getManager();
-        $usu = $em->getRepository('AppBundle:Usuario')->findOneBy(array('id'=>1));
-        if(!$usu){
-            $usuario= new Usuario();
-            $usuario->setNombreUsuario('admin');
-            $usuario->setPass('admin');
-            $usuario->setNombre('admin');
-            $usuario->setApellidos('admin');
-            $usuario->setDni('26502842B');
-            $usuario->setTelefono(99);
-            $usuario->setEmail('demo@demo.com');
-            $usuario->setEsAdmin(true);
-            $usuario->setEsCamarero(false);
-            $usuario->setEsCliente(false);
-            // Obtener el EntityManager
-            $em = $this->getDoctrine()->getManager();
-            $em->persist($usuario);
-            // Guardar los cambios
-            $em->flush();
-        }
-        return $this->render(':default:formulario.html.twig');
-    }
+
     /**
      * @Route("/entrar", name="usuario_entrar")
      */
     public function loginAction()
     {
-        /**$helper = $this->get('security.authentication_utils');
+        $helper = $this->get('security.authentication_utils');
 
         return $this->render(':default:formulario.html.twig',
             [
                 'ultimo_usuario' => $helper->getLastUsername(),
                 'error' => $helper->getLastAuthenticationError()
-            ]);*/
+            ]);
         return $this->render(':default:formulario.html.twig');
     }
     /**
@@ -423,5 +397,36 @@ class DefaultController extends Controller
     {
         // Al salir se redirecciona al formulario de login
         return $this->render('default/formulario.html.twig', array());
+    }
+    /**
+     * @Route("/instalar", name="instalar")
+     */
+    public function instalarAction()
+    {
+        $em = $this->getDoctrine()->getManager();
+        $usu = $em->getRepository('AppBundle:Usuario')->findOneBy(array('id'=>1));
+        if(!$usu){
+            $usuario= new Usuario();
+            $usuario->setNombreUsuario('admin');
+            $usuario->setPass('admin');
+            $helper =  $password = $this->container->get('security.password_encoder');
+            $usuario->setPass($helper->encodePassword($usuario, $usuario->getPassword()));
+
+            $usuario->setNombre('admin');
+            $usuario->setApellidos('admin');
+            $usuario->setDni('26502842B');
+            $usuario->setTelefono(99);
+            $usuario->setEmail('demo@demo.com');
+            $usuario->setEsAdmin(true);
+            $usuario->setEsCamarero(false);
+            $usuario->setEsCliente(false);
+            $usuario->setMesaOcupada(0);
+            // Obtener el EntityManager
+            $em = $this->getDoctrine()->getManager();
+            $em->persist($usuario);
+            // Guardar los cambios
+            $em->flush();
+        }
+        return $this->render(':default:formulario.html.twig');
     }
 }

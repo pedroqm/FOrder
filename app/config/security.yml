@@ -3,7 +3,12 @@
 security:
     # http://symfony.com/doc/current/book/security.html#encoding-the-user-s-password
     encoders:
-        AppBundle\Entity\Usuario: plaintext
+       AppBundle\Entity\Usuario: bcrypt
+       Symfony\Component\Security\Core\User\User:
+                   algorithm: bcrypt
+                   cost: 12
+
+
 
     # http://symfony.com/doc/current/book/security.html#hierarchical-roles
     role_hierarchy:
