@@ -87,8 +87,6 @@ class DefaultController extends Controller
 
 
 
-
-
                 return $this->render(':default:inicio.html.twig', [
                     'tipoProducto' => $tipoProducto,
                     'mesa' => $mesas,
@@ -212,12 +210,12 @@ class DefaultController extends Controller
         foreach($factura as $f){
 
             $arrayPedidos[$i]=$f->getIdPedido();
+
             $i++;
     }
         //creamos un array con los detalles delpedido para que no haya duplicados
 
-
-        $arrayDetallePedido=array();
+        $arrayDetallePedido=0;
 
         $j=0;
         $i=0;
@@ -225,32 +223,36 @@ class DefaultController extends Controller
         $cantidad=0;
 
         do{
-
+            $encontrado=false;
             $dpedido=$em->getRepository('AppBundle:DetallePedido')->findBy(array('idPedido'=>$arrayPedidos[$j]));
-            //var_dump($dpedido); //bien
 
-
-                if(!$arrayDetallePedido){
-                    $arrayDetallePedido[$j] = $dpedido;
-                    //var_dump($arrayDetallePedido[0][0]->getCantidad());  //bien
+                if(!$arrayDetallePedido){ //guardamos el primer pedido
+                    $arrayDetallePedido = $dpedido;
                 }else{
-              $arrayDetallePedido[$j] = $dpedido;
-                //recorremos los pedidos que tenga el cliente y comprobamos si el producto está en dpedido
-                  /*  for ($z = 0; $z < count($arrayDetallePedido); $z++) {
-                        // Si el Id pedido es = a IdPedido de DetallePedido
-                        var_dump($arrayPedidos[$j]);
-                        var_dump($arrayDetallePedido[$z][0]->getIdPedido());
-                        if ($arrayPedidos[$j] == $arrayDetallePedido[$z][0]->getIdPedido()) {
-                            var_dump("iguales");
-                            $arrayDetallePedido[$j] = $dpedido;
-                            $cantidad = $arrayDetallePedido[$z][0]->getCantidad();
-                            //var_dump($cantidad);
-                            $arrayDetallePedido[$z][0]->setCantidad($dpedido[0]->getCantidad() + $cantidad);
-                            //var_dump($arrayDetallePedido[$z][0]->getCantidad());
-                        } else {
-                            $arrayDetallePedido[$j] = $dpedido;
+
+
+                //recorremos los pedidos que tenga el cliente y comprobamos si el producto está en el array de detallepedido y en dpedido
+
+                    for ($z = 0; $z < count($dpedido); $z++) {
+                        for($i=0; $i< count($arrayDetallePedido); $i++) {
+                            $encontrado = false;
+
+                            if ($arrayDetallePedido[$i]->getNombreProducto() == $dpedido[$z]->getNombreProducto()) {
+                             $cantidad = $arrayDetallePedido[$i]->getCantidad();
+                             $arrayDetallePedido[$i]->setCantidad($dpedido[0]->getCantidad() + $cantidad);
+                            $encontrado = true;
+                            break;
                         }
-                    }*/
+
+                    }
+                    if(!$encontrado){
+
+                        array_push($arrayDetallePedido, $dpedido[$z]);
+
+                    }
+
+                }
+
                 }
 
 
@@ -308,9 +310,12 @@ class DefaultController extends Controller
                     $newPedido->setIdPedido($pedidoRealizado->getId());
                     $newPedido->setNombreProducto($pedido[$i][0]->getNombreProducto());
                     $newPedido->setCantidad($pedido[$i][1]);
+                    $newPedido->setDpedido($pedidoRealizado);
                     $em->persist($newPedido);
                     // Guardar los cambios
                     $em->flush();
+
+
 
                     //actualizamos la cuenta
                     $precio = $producto->getPrecio();
