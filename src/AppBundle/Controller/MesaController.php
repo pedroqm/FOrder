@@ -104,7 +104,7 @@ class MesaController extends Controller
             $em->flush();
 
             if($cliente) {
-                //ponemos la mesa libre
+                //ponemos la mesa del usuario libre
                 $usuario = $em->getRepository('AppBundle:Usuario')->findById($cliente);
                 $usuario[0]->setMesaOcupada(0);
 
@@ -158,12 +158,20 @@ class MesaController extends Controller
             $em = $this->getDoctrine()->getManager();
             $factura=$id->getFactura();
             $cuenta=$id->getCuenta();
+            $cliente=$id->getUser();
 
 
             //sumamos la cuenta a la factura de la mesa
             $id->setCuenta(0);
             $id->setFactura($factura+$cuenta);
 
+
+            //ponemos la mesa del usuario libre
+            $usuario = $em->getRepository('AppBundle:Usuario')->findById($cliente);
+            $usuario[0]->setMesaOcupada(0);
+
+            $em->persist($usuario[0]);
+            $em->flush();
 
             //ponemos el estado de la mesa a "libre"
             $id->setEstado("libre");
@@ -195,8 +203,6 @@ class MesaController extends Controller
             // Obtener el EntityManager
             $em = $this->getDoctrine()->getManager();
 
-            /*$helper =  $password = $this->container->get('security.password_encoder');
-            $usuario->setPassword($helper->encodePassword($usuario, $usuario->getPassword()));*/
 
             // Asegurarse de que se tiene en cuenta el nuevo usuario
             $em->persist($mesa);
@@ -244,9 +250,7 @@ class MesaController extends Controller
                 $this->generateUrl('mesa_listar')
             );
 
-        return $this->render(':mesa:modificar_mesa.html.twig', [
-            'formulario' => $formulario->createView()
-        ]);
+
     }
     /**
      * @Route("/eliminar/{mesa}", name="mesa_eliminar")
@@ -263,11 +267,12 @@ class MesaController extends Controller
             $this->addFlash('success', 'Mesa eliminada de forma correcta');
 
 
-            // Redirigir al usuario a la lista
-            return new RedirectResponse(
-                $this->generateUrl('mesa_listar')
-            );
+
         }
+        // Redirigir al usuario a la lista
+        return new RedirectResponse(
+            $this->generateUrl('mesa_listar')
+        );
 
     }
 

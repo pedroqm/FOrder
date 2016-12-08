@@ -52,10 +52,15 @@
           </table>
 
   {% endif %}
-
+{% if mesa %}
   <a href="{{ path('realizar_pedido') }}" class="btn btn-success btn-lg">
    Confirmar
   </a>
+{% else %}
+    <a href="{{ path('ver_cuenta') }}" class="btn btn-info btn-lg">
+        Ver la cuenta completa
+    </a>
+{% endif %}
   <a href="{{ path('inicio') }}" class="btn btn-success btn-lg">
    Volver
   </a>

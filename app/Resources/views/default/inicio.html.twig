@@ -9,21 +9,29 @@
      <h3>Bienvenido {{ usuarios.nombreUsuario }}</h3>
      <br/>
      {% if usuarios.esCliente == true %}
+
          {% if usuarios.mesaOcupada == 0 %}
+             {% if FNP %}
+                 <p>Tiene facturas sin pagar. Paguelas al camarero para poder continuar. </p>
 
-             {% if mesa %}
-                 <form action="{{ path('inicio')}}" method="post">
-                 <p>Seleccione la mesa</p>
+             {% else %}
 
-                     <select name="Nmesa" class="form-control">
-                     {% for m in mesa %}
-                         {% if m.estado != "ocupado" and m.estado != "cuenta pedida"%}
-                            <option value="{{ m.id }}" name="Nmesa2"><label>Mesa : {{ m.id }}  {{ m.estado }}</label></option>
-                         {% endif %}
-                     {% endfor %}
-                 </select>
-                     <button class="btn btn-success btn-block active" type="submit" name="ocupar" >Ocupar mesa</button>
-                 </form>
+                 {% if mesa %}
+                     <form action="{{ path('inicio')}}" method="post">
+                     <p>Seleccione la mesa</p>
+
+                         <select name="Nmesa" class="form-control">
+                         {% for m in mesa %}
+                             {% if m.estado != "ocupado" and m.estado != "cuenta pedida"%}
+                                <option value="{{ m.id }}" name="Nmesa2"><label>Mesa : {{ m.id }}  {{ m.estado }}</label></option>
+                             {% endif %}
+                         {% endfor %}
+                     </select>
+                         <button class="btn btn-success btn-block active" type="submit" name="ocupar" >Ocupar mesa</button>
+                     </form>
+
+                 {% endif %}
+
 
              {% endif %}
 

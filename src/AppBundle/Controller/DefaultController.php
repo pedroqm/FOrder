@@ -26,7 +26,6 @@ class DefaultController extends Controller
                 'ultimo_usuario' => $helper->getLastUsername(),
                 'error' => $helper->getLastAuthenticationError()
             ]);
-        return $this->render(':default:formulario.html.twig');
     }
     /**
      * @Route("/comprobar", name="usuario_comprobar")
@@ -60,6 +59,7 @@ class DefaultController extends Controller
         $cliente = $usuario->getEsCliente();
         $mesas = $em->getRepository('AppBundle:Mesa')
             ->findAll();
+        $facturasNoPagadas=$em->getRepository('AppBundle:FacturaNoPagada')->findBy(array('usuario'=>$usuario->getId()));
 
         if (isset($_POST['ocupar'])) {
 
@@ -90,6 +90,7 @@ class DefaultController extends Controller
                 return $this->render(':default:inicio.html.twig', [
                     'tipoProducto' => $tipoProducto,
                     'mesa' => $mesas,
+                    'FNP'=>$facturasNoPagadas,
                     'prueba' => $prueba, //---------------------------------------------------------------------------
                     'usuarios' => $usuario
                 ]);
@@ -133,9 +134,7 @@ class DefaultController extends Controller
     {
         $em = $this->getDoctrine()->getManager();
 
-        $usuario = $this->getUser();
-        $mesas = $em->getRepository('AppBundle:Mesa')
-            ->findAll();
+        $mesas = $em->getRepository('AppBundle:Mesa')->findAll();
         $this->getUser()->setMesaOcupada(0);
         $em->flush();
 
