@@ -474,7 +474,9 @@ class Usuario implements UserInterface
         if ($this->getEsCamarero()) {
             $roles[] = "ROLE_CAMARERO";
         }
-
+        if ($this->getEsCliente()) {
+            $roles[] = "ROLE_USER";
+        }
         return $roles;
     }
 
@@ -612,4 +614,15 @@ class Usuario implements UserInterface
     {
         return $this->FacturaNoP;
     }
+
+    public function isEqualTo(UserInterface $user){
+        return $this->id===$user->getId();
+
+    }
+    public function __toString()
+    {
+        return $this->getNombreUsuario() . ' (' . $this->getNie() . ')';
+    }
+
+
 }

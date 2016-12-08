@@ -107,4 +107,14 @@ class FacturaPagada
 
         return $this;
     }
+
+    /**
+     * Get idPedido
+     *
+     * @return integer 
+     */
+    public function getIdPedido()
+    {
+        return $this->idPedido;
+    }
 }

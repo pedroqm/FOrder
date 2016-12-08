@@ -36,9 +36,10 @@ class Pedido
      * @var Mesa
      */
     protected  $mesaOcupada;
+
     /**
-     * @ORM\ManyToOne(targetEntity="AppBundle\Entity\DetallePedido",
-     * inversedBy="Dpedido")
+     * @ORM\OneToMany(targetEntity="AppBundle\Entity\DetallePedido",
+     * mappedBy="Dpedido")
      *
      * @var DetallePedido
      */
@@ -172,23 +173,34 @@ class Pedido
         return $this->productos;
     }
 
+
     /**
-     * Set Detallepedido
+     * Add Detallepedido
      *
      * @param \AppBundle\Entity\DetallePedido $detallepedido
      * @return Pedido
      */
-    public function setDetallepedido(\AppBundle\Entity\DetallePedido $detallepedido = null)
+    public function addDetallepedido(\AppBundle\Entity\DetallePedido $detallepedido)
     {
-        $this->Detallepedido = $detallepedido;
+        $this->Detallepedido[] = $detallepedido;
 
         return $this;
     }
 
     /**
+     * Remove Detallepedido
+     *
+     * @param \AppBundle\Entity\DetallePedido $detallepedido
+     */
+    public function removeDetallepedido(\AppBundle\Entity\DetallePedido $detallepedido)
+    {
+        $this->Detallepedido->removeElement($detallepedido);
+    }
+
+    /**
      * Get Detallepedido
      *
-     * @return \AppBundle\Entity\DetallePedido 
+     * @return \Doctrine\Common\Collections\Collection 
      */
     public function getDetallepedido()
     {

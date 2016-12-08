@@ -37,8 +37,8 @@ class DetallePedido
 
 
     /**
-     * @ORM\OneToMany(targetEntity="AppBundle\Entity\Pedido",
-     * mappedBy="Detallepedido")
+     * @ORM\ManyToOne(targetEntity="AppBundle\Entity\Pedido",
+     * inversedBy="Detallepedido")
      *
      * @var Pedido
      */
@@ -131,33 +131,25 @@ class DetallePedido
         return $this->cantidad;
     }
 
+
+
     /**
-     * Add Dpedido
+     * Set Dpedido
      *
      * @param \AppBundle\Entity\Pedido $dpedido
      * @return DetallePedido
      */
-    public function addDpedido(\AppBundle\Entity\Pedido $dpedido)
+    public function setDpedido(\AppBundle\Entity\Pedido $dpedido = null)
     {
-        $this->Dpedido[] = $dpedido;
+        $this->Dpedido = $dpedido;
 
         return $this;
     }
 
     /**
-     * Remove Dpedido
-     *
-     * @param \AppBundle\Entity\Pedido $dpedido
-     */
-    public function removeDpedido(\AppBundle\Entity\Pedido $dpedido)
-    {
-        $this->Dpedido->removeElement($dpedido);
-    }
-
-    /**
      * Get Dpedido
      *
-     * @return \Doctrine\Common\Collections\Collection 
+     * @return \AppBundle\Entity\Pedido 
      */
     public function getDpedido()
     {
