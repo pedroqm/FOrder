@@ -34,8 +34,7 @@
     {% else %}
         <h2>No hay ingredientes para mostrar</h2>
     {% endif %}
-
-    <a href="{{ path('ingrediente_nuevo') }}" class="btn btn-success btn-lg">
+    <a href="{{ path('ingrediente_nuevo', { 'producto': producto.id }) }}" class="btn btn-success btn-lg">
         Nuevo ingrediente
     </a>
     <a href="{{ path('inicio') }}" class="btn btn-success btn-lg">

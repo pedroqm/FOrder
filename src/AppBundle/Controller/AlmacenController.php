@@ -59,7 +59,7 @@ class AlmacenController extends Controller
         // Procesar el formulario si se ha enviado con un POST
         $formulario->handleRequest($peticion);
 
-        // Si se ha enviado y el contenido es válido, guardar los cambios
+        // Si se ha enviado y el contenido es vï¿½lido, guardar los cambios
        if ($formulario->isSubmitted() && $formulario->isValid()) {
 
            // Obtener el EntityManager
@@ -70,7 +70,7 @@ class AlmacenController extends Controller
            // Guardar los cambios
            $em->flush();
 
-           // Redirigir al usuario a la lista
+           // Redirigir  a la lista
            return new RedirectResponse(
                $this->generateUrl('almacen_listar')
            );
@@ -91,7 +91,7 @@ class AlmacenController extends Controller
         // Procesar el formulario si se ha enviado con un POST
         $formulario->handleRequest($peticion);
 
-        // Si se ha enviado y el contenido es válido, guardar los cambios
+        // Si se ha enviado y el contenido es vï¿½lido, guardar los cambios
         if ($formulario->isSubmitted() && $formulario->isValid()) {
 
             // Obtener el EntityManager

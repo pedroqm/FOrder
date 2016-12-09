@@ -35,15 +35,10 @@ class IngredientesController extends Controller
             $ingrediente = $em->getRepository('AppBundle:Ingredientes')
                 ->findBy(array('nombreProducto' => $id->getNombreProducto()));
 
-            $em = $this->getDoctrine()->getManager();
 
-            $producto=new Producto();
-            $producto=$em->getRepository('AppBundle:Producto')
-                ->findOneBy(array('id' => $id->getId()));
+
             $_SESSION['idprod']=$id->getId();
-            //$almacen=new Almacen();
-            //$almacen=$em->getRepository('AppBundle:Almacen')
-             //   ->findOneBy(array('nombreIngrediente'=>$ingrediente->getNombreIngrediente()));
+
 
             return $this->render(':ingredientes:listar_ingredientes.html.twig', [
                 'ingrediente' => $ingrediente,
@@ -57,15 +52,12 @@ class IngredientesController extends Controller
      */
     public function listarAction()
     {
-        /*if(!isset($_SESSION['idprod'])){
-            session_start();
-        }*/
         $em = $this->getDoctrine()->getManager();
-
-        $ingrediente = $em->getRepository('AppBundle:Ingredientes')
-            ->findAll();
         $producto=$em->getRepository('AppBundle:Producto')
             ->findOneBy(array('id' => $_SESSION['idprod']));
+        $ingrediente = $em->getRepository('AppBundle:Ingredientes')
+            ->findBy(array('nombreProducto' => $producto->getNombreProducto()));
+
 
         return $this->render(':ingredientes:listar_ingredientes.html.twig', [
             'ingrediente' => $ingrediente,
@@ -75,10 +67,10 @@ class IngredientesController extends Controller
 
 
     /**
-     * @Route("/nuevo", name="ingrediente_nuevo")
+     * @Route("/nuevo/{producto}", name="ingrediente_nuevo")
      * @Security("is_granted('ROLE_ADMIN')")
      */
-    public function nuevoAction(Request $peticion)
+    public function nuevoAction(Request $peticion, Producto $producto)
     {
         $ingrediente= new Ingredientes();
 
@@ -94,9 +86,24 @@ class IngredientesController extends Controller
            // Obtener el EntityManager
            $em = $this->getDoctrine()->getManager();
 
-           $producto=new Producto();
-           $producto=$em->getRepository('AppBundle:Producto')
-               ->findOneBy(array('id' => $_SESSION['idprod']));
+           $almacenn=$em->getRepository('AppBundle:Almacen')
+               ->findOneBy(array('nombreIngrediente'=>$ingrediente->getNombreIngrediente()));
+
+           if($almacenn){
+               $ingrediente->setAlmacenado($almacenn);
+           }else{
+               $almacen= new Almacen();
+               $almacen->setNombreIngrediente($ingrediente->getNombreIngrediente());
+               $almacen->setStock(0);
+               $almacen->setStockMin(0);
+               $em->persist($almacen);
+               $em->flush();
+               $ingrediente->setAlmacenado($almacen);
+           }
+
+
+           $ingrediente->addProducto($producto);
+
            $ingrediente->setNombreProducto($producto->getNombreProducto());
 
            // Asegurarse de que se tiene en cuenta el nuevo pedido
@@ -110,6 +117,7 @@ class IngredientesController extends Controller
            );
        }
         return $this->render(':ingredientes:nuevo_ingredientes.html.twig',[
+            'producto'=>$producto,
             'formulario' => $formulario->createView()
         ]);
     }
@@ -161,10 +169,11 @@ class IngredientesController extends Controller
             $em->flush();
 
 
-            return new RedirectResponse(
-                $this->generateUrl('ingrediente_listar')
-            );
         }
+
+        return new RedirectResponse(
+            $this->generateUrl('ingrediente_listar')
+        );
 
     }
 
