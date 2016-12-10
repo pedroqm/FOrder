@@ -330,10 +330,27 @@ class DefaultController extends Controller
 
 
                     //descontamos los productos en el almacen
-                    /*
-                    $al = $em->getRepository('AppBundle:Ingredientes')->findAll(array('nombreProducto'=>$pedido[$i][0]->getNombreProducto()));
-                    var_dump($al);
-                    var_dump('uno');*/
+
+
+                    //dentro del carrito buscamos los pedidos que tengan cantidad distinta de 0 para descontar los productos
+                    if($pedido[$i][1]!=0){
+                        $Ingredientes = $em->getRepository('AppBundle:Ingredientes')->findBy(array('nombreProducto' => $producto->getNombreProducto()));
+
+                        if($Ingredientes){
+                            for ($z = 0; $z < count($Ingredientes); $z++) {
+                                $almacen=$em->getRepository('AppBundle:Almacen')->findBy(array('nombreIngrediente'=>$Ingredientes[$z]->getNombreIngrediente()));
+                                $stockActual=$almacen[0]->getStock();
+                               $almacen[0]->setStock($stockActual-$Ingredientes[$z]->getCantidad());
+
+                                $em->persist($almacen[0]);
+
+                                // Guardar los cambios
+                                $em->flush();
+                            }
+                          
+                        }
+                    }
+
                 }
 
                 $this->addFlash(

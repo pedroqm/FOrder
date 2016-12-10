@@ -28,6 +28,7 @@
             </thead>
             <tbody>
             {% for pe in pedido %}
+                {% if pe.1 != 0 %}
                 <tr>
                     <td>{{ pe.0.nombreProducto }}</td>
                     <td>{{ pe.0.precio }}€</td>
@@ -38,6 +39,7 @@
                         </form>
                      </td>
                 </tr>
+                    {% endif %}
             {% endfor %}
             <tr><td>Total: {% if total %} {{ total }} {% else %} 0 {% endif %}€</td></tr>
             </tbody>
