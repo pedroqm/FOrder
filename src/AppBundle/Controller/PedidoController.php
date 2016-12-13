@@ -129,10 +129,9 @@ class PedidoController extends Controller
             }
         }
         $em = $this->getDoctrine()->getManager();
-        $tipoProducto = $em->getRepository('AppBundle:TipoProducto')
-            ->findOneBy(array('id' => $_SESSION['tipoProducto']));
+        $tipoProducto=$_SESSION['tipoProducto'];
         $producto = $em->getRepository('AppBundle:Producto')
-            ->findBy(array('tipo' => $tipoProducto->getTipo()));
+            ->findBy(array('tipo' => $_SESSION['tipoProducto']));
 
         $total=0;
         if (isset($_SESSION['pedido'])) {  //Se muestra la cuenta con los productos que lleva seleccionados

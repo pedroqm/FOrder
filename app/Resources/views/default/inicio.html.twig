@@ -9,7 +9,6 @@
      <h3>Bienvenido {{ usuarios.nombreUsuario }}</h3>
      <br/>
      {% if usuarios.esCliente == true %}
-
          {% if usuarios.mesaOcupada == 0 %}
              {% if FNP %}
                  <p>Tiene facturas sin pagar. Paguelas al camarero para poder continuar. </p>
@@ -41,7 +40,7 @@
                  <div class="row">
                  {% for t in tipoProducto %}
 
-                     <form action="{{ path('ver_productos', { 'tipoProducto': t.id }) }}" method="post">
+                     <form action="{{ path('ver_productos', { 'tipoProducto': t.tipo }) }}" method="post">
                          <button class="btn btn-lg btn-primary btn-block" type="submit" name="ver_pro">{{ t.tipo }} </button>
                      </form>
 
@@ -64,7 +63,7 @@
              <div class="row">
                  {% for t in tipoProducto %}
 
-                     <form action="{{ path('ver_productos', { 'tipoProducto': t.id }) }}" method="post">
+                     <form action="{{ path('ver_productos', { 'tipoProducto': t.tipo }) }}" method="post">
                          <button class="btn btn-lg btn-primary btn-block" type="submit" name="ver_pro">{{ t.tipo }} </button>
                      </form>
 
@@ -97,7 +96,7 @@
              <div class="row">
                  {% for t in tipoProducto %}
 
-                     <form action="{{ path('ver_productos', { 'tipoProducto': t.id }) }}" method="post">
+                     <form action="{{ path('ver_productos', { 'tipoProducto': t.tipo }) }}" method="post">
                          <button class="btn btn-lg btn-primary btn-block" type="submit" name="ver_pro">{{ t.tipo }} </button>
                      </form>
 

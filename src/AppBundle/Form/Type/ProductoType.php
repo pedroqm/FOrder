@@ -27,13 +27,14 @@ class ProductoType extends AbstractType
                 ],
                 'required' => false
             ])
-            ->add('tipo', null, [
-                'label' => 'Tipo',
+            ->add('tipo', 'choice', array('label'=>'selecciona el tipo' ,
+                'multiple'=>false,
+                'choices'=>array("Bebidas"=> 'Bebidas',"Entrantes"=>"Entrantes","Carne"=>"Carne","Pescado"=>"Pescado","Postres"=>"Postres"),
                 'attr' => [
                     'class' => 'form-control'
-                ],
-                'required' => false
-            ])
+
+                ]
+            ))
             ->add('enviar', 'submit', [
                 'label' => 'Guardar cambios',
                 'attr' => [

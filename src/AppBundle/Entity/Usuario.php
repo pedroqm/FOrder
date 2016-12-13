@@ -82,12 +82,7 @@ class Usuario implements UserInterface
      * @var string
      */
     protected $nombre;
-    /**
-     * @ORM\Column(type="decimal")
-     *
-     * @var decimal
-     */
-    protected $factura;
+
 
     /**
      * @ORM\Column(type="string")
@@ -96,9 +91,9 @@ class Usuario implements UserInterface
     protected $nombreUsuario;
 
     /**
-     * @ORM\Column(type="decimal")
+     * @ORM\Column(type="integer")
      *
-     * @var decimal
+     * @var integer
      *
      */
     protected $mesaOcupada; //opcion 0 si no ocupa mesa
@@ -409,28 +404,7 @@ class Usuario implements UserInterface
         return $this->nombre;
     }
 
-    /**
-     * Set factura
-     *
-     * @param string $factura
-     * @return Usuario
-     */
-    public function setFactura($factura)
-    {
-        $this->factura = $factura;
 
-        return $this;
-    }
-
-    /**
-     * Get factura
-     *
-     * @return string 
-     */
-    public function getFactura()
-    {
-        return $this->factura;
-    }
 
 
     public function __construct()
@@ -444,7 +418,6 @@ class Usuario implements UserInterface
             $this->esAdmin = false;
             $this->esCliente = true;
         }
-        $this->factura=0;
     }
 
     /**

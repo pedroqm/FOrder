@@ -27,11 +27,20 @@ class Producto{
      * @var string
      */
     protected $nombreProducto;
+
+    //Hay suficientes ingredientes?
+    /**
+     * @ORM\Column(type="boolean")
+     * @var boolean
+     */
+    protected $existencias;
+
     /**
      * @ORM\Column(type="string")
      * @var string
      */
     protected $tipo;
+
 
     /**
      * @ORM\ManyToMany(targetEntity="Pedido",
@@ -55,6 +64,8 @@ class Producto{
         $this->comanda = new \Doctrine\Common\Collections\ArrayCollection();
         $this->ingredientes = new \Doctrine\Common\Collections\ArrayCollection();
     }
+
+
 
     /**
      * Get id
@@ -110,6 +121,52 @@ class Producto{
     public function getNombreProducto()
     {
         return $this->nombreProducto;
+    }
+
+    /**
+     * Set existencias
+     *
+     * @param boolean $existencias
+     * @return Producto
+     */
+    public function setExistencias($existencias)
+    {
+        $this->existencias = $existencias;
+
+        return $this;
+    }
+
+    /**
+     * Get existencias
+     *
+     * @return boolean 
+     */
+    public function getExistencias()
+    {
+        return $this->existencias;
+    }
+
+    /**
+     * Set tipo
+     *
+     * @param string $tipo
+     * @return Producto
+     */
+    public function setTipo($tipo)
+    {
+        $this->tipo = $tipo;
+
+        return $this;
+    }
+
+    /**
+     * Get tipo
+     *
+     * @return string 
+     */
+    public function getTipo()
+    {
+        return $this->tipo;
     }
 
     /**
@@ -176,28 +233,5 @@ class Producto{
     public function getIngredientes()
     {
         return $this->ingredientes;
-    }
-
-    /**
-     * Set tipo
-     *
-     * @param string $tipo
-     * @return Producto
-     */
-    public function setTipo($tipo)
-    {
-        $this->tipo = $tipo;
-
-        return $this;
-    }
-
-    /**
-     * Get tipo
-     *
-     * @return string 
-     */
-    public function getTipo()
-    {
-        return $this->tipo;
     }
 }

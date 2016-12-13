@@ -10,9 +10,11 @@ use AppBundle\Form\Type\AlmacenType;
 use AppBundle\Entity\Ingredientes;
 use AppBundle\Form\Type\IngredienteType;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Route;
+use Symfony\Bridge\Doctrine\Tests\Form\Type\EntityTypeTest;
 use Symfony\Bundle\FrameworkBundle\Controller\Controller;
 use Symfony\Component\HttpFoundation\RedirectResponse;
 use Symfony\Component\HttpFoundation\Request;
+use Symfony\Bridge\Doctrine\Form\Type\EntityType;
 
 /**
  * @Route("/productos")
@@ -30,11 +32,9 @@ class ProductosController extends Controller
         $producto = $em->getRepository('AppBundle:Producto')
             ->findAll();
         $mesa=$em->getRepository('AppBundle:Mesa')->findOneById($this->getUser()->getMesaOcupada());
-        $tipoProducto="";
         $pedido=null;
         return $this->render(':productos:ver_productos.html.twig', [
             'producto' => $producto,
-            'tipoProducto'=>$tipoProducto,
             'usuarios'=>$usuario,
             'mesa'=>$mesa,
             'pedido'=>$pedido
@@ -44,9 +44,9 @@ class ProductosController extends Controller
     /**
      * @Route("/tipo_producto/{tipoProducto}", name="ver_productos"), methods={'GET', 'POST'}
      */
-    public function verProductosAction(TipoProducto $tipoProducto)
+    public function verProductosAction($tipoProducto)
     {
-
+        dump($tipoProducto);
         $total=0;
 
         if(isset($_SESSION['pedido'])){
@@ -57,7 +57,7 @@ class ProductosController extends Controller
                 }
             }else{
                 $total=0;
-                $pedido=null; //buscar los pedidos realizados y no pagados en la base de datos
+                $pedido=null;
             }
 
         }else{    //Se muestra la cuenta sin pedidos.
@@ -71,7 +71,8 @@ class ProductosController extends Controller
 
 
         $producto = $em->getRepository('AppBundle:Producto')
-                ->findBy(array('tipo' => $tipoProducto->getTipo()));
+                ->findBy(array('tipo' => $tipoProducto));
+
 
         $_SESSION['tipoProducto']=$tipoProducto;
 
@@ -109,11 +110,14 @@ class ProductosController extends Controller
         // Procesar el formulario si se ha enviado con un POST
         $formulario->handleRequest($peticion);
 
+
         // Si se ha enviado y el contenido es válido, guardar los cambios
        if ($formulario->isSubmitted() && $formulario->isValid()) {
 
            // Obtener el EntityManager
            $em = $this->getDoctrine()->getManager();
+
+           $producto->setExistencias(false);
 
            // Asegurarse de que se tiene en cuenta el nuevo pedido
            $em->persist($producto);
@@ -125,7 +129,10 @@ class ProductosController extends Controller
            return new RedirectResponse(
                $this->generateUrl('inicio')
            );
+
+
        }
+
         return $this->render(':productos:nuevo_productos.html.twig' ,[
             'formulario' => $formulario->createView()
         ]);
@@ -175,11 +182,10 @@ class ProductosController extends Controller
             $em->remove($producto);
             $em->flush();
 
-
-            return new RedirectResponse(
-                $this->generateUrl('inicio')
-            );
         }
+        return new RedirectResponse(
+            $this->generateUrl('inicio')
+        );
 
     }
 

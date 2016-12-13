@@ -61,11 +61,17 @@ class DefaultController extends Controller
             ->findAll();
         $facturasNoPagadas=$em->getRepository('AppBundle:FacturaNoPagada')->findBy(array('usuario'=>$usuario->getId()));
 
+        $tipoProducto = $em->getRepository('AppBundle:Producto')
+            ->createQueryBuilder('v')
+            ->select('v.tipo')
+            ->distinct()
+            ->getQuery()
+            ->getResult();
+
         if (isset($_POST['ocupar'])) {
 
             $usuario = $this->getUser()->setMesaOcupada($_POST['Nmesa']);
             $mesa=$em->getRepository('AppBundle:Mesa')->findOneById($_POST['Nmesa'])->setEstado("ocupado");
-            $mesa->setUser($this->getUser());
             $em->persist($usuario);
             $em->persist($mesa);
             // Guardar los cambios
@@ -74,16 +80,6 @@ class DefaultController extends Controller
         }
 
             if ($cliente) {
-                $tipoProducto = $em->getRepository('AppBundle:TipoProducto')
-                    ->findAll();
-
-
-                // $prueba=$em->getRepository('AppBundle:Producto')->findBy(array('ingredientes'=> $produc->getIngredientes()));
-                $prueba = $em->getRepository('AppBundle:Ingredientes')->findBy(array('nombreProducto' => 'bocadillo de lomo')); //funciona
-                //$produc = $em->getRepository('AppBundle:Producto')->findby(array('id'=>4));
-                // $prueba=$em->getRepository('AppBundle:Ingredientes')->findBy(array('producto'=>getProducto(1)));
-
-
 
 
 
@@ -91,7 +87,6 @@ class DefaultController extends Controller
                     'tipoProducto' => $tipoProducto,
                     'mesa' => $mesas,
                     'FNP'=>$facturasNoPagadas,
-                    'prueba' => $prueba, //---------------------------------------------------------------------------
                     'usuarios' => $usuario
                 ]);
             } else {
@@ -105,8 +100,7 @@ class DefaultController extends Controller
                             'pedido' => $pedidoRealizado
                         ]);
                     }else{
-                        $tipoProducto = $em->getRepository('AppBundle:TipoProducto')
-                            ->findAll();
+
 
                         return $this->render(':default:inicio.html.twig', [
                             'tipoProducto' => $tipoProducto,
@@ -116,8 +110,7 @@ class DefaultController extends Controller
                     }
 
                 } else {
-                    $tipoProducto = $em->getRepository('AppBundle:TipoProducto')
-                        ->findAll();
+
                     return $this->render(':default:inicio.html.twig', [
                         'tipoProducto' => $tipoProducto,
                         'mesa' => $mesas,
@@ -152,8 +145,12 @@ class DefaultController extends Controller
     {
         $em = $this->getDoctrine()->getManager();
         $usuario = $this->getUser();
-        $tipoProducto = $em->getRepository('AppBundle:TipoProducto')
-            ->findAll();
+        $tipoProducto = $em->getRepository('AppBundle:Producto')
+            ->createQueryBuilder('v')
+            ->select('v.tipo')
+            ->distinct()
+            ->getQuery()
+            ->getResult();
         $mesas = $em->getRepository('AppBundle:Mesa')
             ->findAll();
         return $this->render(':default:inicio.html.twig', [
@@ -347,7 +344,6 @@ class DefaultController extends Controller
                                 // Guardar los cambios
                                 $em->flush();
                             }
-                          
                         }
                     }
 
