@@ -17,11 +17,6 @@ class DetallePedido
      */
     protected $id;
 
-    /**
-     * @ORM\Column(type="integer")
-     * @var integer
-     */
-    protected $idPedido;
 
     /**
      * @ORM\Column(type="string")
@@ -34,6 +29,12 @@ class DetallePedido
      * @var integer
      */
     protected $cantidad;
+
+    /**
+     * @ORM\Column(type="float")
+     * @var float
+     */
+    protected $precio;
 
 
     /**
@@ -154,5 +155,28 @@ class DetallePedido
     public function getDpedido()
     {
         return $this->Dpedido;
+    }
+
+    /**
+     * Set precio
+     *
+     * @param float $precio
+     * @return DetallePedido
+     */
+    public function setPrecio($precio)
+    {
+        $this->precio = $precio;
+
+        return $this;
+    }
+
+    /**
+     * Get precio
+     *
+     * @return float 
+     */
+    public function getPrecio()
+    {
+        return $this->precio;
     }
 }

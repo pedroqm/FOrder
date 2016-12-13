@@ -220,7 +220,7 @@ class DefaultController extends Controller
 
         do{
             $encontrado=false;
-            $dpedido=$em->getRepository('AppBundle:DetallePedido')->findBy(array('idPedido'=>$arrayPedidos[$j]));
+            $dpedido=$em->getRepository('AppBundle:DetallePedido')->findBy(array('Dpedido'=>$arrayPedidos[$j]));
 
                 if(!$arrayDetallePedido){ //guardamos el primer pedido
                     $arrayDetallePedido = $dpedido;
@@ -303,7 +303,7 @@ class DefaultController extends Controller
 
                     //guardamos los detalles del pedido
                     $newPedido = new DetallePedido();
-                    $newPedido->setIdPedido($pedidoRealizado->getId());
+                    $newPedido->setPrecio($producto->getPrecio());
                     $newPedido->setNombreProducto($pedido[$i][0]->getNombreProducto());
                     $newPedido->setCantidad($pedido[$i][1]);
                     $newPedido->setDpedido($pedidoRealizado);
