@@ -30,8 +30,8 @@ class Producto{
 
     //Hay suficientes ingredientes?
     /**
-     * @ORM\Column(type="boolean")
-     * @var boolean
+     * @ORM\Column(type="integer")
+     * @var integer
      */
     protected $existencias;
 

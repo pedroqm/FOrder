@@ -30,6 +30,12 @@ class FacturaNoPagada
 
 
     /**
+     * @ORM\Column(type="integer")
+     * @var integer
+     */
+    protected $idUsuario;
+
+    /**
      * @ORM\ManyToOne(targetEntity="Usuario",
      *  inversedBy="FacturaNoP")
      *
@@ -116,5 +122,28 @@ class FacturaNoPagada
     public function getIdPedido()
     {
         return $this->idPedido;
+    }
+
+    /**
+     * Set idUsuario
+     *
+     * @param integer $idUsuario
+     * @return FacturaNoPagada
+     */
+    public function setIdUsuario($idUsuario)
+    {
+        $this->idUsuario = $idUsuario;
+
+        return $this;
+    }
+
+    /**
+     * Get idUsuario
+     *
+     * @return integer 
+     */
+    public function getIdUsuario()
+    {
+        return $this->idUsuario;
     }
 }

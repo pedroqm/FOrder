@@ -1,0 +1,46 @@
+{% extends '::index.html.twig' %}
+{% block title %}Cuenta{% endblock %}
+ {% block content %}
+
+     <h2 class="well">Facturas Pendientes</h2>
+
+
+     {% if usuario %}
+
+         <table class="table table-bordered table-condensed table-hover table-striped">
+             <thead>
+             <tr>
+                 <th>Nombre Usuario</th>
+                 <th>Total</th>
+                 <th></th>
+                 <th></th>
+             </tr>
+             </thead>
+             <tbody>
+
+             {% for u in usuario %}
+                 <tr>
+
+                     <td>{{ u.nombreUsuario }}</td>
+                     <td>{{ u.factura }} €</td>
+                     <td>
+                         <form method="post" action="{{ path('pagar_facturasNP', {'id': u.id}) }}" >
+                             <button class="btn btn-success " type="submit" name="pagarFacturasNP">Pagar Factura </button>
+                         </form>
+                     </td>
+                     <td>
+                         <a href="{{ path('ver_cuenta') }}" class="btn btn-info">
+                             Ver la Factura completa
+                         </a>
+                     </td>
+                 </tr>
+             {% endfor %}
+             </tbody>
+         </table>
+
+     {% endif %}
+
+     <a href="{{ path('inicio') }}" class="btn btn-success btn-lg">
+         Volver
+     </a>
+ {% endblock %}

@@ -51,6 +51,7 @@ class UsuarioController extends Controller
             $usuario->setEsCamarero(false);
             $usuario->setEsCliente(true);
             $usuario->setMesaOcupada(0);
+            $usuario->setFactura(0);
 
             // Obtener el EntityManager
             $em = $this->getDoctrine()->getManager();
@@ -92,7 +93,8 @@ class UsuarioController extends Controller
 
            $helper =  $password = $this->container->get('security.password_encoder');
            $usuario->setPass($helper->encodePassword($usuario, $usuario->getPassword()));
-
+           $usuario->setMesaOcupada(0);
+           $usuario->setFactura(0);
 
            $em->persist($usuario);
            // Guardar los cambios

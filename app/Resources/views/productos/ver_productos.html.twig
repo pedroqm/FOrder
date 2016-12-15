@@ -15,42 +15,45 @@
         </p>
 
 
-    {% if pedido %}
+        {% if pedido %}
 
 
-        <table class="table table-bordered table-condensed table-hover table-striped">
-            <thead>
-            <tr>
-                <th>Nombre</th>
-                <th>Precio</th>
-                <th>Cantidad</th>
-            </tr>
-            </thead>
-            <tbody>
-            {% for pe in pedido %}
-                {% if pe.1 != 0 %}
+            <table class="table table-bordered table-condensed table-hover table-striped">
+                <thead>
                 <tr>
-                    <td>{{ pe.0.nombreProducto }}</td>
-                    <td>{{ pe.0.precio }}€</td>
-                    <td>{{ pe.1 }}</td>
-                     <td>
-                        <form action="{{ path('pedir', { 'producto': pe.0.id }) }}" method="post">
-                            <button class="btn btn-danger btn-sm" type="submit" name="borrarP">Borrar </button>
-                        </form>
-                     </td>
+                    <th>Nombre</th>
+                    <th>Precio</th>
+                    <th>Cantidad</th>
                 </tr>
+                </thead>
+                <tbody>
+                {% for pe in pedido %}
+                    {% if pe.1 != 0 %}
+
+                        <tr>
+                            <td>{{ pe.0.nombreProducto }}</td>
+                            <td>{{ pe.0.precio }}€</td>
+                            <td>{{ pe.1 }}</td>
+                            <td>
+                                <form action="{{ path('pedir', { 'producto': pe.0.id }) }}" method="post">
+                                    <button class="btn btn-danger btn-sm" type="submit" name="borrarP">Borrar</button>
+                                </form>
+                            </td>
+                        </tr>
                     {% endif %}
-            {% endfor %}
-            <tr><td>Total: {% if total %} {{ total }} {% else %} 0 {% endif %}€</td></tr>
-            </tbody>
-        </table>
-    {% endif %}
+                {% endfor %}
+                <tr>
+                    <td>Total: {% if total %} {{ total }} {% else %} 0 {% endif %}€</td>
+                </tr>
+                </tbody>
+            </table>
+        {% endif %}
 
-    {% if producto %}
+        {% if producto %}
 
-           <table>
-               <tbody>
-               {% for p in producto %}
+            <table>
+                <tbody>
+                {% for p in producto %}
                     <tr>
                         <td>
                             <strong>{{ p.nombreProducto }}</strong>
@@ -62,28 +65,29 @@
 
                         <td>
                             <form action="{{ path('pedir', { 'producto': p.id }) }}" method="post">
-                                Cantidad:&nbsp; <input type="number" name="cantidad" style="width: 50px;" value="1">
-                                <button class="btn btn-success btn-sm" type="submit" name="pedirP">pedir </button>
+                                Cantidad:&nbsp; <input type="number" min="0" name="cantidad" style="width: 50px;"
+                                                       value="1">
+                                <button class="btn btn-success btn-sm" type="submit" name="pedirP">pedir</button>
                             </form>
                         </td>
 
 
                     </tr>
-               {% endfor %}
-               </tbody>
-           </table>
+                {% endfor %}
+                </tbody>
+            </table>
 
 
-    {% else %}
-        <h2>No hay productos para mostrar</h2>
-    {% endif %}
-    <br><br>
-    <a href="{{ path('cuenta') }}" class="btn btn-success btn-lg">
-        Terminar el Pedido
-    </a>
-    <a href="{{ path('inicio') }}" class="btn btn-success btn-lg">
-        Seguir pidiendo
-    </a>
+        {% else %}
+            <h2>No hay productos para mostrar</h2>
+        {% endif %}
+        <br><br>
+        <a href="{{ path('cuenta') }}" class="btn btn-success btn-lg">
+            Terminar el Pedido
+        </a>
+        <a href="{{ path('inicio') }}" class="btn btn-success btn-lg">
+            Seguir pidiendo
+        </a>
     {% else %}
         <h2>No hay mesa seleccionada</h2>
     {% endif %}

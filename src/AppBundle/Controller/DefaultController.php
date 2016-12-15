@@ -1,7 +1,9 @@
 <?php
 namespace AppBundle\Controller;
+
 use AppBundle\Entity\DetallePedido;
 use AppBundle\Entity\FacturaNoPagada;
+use AppBundle\Entity\FacturaPagada;
 use AppBundle\Entity\Mesa;
 use AppBundle\Entity\Producto;
 use AppBundle\Entity\Pedido;
@@ -11,6 +13,7 @@ use AppBundle\Form\Type\UsuarioType;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Route;
 use Symfony\Bundle\FrameworkBundle\Controller\Controller;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Security;
+
 class DefaultController extends Controller
 {
 
@@ -27,12 +30,14 @@ class DefaultController extends Controller
                 'error' => $helper->getLastAuthenticationError()
             ]);
     }
+
     /**
      * @Route("/comprobar", name="usuario_comprobar")
      */
     public function comprobarAction()
     {
     }
+
     /**
      * @Route("/admin", name="administracion")
      * @Security("is_granted('ROLE_ADMIN')")
@@ -41,6 +46,7 @@ class DefaultController extends Controller
     {
         return $this->render(':default:administracion.html.twig');
     }
+
     /**
      * @Route("/mesas", name="mesas")
      * @Security("is_granted('ROLE_CAMARERO')")
@@ -49,6 +55,7 @@ class DefaultController extends Controller
     {
         return $this->render(':mesa:listar_mesa.html.twig');
     }
+
     /**
      * @Route("/", name="inicio")
      */
@@ -59,7 +66,7 @@ class DefaultController extends Controller
         $cliente = $usuario->getEsCliente();
         $mesas = $em->getRepository('AppBundle:Mesa')
             ->findAll();
-        $facturasNoPagadas=$em->getRepository('AppBundle:FacturaNoPagada')->findBy(array('usuario'=>$usuario->getId()));
+        $facturasNoPagadas = $em->getRepository('AppBundle:FacturaNoPagada')->findBy(array('usuario' => $usuario->getId()));
 
         $tipoProducto = $em->getRepository('AppBundle:Producto')
             ->createQueryBuilder('v')
@@ -71,7 +78,8 @@ class DefaultController extends Controller
         if (isset($_POST['ocupar'])) {
 
             $usuario = $this->getUser()->setMesaOcupada($_POST['Nmesa']);
-            $mesa=$em->getRepository('AppBundle:Mesa')->findOneById($_POST['Nmesa'])->setEstado("ocupado");
+            $mesa = $em->getRepository('AppBundle:Mesa')->findOneById($_POST['Nmesa'])->setEstado("ocupado");
+            $mesa->setUser($this->getUser());
             $em->persist($usuario);
             $em->persist($mesa);
             // Guardar los cambios
@@ -79,37 +87,28 @@ class DefaultController extends Controller
 
         }
 
-            if ($cliente) {
+        if ($cliente) {
 
 
-
-                return $this->render(':default:inicio.html.twig', [
-                    'tipoProducto' => $tipoProducto,
-                    'mesa' => $mesas,
-                    'FNP'=>$facturasNoPagadas,
-                    'usuarios' => $usuario
-                ]);
-            } else {
-                $camarero = $usuario->getEsCamarero();
-                if ($camarero) {
-                    if($this->getUser()->getMesaOcupada()==0){
-                        $em = $this->getDoctrine()->getManager();
-                        $pedidoRealizado = $em->getRepository('AppBundle:Pedido')->findBy(array('estado' => array('pendiente','preparado')));
-                        return $this->render(':mesa:listar_mesa.html.twig', [
-                            'mesa' => $mesas,
-                            'pedido' => $pedidoRealizado
-                        ]);
-                    }else{
-
-
-                        return $this->render(':default:inicio.html.twig', [
-                            'tipoProducto' => $tipoProducto,
-                            'mesa' => $mesas,
-                            'usuarios' => $usuario
-                        ]);
-                    }
-
+            return $this->render(':default:inicio.html.twig', [
+                'tipoProducto' => $tipoProducto,
+                'mesa' => $mesas,
+                'FNP' => $facturasNoPagadas,
+                'usuarios' => $usuario
+            ]);
+        } else {
+            $camarero = $usuario->getEsCamarero();
+            if ($camarero) {
+                if ($this->getUser()->getMesaOcupada() == 0) {
+                    $em = $this->getDoctrine()->getManager();
+                    $pedidoRealizado = $em->getRepository('AppBundle:Pedido')->findBy(array('estado' => array('pendiente', 'preparado')));
+                    return $this->render(':mesa:listar_mesa.html.twig', [
+                        'mesa' => $mesas,
+                        'pedido' => $pedidoRealizado,
+                        'usuarios'=>$usuario
+                    ]);
                 } else {
+
 
                     return $this->render(':default:inicio.html.twig', [
                         'tipoProducto' => $tipoProducto,
@@ -117,27 +116,39 @@ class DefaultController extends Controller
                         'usuarios' => $usuario
                     ]);
                 }
+
+            } else {
+
+                return $this->render(':default:inicio.html.twig', [
+                    'tipoProducto' => $tipoProducto,
+                    'mesa' => $mesas,
+                    'usuarios' => $usuario
+                ]);
             }
+        }
     }
 
     /**
      * @Route("/camarero", name="inicioCamarero")
+     * @Security("is_granted('ROLE_CAMARERO')")
      */
     public function inicioCamareroAction()
     {
         $em = $this->getDoctrine()->getManager();
-
+        $usuario = $this->getUser();
         $mesas = $em->getRepository('AppBundle:Mesa')->findAll();
         $this->getUser()->setMesaOcupada(0);
         $em->flush();
 
-        $pedidoRealizado = $em->getRepository('AppBundle:Pedido')->findBy(array('estado' => array('pendiente','preparado')));
+        $pedidoRealizado = $em->getRepository('AppBundle:Pedido')->findBy(array('estado' => array('pendiente', 'preparado')));
 
         return $this->render(':mesa:listar_mesa.html.twig', [
             'mesa' => $mesas,
-            'pedido' => $pedidoRealizado
+            'pedido' => $pedidoRealizado,
+            'usuarios'=>$usuario
         ]);
     }
+
     /**
      * @Route("/pedidoManual", name="pedidoManual")
      */
@@ -155,122 +166,123 @@ class DefaultController extends Controller
             ->findAll();
         return $this->render(':default:inicio.html.twig', [
             'tipoProducto' => $tipoProducto,
-            'mesa'=>$mesas,
-            'usuarios'=> $usuario
+            'mesa' => $mesas,
+            'usuarios' => $usuario
         ]);
     }
+
     /**
      * @Route("/cuenta", name="cuenta")
      */
     public function cuentaAction()
     {
         $em = $this->getDoctrine()->getManager();
-        $mesa=$em->getRepository('AppBundle:Mesa')->findOneById($this->getUser()->getMesaOcupada());
-        $producto=new Producto();
+        $mesa = $em->getRepository('AppBundle:Mesa')->findOneById($this->getUser()->getMesaOcupada());
+        $producto = new Producto();
         $total = 0;
-        if(isset($_SESSION['pedido'])){
-            if($_SESSION['pedido']==''){
-                $pedido=null;
-                $total=0;
-            }else {
+        if (isset($_SESSION['pedido'])) {
+            if ($_SESSION['pedido'] == '') {
+                $pedido = null;
+                $total = 0;
+            } else {
                 $pedido = $_SESSION['pedido'];
 
                 for ($j = 0; $j < count($pedido); $j++) {
                     $total = $total + ($pedido[$j][0]->getPrecio() * $pedido[$j][1]);
                 }
             }
-        }else{    //Se muestra la cuenta sin pedidos.
-            $pedido=null;
-            $total=0;
+        } else {    //Se muestra la cuenta sin pedidos.
+            $pedido = null;
+            $total = 0;
         }
-        return $this->render('default/cuenta.html.twig',[
+        return $this->render('default/cuenta.html.twig', [
             'producto' => $producto,
-            'mesa'=>$mesa,
-            'total'=>$total,
-            'pedido'=>$pedido
+            'mesa' => $mesa,
+            'total' => $total,
+            'pedido' => $pedido
         ]);
     }
 
     /**
-    * @Route("/ver_cuenta", name="ver_cuenta")
-    */
+     * @Route("/ver_cuenta", name="ver_cuenta")
+     */
     public function VerCuentaAction()
     {
         $em = $this->getDoctrine()->getManager();
-        $factura=$em->getRepository('AppBundle:FacturaNoPagada')->findBy(array('usuario'=>$this->getUser()));
-        $mesa=$em->getRepository('AppBundle:Mesa')->findOneById($this->getUser()->getMesaOcupada());
+        $factura = $em->getRepository('AppBundle:FacturaNoPagada')->findBy(array('usuario' => $this->getUser()));
+        $mesa = $em->getRepository('AppBundle:Mesa')->findOneById($this->getUser()->getMesaOcupada());
 
         //creamos un array con los pedidos que tiene el cliente en la factura
-        $arrayPedidos=array();
-        $i=0;
-        foreach($factura as $f){
+        $arrayPedidos = array();
+        $i = 0;
+        foreach ($factura as $f) {
 
-            $arrayPedidos[$i]=$f->getIdPedido();
+            $arrayPedidos[$i] = $f->getIdPedido();
 
             $i++;
-    }
+        }
         //creamos un array con los detalles delpedido para que no haya duplicados
 
-        $arrayDetallePedido=0;
+        $arrayDetallePedido = 0;
 
-        $j=0;
-        $i=0;
-        $z=0;
-        $cantidad=0;
+        $j = 0;
+        $i = 0;
+        $z = 0;
+        $cantidad = 0;
 
-        do{
-            $encontrado=false;
-            $dpedido=$em->getRepository('AppBundle:DetallePedido')->findBy(array('Dpedido'=>$arrayPedidos[$j]));
+        do {
+            $encontrado = false;
+            $dpedido = $em->getRepository('AppBundle:DetallePedido')->findBy(array('Dpedido' => $arrayPedidos[$j]));
 
-                if(!$arrayDetallePedido){ //guardamos el primer pedido
-                    $arrayDetallePedido = $dpedido;
-                }else{
+            if (!$arrayDetallePedido) { //guardamos el primer pedido
+                $arrayDetallePedido = $dpedido;
+            } else {
 
 
                 //recorremos los pedidos que tenga el cliente y comprobamos si el producto está en el array de detallepedido y en dpedido
 
-                    for ($z = 0; $z < count($dpedido); $z++) {
-                        for($i=0; $i< count($arrayDetallePedido); $i++) {
-                            $encontrado = false;
+                for ($z = 0; $z < count($dpedido); $z++) {
+                    for ($i = 0; $i < count($arrayDetallePedido); $i++) {
+                        $encontrado = false;
 
-                            if ($arrayDetallePedido[$i]->getNombreProducto() == $dpedido[$z]->getNombreProducto()) {
-                             $cantidad = $arrayDetallePedido[$i]->getCantidad();
-                             $arrayDetallePedido[$i]->setCantidad($dpedido[0]->getCantidad() + $cantidad);
+                        if ($arrayDetallePedido[$i]->getNombreProducto() == $dpedido[$z]->getNombreProducto()) {
+                            $cantidad = $arrayDetallePedido[$i]->getCantidad();
+                            $arrayDetallePedido[$i]->setCantidad($dpedido[0]->getCantidad() + $cantidad);
                             $encontrado = true;
                             break;
                         }
 
                     }
-                    if(!$encontrado){
+                    if (!$encontrado) {
 
                         array_push($arrayDetallePedido, $dpedido[$z]);
 
+
                     }
-
                 }
-
-                }
-
-
-        $j++;
-        }while($j<count($arrayPedidos));
+            }
 
 
-        return $this->render('default/VerCuenta.html.twig',[
+            $j++;
+        } while ($j < count($arrayPedidos));
+
+
+        return $this->render('default/VerCuenta.html.twig', [
             'factura' => $factura,
-            'mesa'=>$mesa,
-            'dpedido'=>$arrayDetallePedido
+            'mesa' => $mesa,
+            'dpedido' => $arrayDetallePedido
 
         ]);
     }
+
     /**
      * @Route("/realizar_pedido", name="realizar_pedido")
      */
     public function realizarPedidoAction()
     {
         $total = 0;
-        if(isset($_SESSION['pedido'])) {
-            if($_SESSION['pedido']!=''){
+        if (isset($_SESSION['pedido'])) {
+            if ($_SESSION['pedido'] != '') {
                 $em = $this->getDoctrine()->getManager();
                 $pedido = $_SESSION['pedido'];
 
@@ -286,10 +298,11 @@ class DefaultController extends Controller
                 $em->flush();
 
                 //creamos una factura
-                $factura= new FacturaNoPagada();
+                $factura = new FacturaNoPagada();
                 $factura->setHora(new \DateTime());
                 $factura->setIdPedido($pedidoRealizado->getId());
                 $factura->setUsuario($this->getUser());
+                $factura->setIdUsuario($this->getUser()->getId());
                 $em->persist($factura);
                 // Guardar los cambios
                 $em->flush();
@@ -312,7 +325,6 @@ class DefaultController extends Controller
                     $em->flush();
 
 
-
                     //actualizamos la cuenta
                     $precio = $producto->getPrecio();
                     $cantidad = $pedido[$i][1];
@@ -324,20 +336,18 @@ class DefaultController extends Controller
                     $em->flush();
 
 
-
-
                     //descontamos los productos en el almacen
 
 
                     //dentro del carrito buscamos los pedidos que tengan cantidad distinta de 0 para descontar los productos
-                    if($pedido[$i][1]!=0){
+                    if ($pedido[$i][1] != 0) {
                         $Ingredientes = $em->getRepository('AppBundle:Ingredientes')->findBy(array('nombreProducto' => $producto->getNombreProducto()));
 
-                        if($Ingredientes){
+                        if ($Ingredientes) {
                             for ($z = 0; $z < count($Ingredientes); $z++) {
-                                $almacen=$em->getRepository('AppBundle:Almacen')->findBy(array('nombreIngrediente'=>$Ingredientes[$z]->getNombreIngrediente()));
-                                $stockActual=$almacen[0]->getStock();
-                               $almacen[0]->setStock($stockActual-$Ingredientes[$z]->getCantidad());
+                                $almacen = $em->getRepository('AppBundle:Almacen')->findBy(array('nombreIngrediente' => $Ingredientes[$z]->getNombreIngrediente()));
+                                $stockActual = $almacen[0]->getStock();
+                                $almacen[0]->setStock($stockActual - $Ingredientes[$z]->getCantidad());
 
                                 $em->persist($almacen[0]);
 
@@ -346,6 +356,14 @@ class DefaultController extends Controller
                             }
                         }
                     }
+
+                    //guardamos la factura
+                    $usuario1=$em->getRepository('AppBundle:Usuario')->findOneById($this->getUser()->getId());
+                    $usuario1->setFactura($mesa->getCuenta());
+                    $em->persist($usuario1);
+
+                    // Guardar los cambios
+                    $em->flush();
 
                 }
 
@@ -357,28 +375,28 @@ class DefaultController extends Controller
             }
 
             $em = $this->getDoctrine()->getManager();
-            $mesa=$em->getRepository('AppBundle:Mesa')->findOneById($this->getUser()->getMesaOcupada());
-            $producto=new Producto();
+            $mesa = $em->getRepository('AppBundle:Mesa')->findOneById($this->getUser()->getMesaOcupada());
+            $producto = new Producto();
             $_SESSION['pedido'] = '';
-            $pedido=null;
+            $pedido = null;
 
 
-            return $this->render('default/cuenta.html.twig',[
+            return $this->render('default/cuenta.html.twig', [
                 'producto' => $producto,
-                'mesa'=>$mesa,
-                'total'=>$total,
-                'pedido'=>$pedido
+                'mesa' => $mesa,
+                'total' => $total,
+                'pedido' => $pedido
             ]);
-        }else{    //Se muestra la cuenta sin pedidos.
+        } else {    //Se muestra la cuenta sin pedidos.
             $em = $this->getDoctrine()->getManager();
-            $mesa=$em->getRepository('AppBundle:Mesa')->findOneById($this->getUser()->getMesaOcupada());
-            $producto=new Producto();
-            $pedido=null;
-            return $this->render('default/cuenta.html.twig',[
+            $mesa = $em->getRepository('AppBundle:Mesa')->findOneById($this->getUser()->getMesaOcupada());
+            $producto = new Producto();
+            $pedido = null;
+            return $this->render('default/cuenta.html.twig', [
                 'producto' => $producto,
-                'mesa'=>$mesa,
-                'total'=>$total,
-                'pedido'=>$pedido
+                'mesa' => $mesa,
+                'total' => $total,
+                'pedido' => $pedido
             ]);
         }
     }
@@ -388,25 +406,26 @@ class DefaultController extends Controller
      */
     public function PagarAction()
     {
-        $total=0;
+        $total = 0;
         $em = $this->getDoctrine()->getManager();
-        $mesa=$em->getRepository('AppBundle:Mesa')->findOneById($this->getUser()->getMesaOcupada());
+        $mesa = $em->getRepository('AppBundle:Mesa')->findOneById($this->getUser()->getMesaOcupada());
         $mesa->setEstado("cuenta pedida");
         $em->persist($mesa);
         // Guardar los cambios
         $em->flush();
 
-        $producto=new Producto();
-        $pedido=null;
+        $producto = new Producto();
+        $pedido = null;
 
 
-        return $this->render('default/cuenta.html.twig',[
+        return $this->render('default/cuenta.html.twig', [
             'producto' => $producto,
-            'mesa'=>$mesa,
-            'total'=>$total,
-            'pedido'=>$pedido
+            'mesa' => $mesa,
+            'total' => $total,
+            'pedido' => $pedido
         ]);
     }
+
     /**
      * @Route("/salir", name="salir")
      */
@@ -415,18 +434,19 @@ class DefaultController extends Controller
         // Al salir se redirecciona al formulario de login
         return $this->render('default/formulario.html.twig', array());
     }
+
     /**
      * @Route("/instalar", name="instalar")
      */
     public function instalarAction()
     {
         $em = $this->getDoctrine()->getManager();
-        $usu = $em->getRepository('AppBundle:Usuario')->findOneBy(array('id'=>1));
-        if(!$usu){
-            $usuario= new Usuario();
+        $usu = $em->getRepository('AppBundle:Usuario')->findOneBy(array('id' => 1));
+        if (!$usu) {
+            $usuario = new Usuario();
             $usuario->setNombreUsuario('admin');
             $usuario->setPass('admin');
-            $helper =  $password = $this->container->get('security.password_encoder');
+            $helper = $password = $this->container->get('security.password_encoder');
             $usuario->setPass($helper->encodePassword($usuario, $usuario->getPassword()));
 
             $usuario->setNombre('admin');
@@ -445,5 +465,133 @@ class DefaultController extends Controller
             $em->flush();
         }
         return $this->render(':default:formulario.html.twig');
+    }
+
+
+    /**
+     * @Route("/pagarFacturas", name="pagar_facturas")
+     * @Security("is_granted('ROLE_CAMARERO')")
+     */
+    public function pagarFacturas()
+    {
+
+        //mostrar los usuarios con facturas no pagadas
+
+        $em = $this->getDoctrine()->getManager();
+
+            $FacturasUsuarios = $em->getRepository('AppBundle:FacturaNoPagada')
+                ->createQueryBuilder('v')
+                ->select('v.idUsuario')
+                ->distinct()
+                ->getQuery()
+                ->getResult();
+
+
+            $arrayUsuarios = array();
+            $j = 0;
+            do {
+
+                $usuarios = $em->getRepository('AppBundle:Usuario')->findBy(array("id" => $FacturasUsuarios[$j]));
+
+                if (!$arrayUsuarios) {
+                    $arrayUsuarios = $usuarios;
+                } else {
+                    for ($i = 0; $i < count($arrayUsuarios); $i++) {
+                        $encontrado = false;
+                        if ($arrayUsuarios[$i]->getId() == $usuarios[0]->getId()) {
+                            $encontrado = true;
+                            break;
+                        }
+                    }
+                    if (!$encontrado) {
+
+                        array_push($arrayUsuarios, $usuarios[0]);
+
+                    }
+                }
+                $j++;
+            } while ($j < count($FacturasUsuarios));
+
+
+        return $this->render('default/pagarFacturas.html.twig', [
+            'usuario' => $arrayUsuarios,
+        ]);
+
+    }
+
+
+    /**
+     * @Route("/pagarFacturasNP/{id}", name="pagar_facturasNP"), methods={'GET', 'POST'}
+     * @Security("is_granted('ROLE_CAMARERO')")
+     */
+    public function pagarFacturasNP(Usuario $id)
+    {
+
+        //mostrar los usuarios con facturas no pagadas
+
+        $em = $this->getDoctrine()->getManager();
+
+        if(isset($_POST['pagarFacturasNP'])) {
+            //poner las facturas en facturas pagadas
+
+            $facturas = $em->getRepository('AppBundle:FacturaNoPagada')->findBy(array('usuario' => $id));
+
+            if ($facturas) {
+
+                while ($facturas) {
+                    $facturaPagada = new FacturaPagada();
+                    $facturaPagada->setUsuario($id);
+                    $facturaPagada->setHora(new \DateTime());
+                    $facturaPagada->setIdPedido($facturas[0]->getIdPedido());
+
+                    $em->persist($facturaPagada);
+                    $em->flush();
+
+                    $em->remove($facturas[0]);
+                    $em->flush();
+
+
+                    $facturas = $em->getRepository('AppBundle:FacturaNoPagada')->findBy(array('usuario' => $id));
+                };
+            }
+        }
+        $FacturasUsuarios = $em->getRepository('AppBundle:FacturaNoPagada')
+            ->createQueryBuilder('v')
+            ->select('v.idUsuario')
+            ->distinct()
+            ->getQuery()
+            ->getResult();
+
+
+        $arrayUsuarios = array();
+        $j = 0;
+        do {
+
+            $usuarios = $em->getRepository('AppBundle:Usuario')->findBy(array("id" => $FacturasUsuarios[$j]));
+
+            if (!$arrayUsuarios) {
+                $arrayUsuarios = $usuarios;
+            } else {
+                for ($i = 0; $i < count($arrayUsuarios); $i++) {
+                    $encontrado = false;
+                    if ($arrayUsuarios[$i]->getId() == $usuarios[0]->getId()) {
+                        $encontrado = true;
+                        break;
+                    }
+                }
+                if (!$encontrado) {
+
+                    array_push($arrayUsuarios, $usuarios[0]);
+
+                }
+            }
+            $j++;
+        } while ($j < count($FacturasUsuarios));
+
+
+        return $this->render('default/pagarFacturas.html.twig', [
+            'usuario' => $arrayUsuarios,
+        ]);
+
     }
 }

@@ -83,6 +83,12 @@ class Usuario implements UserInterface
      */
     protected $nombre;
 
+    /**
+     * @ORM\Column(type="decimal")
+     * @var decimal
+     */
+    protected $factura;
+
 
     /**
      * @ORM\Column(type="string")
@@ -592,10 +598,28 @@ class Usuario implements UserInterface
         return $this->id===$user->getId();
 
     }
-    public function __toString()
+
+
+    /**
+     * Set factura
+     *
+     * @param string $factura
+     * @return Usuario
+     */
+    public function setFactura($factura)
     {
-        return $this->getNombreUsuario() . ' (' . $this->getNie() . ')';
+        $this->factura = $factura;
+
+        return $this;
     }
 
-
+    /**
+     * Get factura
+     *
+     * @return string 
+     */
+    public function getFactura()
+    {
+        return $this->factura;
+    }
 }

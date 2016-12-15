@@ -19,6 +19,11 @@
     <a href="{{ path('pedidoManual') }}" class="btn btn-success btn-lg">
        Realizar pedido manual
     </a>
+{% if usuarios.esCamarero %}
+    <a href="{{ path('pagar_facturas') }}" class="btn btn-warning btn-lg">
+        Pagar Facturas Pendientes de un cliente
+    </a>
+    {% endif %}
     {% if mesa %}
         <table class="table table-bordered table-condensed table-hover table-striped">
         <thead>
@@ -39,10 +44,10 @@
                 <td>
 
                     <form method="post" action="{{ path('pagado', {'id': m.id}) }}" >
-                        <button class="btn btn-info btn-sm" type="submit" name="pagar">Pagado </button>
+                        <button class="btn btn-info " type="submit" name="pagar">Pagado </button>
                     </form>
                     <form method="post" action="{{ path('NOpagado', {'id': m.id}) }}" >
-                        <button class="btn btn-danger btn-sm" type="submit" name="SinPagar">No Pagado </button>
+                        <button class="btn btn-danger" type="submit" name="SinPagar">No Pagado </button>
                     </form>
 
                 </td>

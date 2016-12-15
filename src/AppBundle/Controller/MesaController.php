@@ -27,6 +27,7 @@ class MesaController extends Controller
     public function listarAction()
     {
         $em = $this->getDoctrine()->getManager();
+        $usuarios=$this->getUser();
 
         $mesa = $em->getRepository('AppBundle:Mesa')
             ->findAll();
@@ -35,7 +36,8 @@ class MesaController extends Controller
 
         return $this->render(':mesa:listar_mesa.html.twig', [
             'mesa' => $mesa,
-            'pedido'=>$pedidoRealizado
+            'pedido'=>$pedidoRealizado,
+            'usuarios'=>$usuarios
         ]);
     }
 
@@ -48,7 +50,6 @@ class MesaController extends Controller
         $mesa = new mesa();
 
         $mesa->setCuenta(0)
-            ->setFactura(0)
             ->setEstado("libre");
 
         // Obtener el EntityManager
@@ -88,13 +89,10 @@ class MesaController extends Controller
         if(isset($_POST['pagar'])){
 
             $em = $this->getDoctrine()->getManager();
-            $factura=$id->getFactura();
-            $cuenta=$id->getCuenta();
             $cliente=$id->getUser();
 
             //sumamos la cuenta a la factura de la mesa
             $id->setCuenta(0);
-            $id->setFactura($factura+$cuenta);
 
             //ponemos el estado de la mesa a "libre"
             $id->setEstado("libre");
@@ -107,6 +105,7 @@ class MesaController extends Controller
                 //ponemos la mesa del usuario libre
                 $usuario = $em->getRepository('AppBundle:Usuario')->findById($cliente);
                 $usuario[0]->setMesaOcupada(0);
+                $usuario[0]->setFactura(0);
 
                 $em->persist($usuario[0]);
                 $em->flush();
@@ -156,14 +155,11 @@ class MesaController extends Controller
 
         if(isset($_POST['SinPagar'])){
             $em = $this->getDoctrine()->getManager();
-            $factura=$id->getFactura();
-            $cuenta=$id->getCuenta();
             $cliente=$id->getUser();
 
 
             //sumamos la cuenta a la factura de la mesa
             $id->setCuenta(0);
-            $id->setFactura($factura+$cuenta);
 
 
             //ponemos la mesa del usuario libre

@@ -23,13 +23,7 @@ class Mesa
      */
     protected $cuenta;
 
-    /**
-     * @ORM\Column(type="decimal")
-     * @var decimal
-     */
-    protected $factura;
-
-    /**
+     /**
      * @ORM\Column(type="string")
      * @var string
      */

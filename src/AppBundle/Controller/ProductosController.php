@@ -46,7 +46,6 @@ class ProductosController extends Controller
      */
     public function verProductosAction($tipoProducto)
     {
-        dump($tipoProducto);
         $total=0;
 
         if(isset($_SESSION['pedido'])){
@@ -72,7 +71,6 @@ class ProductosController extends Controller
 
         $producto = $em->getRepository('AppBundle:Producto')
                 ->findBy(array('tipo' => $tipoProducto));
-
 
         $_SESSION['tipoProducto']=$tipoProducto;
 
