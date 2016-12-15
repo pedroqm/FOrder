@@ -33,9 +33,36 @@ class ProductosController extends Controller
             ->findAll();
         $mesa=$em->getRepository('AppBundle:Mesa')->findOneById($this->getUser()->getMesaOcupada());
         $pedido=null;
-        //buscar existencias
-        for($i=0; $i<count($producto);$i++){
-            dump($i);
+        if($producto) {
+            $min=null;
+            //buscar existencias
+            for ($i = 0; $i < count($producto); $i++) {
+                $existencias=0;
+                $ingrediente = $em->getRepository('AppBundle:Ingredientes')->findBy(array('nombreProducto' => $producto[$i]->getNombreProducto()));
+
+                for ($j = 0; $j < count($ingrediente); $j++) {
+                    $stock = $ingrediente[$j]->getAlmacenado();
+                    $cantidadI = $ingrediente[$j]->getCantidad();
+                    $auxExistencias = $stock->getStock() / $cantidadI;
+                    if (!$min) {
+                        $min = $auxExistencias;
+                    } else {
+                        if ($min > $auxExistencias) {
+                            $min = $auxExistencias;
+                        }
+                    }
+                }
+                dump($min);
+                $existencias = $min;
+
+                $producto[$i]->setExistencias($existencias);
+
+                $em->persist($producto[$i]);
+                // Guardar los cambios
+                $em->flush();
+
+
+            }
         }
 
         return $this->render(':productos:ver_productos.html.twig', [
@@ -87,7 +114,6 @@ class ProductosController extends Controller
 
                 for ($j = 0; $j < count($ingrediente); $j++) {
                     $stock = $ingrediente[$j]->getAlmacenado();
-                    //dump($stock->getStock());
                     $cantidadI = $ingrediente[$j]->getCantidad();
                     $auxExistencias = $stock->getStock() / $cantidadI;
                     if (!$min) {

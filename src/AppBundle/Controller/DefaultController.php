@@ -420,7 +420,9 @@ class DefaultController extends Controller
                             for ($z = 0; $z < count($Ingredientes); $z++) {
                                 $almacen = $em->getRepository('AppBundle:Almacen')->findBy(array('nombreIngrediente' => $Ingredientes[$z]->getNombreIngrediente()));
                                 $stockActual = $almacen[0]->getStock();
-                                $almacen[0]->setStock($stockActual - $Ingredientes[$z]->getCantidad());
+                                $almacen[0]->setStock($stockActual - ($Ingredientes[$z]->getCantidad()*$pedido[$i][1]));
+
+
 
                                 $em->persist($almacen[0]);
 
