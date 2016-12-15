@@ -276,6 +276,78 @@ class DefaultController extends Controller
     }
 
     /**
+     * @Route("/ver_cuentaF/{id}", name="ver_cuentaF"), methods={'GET', 'POST'}
+     */
+    public function VerCuentaFAction(Usuario $id)
+    {
+        $em = $this->getDoctrine()->getManager();
+        $factura = $em->getRepository('AppBundle:FacturaNoPagada')->findBy(array('usuario' => $id));
+        $mesa = $em->getRepository('AppBundle:Mesa')->findOneById($this->getUser()->getMesaOcupada());
+
+        //creamos un array con los pedidos que tiene el cliente en la factura
+        $arrayPedidos = array();
+        $i = 0;
+        foreach ($factura as $f) {
+
+            $arrayPedidos[$i] = $f->getIdPedido();
+
+            $i++;
+        }
+        //creamos un array con los detalles delpedido para que no haya duplicados
+
+        $arrayDetallePedido = 0;
+
+        $j = 0;
+        $i = 0;
+        $z = 0;
+        $cantidad = 0;
+
+        do {
+            $encontrado = false;
+            $dpedido = $em->getRepository('AppBundle:DetallePedido')->findBy(array('Dpedido' => $arrayPedidos[$j]));
+
+            if (!$arrayDetallePedido) { //guardamos el primer pedido
+                $arrayDetallePedido = $dpedido;
+            } else {
+
+
+                //recorremos los pedidos que tenga el cliente y comprobamos si el producto está en el array de detallepedido y en dpedido
+
+                for ($z = 0; $z < count($dpedido); $z++) {
+                    for ($i = 0; $i < count($arrayDetallePedido); $i++) {
+                        $encontrado = false;
+
+                        if ($arrayDetallePedido[$i]->getNombreProducto() == $dpedido[$z]->getNombreProducto()) {
+                            $cantidad = $arrayDetallePedido[$i]->getCantidad();
+                            $arrayDetallePedido[$i]->setCantidad($dpedido[0]->getCantidad() + $cantidad);
+                            $encontrado = true;
+                            break;
+                        }
+
+                    }
+                    if (!$encontrado) {
+
+                        array_push($arrayDetallePedido, $dpedido[$z]);
+
+
+                    }
+                }
+            }
+
+
+            $j++;
+        } while ($j < count($arrayPedidos));
+
+
+        return $this->render('default/VerCuenta.html.twig', [
+            'factura' => $factura,
+            'mesa' => $mesa,
+            'dpedido' => $arrayDetallePedido
+
+        ]);
+    }
+
+    /**
      * @Route("/realizar_pedido", name="realizar_pedido")
      */
     public function realizarPedidoAction()
