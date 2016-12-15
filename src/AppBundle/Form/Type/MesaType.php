@@ -20,8 +20,8 @@ class MesaType extends AbstractType
                 ],
                 'required' => false
             ])
-            ->add('factura', null, [
-                'label' => 'factura',
+            ->add('estado', null,[
+                'label' => 'estado',
                 'attr' => [
                     'class' => 'form-control'
                 ],

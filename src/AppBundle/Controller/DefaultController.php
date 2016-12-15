@@ -7,9 +7,7 @@ use AppBundle\Entity\FacturaPagada;
 use AppBundle\Entity\Mesa;
 use AppBundle\Entity\Producto;
 use AppBundle\Entity\Pedido;
-use AppBundle\Form\Type\ProductoType;
 use AppBundle\Entity\Usuario;
-use AppBundle\Form\Type\UsuarioType;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Route;
 use Symfony\Bundle\FrameworkBundle\Controller\Controller;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Security;
@@ -46,14 +44,13 @@ class DefaultController extends Controller
     {
         return $this->render(':default:administracion.html.twig');
     }
-
     /**
-     * @Route("/mesas", name="mesas")
-     * @Security("is_granted('ROLE_CAMARERO')")
+     * @Route("/salir", name="salir")
      */
-    public function servicioAction()
+    public function salirAction()
     {
-        return $this->render(':mesa:listar_mesa.html.twig');
+        // Al salir se redirecciona al formulario de login
+        return $this->render('default/formulario.html.twig', array());
     }
 
     /**
@@ -151,6 +148,7 @@ class DefaultController extends Controller
 
     /**
      * @Route("/pedidoManual", name="pedidoManual")
+     * @Security("is_granted('ROLE_CAMARERO')")
      */
     public function pedManualAction()
     {
@@ -499,15 +497,6 @@ class DefaultController extends Controller
             'total' => $total,
             'pedido' => $pedido
         ]);
-    }
-
-    /**
-     * @Route("/salir", name="salir")
-     */
-    public function salirAction()
-    {
-        // Al salir se redirecciona al formulario de login
-        return $this->render('default/formulario.html.twig', array());
     }
 
     /**

@@ -23,6 +23,7 @@ class MesaController extends Controller
 
     /**
      * @Route("/listar", name="mesa_listar")
+     * @Security("is_granted('ROLE_CAMARERO')")
      */
     public function listarAction()
     {
@@ -184,6 +185,7 @@ class MesaController extends Controller
     }
     /**
      * @Route("/modificar/{mesa}", name="mesa_modificar")
+     * @Security("is_granted('ROLE_CAMARERO')")
      */
     public function modificarAction(Request $peticion, Mesa $mesa)
     {
@@ -250,6 +252,7 @@ class MesaController extends Controller
     }
     /**
      * @Route("/eliminar/{mesa}", name="mesa_eliminar")
+     * @Security("is_granted('ROLE_CAMARERO')")
      */
     public function eliminarAction(Request $peticion, Mesa $mesa)
     {

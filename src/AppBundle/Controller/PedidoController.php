@@ -14,45 +14,7 @@ use Symfony\Component\HttpFoundation\Request;
  */
 class PedidoController extends Controller
 {
-    /**
-     * @Route("/listar", name="pedido_listar")
-     */
-    public function listarAction()
-    {
-        $em = $this->getDoctrine()->getManager();
-        $pedidos = $em->getRepository('AppBundle:Pedido')
-            ->findAll();
-        return $this->render(':pedido:listar_pedido.html.twig', [
-            'pedidos' => $pedidos
-        ]);
-    }
-    /**
-     * @Route("/nuevo", name="pedido_nuevo")
-     */
-    public function nuevoAction(Request $peticion)
-    {
-        $pedido = new Pedido();
-        // Crear el formulario a partir de la clase
-        $formulario = $this->createForm(new PedidoType(), $pedido);
-        // Procesar el formulario si se ha enviado con un POST
-        $formulario->handleRequest($peticion);
-        // Si se ha enviado y el contenido es válido, guardar los cambios
-        if ($formulario->isSubmitted() && $formulario->isValid()) {
-            // Obtener el EntityManager
-            $em = $this->getDoctrine()->getManager();
-            // Asegurarse de que se tiene en cuenta el nuevo pedido
-            $em->persist($pedido);
-            // Guardar los cambios
-            $em->flush();
-            // Redirigir al usuario a la lista
-            return new RedirectResponse(
-                $this->generateUrl('pedido_listar')
-            );
-        }
-        return $this->render(':pedido:nuevo_pedido.html.twig' ,[
-            'formulario' => $formulario->createView()
-        ]);
-    }
+
     /**
      * @Route("/pedir/{producto}", name="pedir")
      */
@@ -215,30 +177,5 @@ class PedidoController extends Controller
             'pedido'=>$pedido
         ]);
     }
-    /**
-     * @Route("/modificar/{pedido}", name="pedido_modificar")
-     */
-    public function modificarAction(Request $peticion, Pedido $pedido)
-    {
-        // Crear el formulario a partir de la clase
-        $formulario = $this->createForm(new PedidoType(), $pedido);
-        // Procesar el formulario si se ha enviado con un POST
-        $formulario->handleRequest($peticion);
-        // Si se ha enviado y el contenido es válido, guardar los cambios
-        if ($formulario->isSubmitted() && $formulario->isValid()) {
-            // Obtener el EntityManager
-            $em = $this->getDoctrine()->getManager();
-            // Asegurarse de que se tiene en cuenta el nuevo pedido
-            $em->persist($pedido);
-            // Guardar los cambios
-            $em->flush();
-            // Redirigir al usuario a la lista
-            return new RedirectResponse(
-                $this->generateUrl('pedido_listar')
-            );
-        }
-        return $this->render(':pedido:modificar_pedido.html.twig', [
-            'formulario' => $formulario->createView()
-        ]);
-    }
+
 }

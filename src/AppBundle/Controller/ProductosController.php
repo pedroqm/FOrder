@@ -6,15 +6,15 @@ use AppBundle\Entity\Producto;
 use AppBundle\Form\Type\ProductoType;
 use AppBundle\Entity\TipoProducto;
 use AppBundle\Entity\Almacen;
-use AppBundle\Form\Type\AlmacenType;
 use AppBundle\Entity\Ingredientes;
-use AppBundle\Form\Type\IngredienteType;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Route;
 use Symfony\Bridge\Doctrine\Tests\Form\Type\EntityTypeTest;
 use Symfony\Bundle\FrameworkBundle\Controller\Controller;
 use Symfony\Component\HttpFoundation\RedirectResponse;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Bridge\Doctrine\Form\Type\EntityType;
+use Sensio\Bundle\FrameworkExtraBundle\Configuration\Security;
+
 
 /**
  * @Route("/productos")
@@ -38,8 +38,8 @@ class ProductosController extends Controller
             //buscar existencias
             for ($i = 0; $i < count($producto); $i++) {
                 $existencias=0;
+                $min=null;
                 $ingrediente = $em->getRepository('AppBundle:Ingredientes')->findBy(array('nombreProducto' => $producto[$i]->getNombreProducto()));
-
                 for ($j = 0; $j < count($ingrediente); $j++) {
                     $stock = $ingrediente[$j]->getAlmacenado();
                     $cantidadI = $ingrediente[$j]->getCantidad();
@@ -52,7 +52,6 @@ class ProductosController extends Controller
                         }
                     }
                 }
-                dump($min);
                 $existencias = $min;
 
                 $producto[$i]->setExistencias($existencias);
@@ -110,6 +109,7 @@ class ProductosController extends Controller
             //buscar existencias
             for ($i = 0; $i < count($producto); $i++) {
                 $existencias=0;
+                $min=null;
                 $ingrediente = $em->getRepository('AppBundle:Ingredientes')->findBy(array('nombreProducto' => $producto[$i]->getNombreProducto()));
 
                 for ($j = 0; $j < count($ingrediente); $j++) {
@@ -124,7 +124,9 @@ class ProductosController extends Controller
                         }
                     }
                 }
-                dump($min);
+                if(!$min){
+                    $min=0;
+                }
                 $existencias = $min;
 
                 $producto[$i]->setExistencias($existencias);
@@ -162,6 +164,7 @@ class ProductosController extends Controller
     }
     /**
      * @Route("/nuevo", name="producto_nuevo")
+     * @Security("is_granted('ROLE_ADMIN')")
      */
     public function nuevoAction(Request $peticion)
     {
@@ -202,6 +205,7 @@ class ProductosController extends Controller
     }
     /**
      * @Route("/modificar/{producto}", name="producto_modificar")
+     * @Security("is_granted('ROLE_ADMIN')")
      */
     public function modificarAction(Request $peticion, Producto $producto)
     {
@@ -235,6 +239,7 @@ class ProductosController extends Controller
 
     /**
      * @Route("/eliminar/{producto}", name="producto_eliminar")
+     * @Security("is_granted('ROLE_ADMIN')")
      */
     public function eliminarAction(Producto $producto)
     {
