@@ -33,6 +33,11 @@ class ProductosController extends Controller
             ->findAll();
         $mesa=$em->getRepository('AppBundle:Mesa')->findOneById($this->getUser()->getMesaOcupada());
         $pedido=null;
+        //buscar existencias
+        for($i=0; $i<count($producto);$i++){
+            dump($i);
+        }
+
         return $this->render(':productos:ver_productos.html.twig', [
             'producto' => $producto,
             'usuarios'=>$usuario,
@@ -71,6 +76,40 @@ class ProductosController extends Controller
 
         $producto = $em->getRepository('AppBundle:Producto')
                 ->findBy(array('tipo' => $tipoProducto));
+
+
+        if($producto) {
+            $min=null;
+            //buscar existencias
+            for ($i = 0; $i < count($producto); $i++) {
+                $existencias=0;
+                $ingrediente = $em->getRepository('AppBundle:Ingredientes')->findBy(array('nombreProducto' => $producto[$i]->getNombreProducto()));
+
+                for ($j = 0; $j < count($ingrediente); $j++) {
+                    $stock = $ingrediente[$j]->getAlmacenado();
+                    //dump($stock->getStock());
+                    $cantidadI = $ingrediente[$j]->getCantidad();
+                    $auxExistencias = $stock->getStock() / $cantidadI;
+                    if (!$min) {
+                        $min = $auxExistencias;
+                    } else {
+                        if ($min > $auxExistencias) {
+                            $min = $auxExistencias;
+                        }
+                    }
+                }
+                dump($min);
+                $existencias = $min;
+
+                $producto[$i]->setExistencias($existencias);
+
+                $em->persist($producto[$i]);
+                // Guardar los cambios
+                $em->flush();
+
+
+            }
+        }
 
         $_SESSION['tipoProducto']=$tipoProducto;
 
@@ -115,7 +154,7 @@ class ProductosController extends Controller
            // Obtener el EntityManager
            $em = $this->getDoctrine()->getManager();
 
-           $producto->setExistencias(false);
+           $producto->setExistencias(0);
 
            // Asegurarse de que se tiene en cuenta el nuevo pedido
            $em->persist($producto);
@@ -159,7 +198,7 @@ class ProductosController extends Controller
 
             // Redirigir al usuario a la lista
             return new RedirectResponse(
-                $this->generateUrl('producto_listar')
+                $this->generateUrl('inicio')
             );
         }
         return $this->render(':productos:modificar_productos.html.twig', [

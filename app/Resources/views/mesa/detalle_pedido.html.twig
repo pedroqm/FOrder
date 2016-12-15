@@ -20,7 +20,7 @@
                     <tr>
                         {% if de.dpedido.id == pedido.id %}
                             <td>{{ de.nombreProducto }}</td>
-                            {% if de.cantidad==0 %}
+                            {% if de.listo==true %}
                                 <td>Listo</td>
                             {% else %}
                                     <td>{{ de.cantidad }}</td>

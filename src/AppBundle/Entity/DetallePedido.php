@@ -35,7 +35,11 @@ class DetallePedido
      * @var float
      */
     protected $precio;
-
+    /**
+     * @ORM\Column(type="boolean")
+     * @var boolean
+     */
+    protected $listo;
 
     /**
      * @ORM\ManyToOne(targetEntity="AppBundle\Entity\Pedido",
@@ -178,5 +182,28 @@ class DetallePedido
     public function getPrecio()
     {
         return $this->precio;
+    }
+
+    /**
+     * Set listo
+     *
+     * @param boolean $listo
+     * @return DetallePedido
+     */
+    public function setListo($listo)
+    {
+        $this->listo = $listo;
+
+        return $this;
+    }
+
+    /**
+     * Get listo
+     *
+     * @return boolean 
+     */
+    public function getListo()
+    {
+        return $this->listo;
     }
 }

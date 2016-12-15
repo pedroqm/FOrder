@@ -51,7 +51,17 @@
                     </form>
 
                 </td>
+
                 <td>
+                    {% if m.user %}
+                    <a href="{{ path('ver_cuentaF', {'id': m.user.id }) }}" class="btn btn-info">
+                        Ver la Factura completa
+                    </a>
+                    {% endif %}
+
+                </td>
+                <td>
+
                     <a href="{{ path('mesa_modificar', {'mesa': m.id}) }}" class="btn btn-warning btn-sm">
                         <i class="glyphicon glyphicon-pencil"></i> Modificar cuenta
                     </a>

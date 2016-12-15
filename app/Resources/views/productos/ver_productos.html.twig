@@ -51,7 +51,8 @@
 
         {% if producto %}
 
-            <table>
+            <table class="table-condensed">
+
                 <tbody>
                 {% for p in producto %}
                     <tr>
@@ -65,7 +66,7 @@
 
                         <td>
                             <form action="{{ path('pedir', { 'producto': p.id }) }}" method="post">
-                                Cantidad:&nbsp; <input type="number" min="0" name="cantidad" style="width: 50px;"
+                                Cantidad:&nbsp; <input type="number" min="0" max="{{ p.existencias }}" name="cantidad" style="width: 50px;"
                                                        value="1">
                                 <button class="btn btn-success btn-sm" type="submit" name="pedirP">pedir</button>
                             </form>

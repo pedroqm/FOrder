@@ -392,6 +392,7 @@ class DefaultController extends Controller
                     $newPedido->setNombreProducto($pedido[$i][0]->getNombreProducto());
                     $newPedido->setCantidad($pedido[$i][1]);
                     $newPedido->setDpedido($pedidoRealizado);
+                    $newPedido->setListo(false);
                     $em->persist($newPedido);
                     // Guardar los cambios
                     $em->flush();
@@ -525,8 +526,10 @@ class DefaultController extends Controller
                 ->getQuery()
                 ->getResult();
 
+        $arrayUsuarios = array();
+        if( $FacturasUsuarios) {
 
-            $arrayUsuarios = array();
+
             $j = 0;
             do {
 
@@ -550,7 +553,7 @@ class DefaultController extends Controller
                 }
                 $j++;
             } while ($j < count($FacturasUsuarios));
-
+        }
 
         return $this->render('default/pagarFacturas.html.twig', [
             'usuario' => $arrayUsuarios,
