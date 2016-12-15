@@ -128,6 +128,9 @@ class UsuarioController extends Controller
                     // Obtener el EntityManager
                     $em = $this->getDoctrine()->getManager();
 
+                    $helper =  $password = $this->container->get('security.password_encoder');
+                    $usuario->setPass($helper->encodePassword($usuario, $usuario->getPassword()));
+
                     // Asegurarse de que se tiene en cuenta el nuevo usuario
                     $em->persist($usuario);
                     // Guardar los cambios

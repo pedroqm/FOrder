@@ -69,8 +69,13 @@
 
                  {% endfor %}
              </div>
+             <a href="{{ path('producto_nuevo') }}" role="button" class="btn btn-success btn-block active" id="a">Nuevo producto</a>
+
          {% else %}
              <h2>No hay productos para mostrar</h2>
+
+             <a href="{{ path('producto_nuevo') }}" role="button" class="btn btn-success btn-block active" id="a">Nuevo producto</a>
+
          {% endif %}
          <div class="row">
              <a href="{{ path('administracion') }}" role="button" class="btn btn-success btn-block active" id="a">Ir al panel de administracion</a>
@@ -104,6 +109,7 @@
              </div>
          {% else %}
              <h2>No hay productos para mostrar</h2>
+
          {% endif %}
          <div class="row">
              <a href="{{ path('inicioCamarero') }}" role="button" class="btn btn-success btn-block active" id="a">Ver las mesas y pedidos</a>

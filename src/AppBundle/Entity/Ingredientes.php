@@ -18,8 +18,8 @@ class Ingredientes
     protected $id;
 
     /**
-     * @ORM\Column(type="decimal")
-     * @var decimal
+     * @ORM\Column(type="float")
+     * @var float
      */
     protected $cantidad;
 

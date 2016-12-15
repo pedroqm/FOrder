@@ -84,8 +84,8 @@ class Usuario implements UserInterface
     protected $nombre;
 
     /**
-     * @ORM\Column(type="decimal")
-     * @var decimal
+     * @ORM\Column(type="float")
+     * @var float
      */
     protected $factura;
 

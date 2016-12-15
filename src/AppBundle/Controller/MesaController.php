@@ -73,7 +73,7 @@ class MesaController extends Controller
     {
         $em = $this->getDoctrine()->getManager();
 
-        $Dpedido=$em->getRepository('AppBundle:DetallePedido')->findBy(array('idPedido'=>$pedido->getId()));
+        $Dpedido=$em->getRepository('AppBundle:DetallePedido')->findBy(array('Dpedido'=>$pedido));
 
         return $this->render(':mesa:detalle_pedido.html.twig', [
             'detalle'=>$Dpedido,

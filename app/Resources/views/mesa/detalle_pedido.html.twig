@@ -18,7 +18,7 @@
                 <tbody>
                 {% for de in detalle %}
                     <tr>
-                        {% if de.idPedido == pedido.id %}
+                        {% if de.dpedido.id == pedido.id %}
                             <td>{{ de.nombreProducto }}</td>
                             {% if de.cantidad==0 %}
                                 <td>Listo</td>

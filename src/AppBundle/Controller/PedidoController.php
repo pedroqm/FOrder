@@ -180,7 +180,7 @@ class PedidoController extends Controller
     public function listoAction(DetallePedido $deP)
     {
         $em = $this->getDoctrine()->getManager();
-        $pedido=$em->getRepository('AppBundle:Pedido')->findOneBy(array('id'=>$deP->getIdPedido()));
+        $pedido=$em->getRepository('AppBundle:Pedido')->findOneBy(array('id'=>$deP->getDpedido()));
 
         $todoPreparado=false;
 
@@ -205,7 +205,7 @@ class PedidoController extends Controller
         // Guardar los cambios
         $em->flush();
 
-        $Dpedido=$em->getRepository('AppBundle:DetallePedido')->findBy(array('idPedido'=>$pedido->getId()));
+        $Dpedido=$em->getRepository('AppBundle:DetallePedido')->findBy(array('Dpedido'=>$pedido->getId()));
 
         return $this->render(':mesa:detalle_pedido.html.twig', [
             'detalle'=>$Dpedido,
